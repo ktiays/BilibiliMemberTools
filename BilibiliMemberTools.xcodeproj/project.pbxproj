@@ -21,6 +21,7 @@
 		55E0757426539F240047CD8B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 55E0757226539F240047CD8B /* LaunchScreen.storyboard */; };
 		55E0930E2653A48A0047CD8B /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 55E0930D2653A48A0047CD8B /* Alamofire */; };
 		55E093102653A4F00047CD8B /* APIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55E0930F2653A4F00047CD8B /* APIManager.swift */; };
+		ED4515A22655863E00825D8A /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED4515A12655863E00825D8A /* Account.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,6 +40,7 @@
 		55E0757326539F240047CD8B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		55E0757526539F240047CD8B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		55E0930F2653A4F00047CD8B /* APIManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIManager.swift; sourceTree = "<group>"; };
+		ED4515A12655863E00825D8A /* Account.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,8 +69,7 @@
 			isa = PBXGroup;
 			children = (
 				55E0756B26539F210047CD8B /* ViewController.swift */,
-				55B5FA6726554269008D65C5 /* LoginView.swift */,
-				55B5FA6926554A8C008D65C5 /* LoginView+Controller.swift */,
+				ED4515A02655861A00825D8A /* Login */,
 			);
 			path = ViewController;
 			sourceTree = "<group>";
@@ -94,6 +95,7 @@
 			children = (
 				55E0756726539F210047CD8B /* AppDelegate.swift */,
 				55E0756926539F210047CD8B /* SceneDelegate.swift */,
+				ED45159F2655860F00825D8A /* Models */,
 				55B5831C2654FCD7008D65C5 /* ViewController */,
 				553322F82653A94C006FE9B7 /* Extension */,
 				55E0B0A22653A5970047CD8B /* API */,
@@ -112,6 +114,23 @@
 				55E0930F2653A4F00047CD8B /* APIManager.swift */,
 			);
 			path = API;
+			sourceTree = "<group>";
+		};
+		ED45159F2655860F00825D8A /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				ED4515A12655863E00825D8A /* Account.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		ED4515A02655861A00825D8A /* Login */ = {
+			isa = PBXGroup;
+			children = (
+				55B5FA6726554269008D65C5 /* LoginView.swift */,
+				55B5FA6926554A8C008D65C5 /* LoginView+Controller.swift */,
+			);
+			path = Login;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -196,6 +215,7 @@
 				55E0756C26539F210047CD8B /* ViewController.swift in Sources */,
 				55B5FA6826554269008D65C5 /* LoginView.swift in Sources */,
 				55E0756826539F210047CD8B /* AppDelegate.swift in Sources */,
+				ED4515A22655863E00825D8A /* Account.swift in Sources */,
 				553322FA2653A970006FE9B7 /* String+Extension.swift in Sources */,
 				55E0756A26539F210047CD8B /* SceneDelegate.swift in Sources */,
 				553322FC2653B953006FE9B7 /* Date+Extension.swift in Sources */,

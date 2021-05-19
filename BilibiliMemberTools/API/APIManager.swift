@@ -30,6 +30,8 @@ final class APIManager {
         
         static let loginSMS = httpPrefix + Host.passport.rawValue + "/web/login/rapid"
         
+        static let info = httpPrefix + Host.api.rawValue + "/x/member/web/account"
+        
     }
     
     private var _countryCode: Int?
@@ -105,6 +107,45 @@ final class APIManager {
                 }
             }
         }
+    }
+    
+    func info() -> (errorDescription: String?, info: Account.Info?) {
+        let semaphore = DispatchSemaphore()
+        let responseQueue = DispatchQueue.global(qos: .utility)
+        
+        var result: (errorDescription: String?, info: Account.Info?) = (nil, nil)
+        AF.request(InterfaceURL.info).responseJSON(queue: responseQueue) { response in
+            let errorHandler = {
+                result.errorDescription = "Unexcepted response."
+                semaphore.signal()
+            }
+            
+            guard let value = response.value as? [String : Any] else {
+                errorHandler()
+                return
+            }
+            guard let message = value["message"] as? String else {
+                errorHandler()
+                return
+            }
+            result.errorDescription = message
+            
+            guard let data = value["data"] as? [String : Any] else {
+                errorHandler()
+                return
+            }
+            let birthday = Account.Info.format(string: data["birthday"] as? String) ?? Date()
+            let uid = (data["mid"] as? Int)?.description ?? .init()
+            let sign = data["sign"] as? String ?? .init()
+            let username = data["uname"] as? String ?? .init()
+            let userID = data["userid"] as? String ?? .init()
+            let rank = data["rank"] as? String ?? .init()
+            let info = Account.Info(birthday: birthday, uid: uid, sign: sign, username: username, userID: userID, rank: rank)
+            result.info = info
+            semaphore.signal()
+        }
+        semaphore.wait()
+        return result
     }
     
     // MARK: - Private Methods

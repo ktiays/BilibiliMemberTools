@@ -9,11 +9,13 @@ import SwiftUI
 class ViewController: UIViewController {
     
     @IBOutlet weak var loginButton: UIButton!
+    @IBOutlet weak var infoButton: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         loginButton.addTarget(self, action: #selector(login), for: .touchUpInside)
+        infoButton.addTarget(self, action: #selector(info), for: .touchUpInside)
     }
     
     override func viewDidLayoutSubviews() {
@@ -34,6 +36,11 @@ class ViewController: UIViewController {
         
         loginViewController.modalPresentationStyle = .fullScreen
         present(loginViewController, animated: true, completion: nil)
+    }
+    
+    @objc func info(_ sender: UIButton) {
+        let info = APIManager.shared.info()
+        print(info.info)
     }
     
 }
