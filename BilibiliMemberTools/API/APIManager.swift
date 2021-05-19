@@ -24,12 +24,14 @@ final class APIManager {
         
         static let captcha = httpPrefix + Host.passport.rawValue + "/web/captcha/combine"
         
+        static let countryList = httpPrefix + Host.passport.rawValue + "/web/generic/country/list"
+        
     }
     
     // MARK: - Public Methods
     
     func captcha() -> (challenge: String, gt: String, key: String) {
-        let semaphore = DispatchSemaphore(value: 0)
+        let semaphore = DispatchSemaphore()
         
         var captchaArgs: (String, String, String) = (.init(), .init(), .init())
         let responseQueue = DispatchQueue.global(qos: .utility)
@@ -52,7 +54,28 @@ final class APIManager {
         return captchaArgs
     }
     
-    func login() {
+    func sms(telephone: String, captchaCode: (key: String, challenge: String, validate: String, seccode: String)) {
+        // Get country code of China.
+        let semaphore = DispatchSemaphore()
+        let responseQueue = DispatchQueue.global(qos: .utility)
+        AF.request(InterfaceURL.countryList).responseJSON(queue: responseQueue) { response in
+            guard let list = (response.value as? [String : Any])?["data"] as? [String : [[String : Any]]] else {
+                semaphore.signal()
+                return
+            }
+            // Filter out the list of country information.
+            guard let countries = list["common"] else {
+                semaphore.signal()
+                return
+            }
+            for country in countries {
+                print(country)
+            }
+        }
+        semaphore.wait()
+    }
+    
+    func login(telephone: String, smsCode: String) {
         
         let params = [
             "access_key": nil,

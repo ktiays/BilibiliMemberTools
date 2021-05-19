@@ -1,8 +1,6 @@
 //
-//  Date+Extension.swift
-//  BilibiliMemberTools
-//
 //  Created by ktiays on 2021/5/18.
+//  Copyright (c) 2021 ktiays. All rights reserved.
 //
 
 import Foundation
