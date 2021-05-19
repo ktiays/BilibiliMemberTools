@@ -28,31 +28,31 @@ final class APIManager {
     
     // MARK: - Public Methods
     
-    func login() {
+    func captcha() -> (challenge: String, gt: String, key: String) {
+        let semaphore = DispatchSemaphore(value: 0)
         
-        func captcha() -> (challenge: String, gt: String, key: String) {
-            let semaphore = DispatchSemaphore(value: 0)
-            
-            var captchaArgs: (String, String, String) = (.init(), .init(), .init())
-            let responseQueue = DispatchQueue.global(qos: .utility)
-            AF.request(InterfaceURL.captcha, parameters: ["plat": 6]).responseJSON(queue: responseQueue) { response in
-                guard let result = response.value as? [String : Any] else {
-                    semaphore.signal()
-                    return
-                }
-                guard let args = (result["data"] as? [String : Any])?["result"] as? [String : Any] else {
-                    semaphore.signal()
-                    return
-                }
-                captchaArgs.0 = args["challenge"] as? String ?? .init()
-                captchaArgs.1 = args["gt"] as? String ?? .init()
-                captchaArgs.2 = args["key"] as? String ?? .init()
+        var captchaArgs: (String, String, String) = (.init(), .init(), .init())
+        let responseQueue = DispatchQueue.global(qos: .utility)
+        AF.request(InterfaceURL.captcha, parameters: ["plat": 6]).responseJSON(queue: responseQueue) { response in
+            guard let result = response.value as? [String : Any] else {
                 semaphore.signal()
+                return
             }
-            semaphore.wait()
-            
-            return captchaArgs
+            guard let args = (result["data"] as? [String : Any])?["result"] as? [String : Any] else {
+                semaphore.signal()
+                return
+            }
+            captchaArgs.0 = args["challenge"] as? String ?? .init()
+            captchaArgs.1 = args["gt"] as? String ?? .init()
+            captchaArgs.2 = args["key"] as? String ?? .init()
+            semaphore.signal()
         }
+        semaphore.wait()
+        
+        return captchaArgs
+    }
+    
+    func login() {
         
         let params = [
             "access_key": nil,
@@ -62,6 +62,10 @@ final class APIManager {
         
         let args = captcha()
         print(args)
+        
+        // Load Geetest verify page.
+        let geetestHTML = Bundle.main.path(forResource: "Geetest/geetest", ofType: "html")
+        print(geetestHTML)
         
     }
     
