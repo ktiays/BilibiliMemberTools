@@ -5,6 +5,7 @@
 
 import UIKit
 import WebKit
+import SwiftUI
 
 class LoginViewController: UIViewController, WKNavigationDelegate, WKScriptMessageHandler {
     
@@ -36,11 +37,16 @@ class LoginViewController: UIViewController, WKNavigationDelegate, WKScriptMessa
     
     private var captcha: Captcha = Captcha()
     
+    private lazy var loginView: UIHostingController<LoginView> = {
+        UIHostingController(rootView: LoginView())
+    }()
+    
     // MARK: - Life Cycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        view.backgroundColor = .systemBackground
         view.addSubview(captchaView)
     }
     
@@ -54,6 +60,11 @@ class LoginViewController: UIViewController, WKNavigationDelegate, WKScriptMessa
     
     func requestSMSCode() {
         APIManager.shared.sms(telephone: "13970005990", captchaCode: (captcha.key, captcha.challenge, captcha.validate, captcha.seccode))
+    }
+    
+    func showLoginView() {
+        let loginView = UIHostingController(rootView: LoginView())
+        present(loginView, animated: true, completion: nil)
     }
     
     // MARK: - WKNavigationDelegate

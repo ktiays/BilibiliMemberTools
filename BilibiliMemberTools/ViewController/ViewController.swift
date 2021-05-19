@@ -4,7 +4,7 @@
 //
 
 import UIKit
-import WebKit
+import SwiftUI
 
 class ViewController: UIViewController {
     
@@ -22,7 +22,7 @@ class ViewController: UIViewController {
     }
     
     @objc func login(_ sender: UIButton) {
-        let loginViewController = LoginViewController()
+        let loginViewController = UIHostingController(rootView: LoginView())
         loginViewController.modalPresentationStyle = .fullScreen
         present(loginViewController, animated: true, completion: nil)
     }

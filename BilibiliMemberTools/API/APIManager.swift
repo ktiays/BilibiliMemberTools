@@ -28,7 +28,11 @@ final class APIManager {
         
         static let sms = httpPrefix + Host.passport.rawValue + "/web/sms/general/v2/send"
         
+        static let loginSMS = httpPrefix + Host.passport.rawValue + "/web/login/rapid"
+        
     }
+    
+    private var _countryCode: Int?
     
     // MARK: - Public Methods
     
@@ -58,35 +62,10 @@ final class APIManager {
     
     func sms(telephone: String, captchaCode: (key: String, challenge: String, validate: String, seccode: String)) {
         DispatchQueue.global().async {
-            let semaphore = DispatchSemaphore()
-            let handlerQueue = DispatchQueue.global(qos: .utility)
-            
-            var countryCode = String()
-            // Get country code of China.
-            AF.request(InterfaceURL.countryList).responseJSON(queue: handlerQueue) { response in
-                guard let list = (response.value as? [String : Any])?["data"] as? [String : [[String : Any]]] else {
-                    semaphore.signal()
-                    return
-                }
-                // Filter out the list of common country information.
-                guard let countries = list["common"] else {
-                    semaphore.signal()
-                    return
-                }
-                
-                for country in countries {
-                    if let id = country["country_id"] as? String, id == "86" {
-                        countryCode = (country["id"] as? Int)?.description ?? .init()
-                    }
-                }
-                semaphore.signal()
-            }
-            semaphore.wait()
-            
             // Send SMS code.
             let params = [
                 "tel": telephone,
-                "cid": countryCode,
+                "cid": self.countryCode()?.description ?? .init(),
                 "type": "21",
                 "captchaType": "6",
                 "key": captchaCode.key,
@@ -94,7 +73,7 @@ final class APIManager {
                 "validate": captchaCode.validate,
                 "seccode": captchaCode.seccode
             ]
-            AF.request(InterfaceURL.sms, method: .post, parameters: params).responseJSON(queue: handlerQueue) { response in
+            AF.request(InterfaceURL.sms, method: .post, parameters: params).responseJSON { response in
                 guard let result = response.value as? [String : Any] else { return }
                 if let code = result["code"] as? Int, code == 0 {
                     print("The SMS code request was successful.")
@@ -105,24 +84,60 @@ final class APIManager {
         }
     }
     
-    func login(telephone: String, smsCode: String) {
-        
+    func login(telephone: String, smsCode: String, completion: ((String?) -> Void)? = nil) {
         let params = [
-            "access_key": nil,
-            "appkey": appkey,
-            "ts": Date().timestamp.description
+            "cid": self.countryCode()?.description ?? .init(),
+            "tel": telephone,
+            "smsCode": smsCode
         ]
-        
-        let args = captcha()
-        print(args)
-        
-        // Load Geetest verify page.
-        let geetestHTML = Bundle.main.path(forResource: "Geetest/geetest", ofType: "html")
-        print(geetestHTML)
-        
+        AF.request(InterfaceURL.loginSMS, method: .post, parameters: params).responseJSON { response in
+            guard let result = response.value as? [String : Any] else { return }
+            if let code = result["code"] as? Int, code == 0 {
+                print("Login successful.")
+                if let completion = completion {
+                    completion(nil)
+                }
+            } else {
+                let errorDescription = "\(result["message"] as? String ?? "Unknow reason")"
+                print("Login failed.(\(errorDescription))")
+                if let completion = completion {
+                    completion(errorDescription)
+                }
+            }
+        }
     }
     
     // MARK: - Private Methods
+    
+    private func countryCode() -> Int? {
+        if let code = _countryCode {
+            return code
+        }
+        let semaphore = DispatchSemaphore()
+        let handlerQueue = DispatchQueue.global(qos: .utility)
+        
+        // Get country code of China.
+        AF.request(InterfaceURL.countryList).responseJSON(queue: handlerQueue) { response in
+            guard let list = (response.value as? [String : Any])?["data"] as? [String : [[String : Any]]] else {
+                semaphore.signal()
+                return
+            }
+            // Filter out the list of common country information.
+            guard let countries = list["common"] else {
+                semaphore.signal()
+                return
+            }
+            
+            for country in countries {
+                if let id = country["country_id"] as? String, id == "86" {
+                    self._countryCode = country["id"] as? Int
+                }
+            }
+            semaphore.signal()
+        }
+        semaphore.wait()
+        return _countryCode
+    }
     
     private func signature(of params: [String : String?]) -> String {
         ""
