@@ -9,6 +9,7 @@ import WebKit
 class LoginViewController: UIViewController, WKNavigationDelegate, WKScriptMessageHandler {
     
     private struct Captcha {
+        var key: String = .init()
         var gt: String = .init()
         var challenge: String = .init()
         var validate: String = .init()
@@ -23,7 +24,8 @@ class LoginViewController: UIViewController, WKNavigationDelegate, WKScriptMessa
         return configuration
     }()
     private lazy var captchaView: WKWebView = {
-        let webView = WKWebView(frame: view.bounds, configuration: captchaViewConfiguration)
+        let webView = WKWebView(frame: .zero, configuration: captchaViewConfiguration)
+        webView.navigationDelegate = self
         guard let path = geetestHTMLPath else {
             assert(false, "The HTML file of the Geetest captcha page was not found.")
         }
@@ -39,19 +41,28 @@ class LoginViewController: UIViewController, WKNavigationDelegate, WKScriptMessa
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .systemBlue
+        view.addSubview(captchaView)
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        view.addSubview(captchaView)
+        captchaView.frame = view.bounds
+    }
+    
+    // MARK: - Private Methods
+    
+    func requestSMSCode() {
+        APIManager.shared.sms(telephone: "13970005990", captchaCode: (captcha.key, captcha.challenge, captcha.validate, captcha.seccode))
     }
     
     // MARK: - WKNavigationDelegate
     
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         let args = APIManager.shared.captcha()
+        captcha.key = args.key
+        captcha.gt = args.gt
+        captcha.challenge = args.challenge
         webView.evaluateJavaScript("showGeetest(\"\(args.gt)\", \"\(args.challenge)\")")
     }
     
@@ -61,6 +72,8 @@ class LoginViewController: UIViewController, WKNavigationDelegate, WKScriptMessa
         guard let code = message.body as? [String : String] else { return }
         captcha.validate = code["geetest_validate"] ?? .init()
         captcha.seccode = code["geetest_seccode"] ?? .init()
+        captchaView.removeFromSuperview()
+        requestSMSCode()
     }
     
 }

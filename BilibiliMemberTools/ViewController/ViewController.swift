@@ -7,16 +7,24 @@ import UIKit
 import WebKit
 
 class ViewController: UIViewController {
-
+    
+    @IBOutlet weak var loginButton: UIButton!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        loginButton.addTarget(self, action: #selector(login), for: .touchUpInside)
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-//        apiTest()
+    }
+    
+    @objc func login(_ sender: UIButton) {
+        let loginViewController = LoginViewController()
+        loginViewController.modalPresentationStyle = .fullScreen
+        present(loginViewController, animated: true, completion: nil)
     }
     
 }

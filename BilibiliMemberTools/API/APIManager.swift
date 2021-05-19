@@ -26,6 +26,8 @@ final class APIManager {
         
         static let countryList = httpPrefix + Host.passport.rawValue + "/web/generic/country/list"
         
+        static let sms = httpPrefix + Host.passport.rawValue + "/web/sms/general/v2/send"
+        
     }
     
     // MARK: - Public Methods
@@ -55,24 +57,52 @@ final class APIManager {
     }
     
     func sms(telephone: String, captchaCode: (key: String, challenge: String, validate: String, seccode: String)) {
-        // Get country code of China.
-        let semaphore = DispatchSemaphore()
-        let responseQueue = DispatchQueue.global(qos: .utility)
-        AF.request(InterfaceURL.countryList).responseJSON(queue: responseQueue) { response in
-            guard let list = (response.value as? [String : Any])?["data"] as? [String : [[String : Any]]] else {
+        DispatchQueue.global().async {
+            let semaphore = DispatchSemaphore()
+            let handlerQueue = DispatchQueue.global(qos: .utility)
+            
+            var countryCode = String()
+            // Get country code of China.
+            AF.request(InterfaceURL.countryList).responseJSON(queue: handlerQueue) { response in
+                guard let list = (response.value as? [String : Any])?["data"] as? [String : [[String : Any]]] else {
+                    semaphore.signal()
+                    return
+                }
+                // Filter out the list of common country information.
+                guard let countries = list["common"] else {
+                    semaphore.signal()
+                    return
+                }
+                
+                for country in countries {
+                    if let id = country["country_id"] as? String, id == "86" {
+                        countryCode = (country["id"] as? Int)?.description ?? .init()
+                    }
+                }
                 semaphore.signal()
-                return
             }
-            // Filter out the list of country information.
-            guard let countries = list["common"] else {
-                semaphore.signal()
-                return
-            }
-            for country in countries {
-                print(country)
+            semaphore.wait()
+            
+            // Send SMS code.
+            let params = [
+                "tel": telephone,
+                "cid": countryCode,
+                "type": "21",
+                "captchaType": "6",
+                "key": captchaCode.key,
+                "challenge": captchaCode.challenge,
+                "validate": captchaCode.validate,
+                "seccode": captchaCode.seccode
+            ]
+            AF.request(InterfaceURL.sms, method: .post, parameters: params).responseJSON(queue: handlerQueue) { response in
+                guard let result = response.value as? [String : Any] else { return }
+                if let code = result["code"] as? Int, code == 0 {
+                    print("The SMS code request was successful.")
+                } else {
+                    print("Failed to request SMS code.(\(result["message"] as? String ?? "Unknow reason"))")
+                }
             }
         }
-        semaphore.wait()
     }
     
     func login(telephone: String, smsCode: String) {
