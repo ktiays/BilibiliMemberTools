@@ -7,12 +7,14 @@ import SwiftUI
 
 struct LoginView: View {
     
+    var loginCompletionHandler: (() -> Void)
+    
     @State private var username: String = ""
     @State private var smsCode: String = ""
     
     @State private var controller: Controller = Controller()
     
-    @State private var isCaptchaed = false
+    @State var isCaptchaed = false
     
     var body: some View {
         ZStack {
@@ -24,22 +26,30 @@ struct LoginView: View {
                 HStack {
                     TextField("SMS Code", text: $smsCode)
                     Button(action: {
-                        
+                        controller.telephone = username
+                        controller.captchaDidVerifyBlock = {
+                            isCaptchaed.toggle()
+                        }
+                        withAnimation(.spring()) {
+                            isCaptchaed.toggle()
+                        }
                     }, label: {
                         Text("Send")
                     })
                     .disabled(username.count != 11)
                 }
-                .padding(.bottom, 36)
+                .padding(.bottom, 48)
                 
                 Button(action: {
-                    
+                    controller.login(telephone: username, smsCode: smsCode) {
+                        loginCompletionHandler()
+                    }
                 }, label: {
                     Text("Login")
                         .bold()
                         .foregroundColor(.white)
                         .padding()
-                        .padding(.horizontal, 50)
+                        .padding(.horizontal, 60)
                         .background(Color(.systemBlue))
                         .clipShape(Capsule())
                 })
@@ -49,8 +59,8 @@ struct LoginView: View {
             .padding()
             
             Controller.WebView(webView: controller.captchaView)
-                .disabled(true)
-//                .opacity(0)
+                .disabled(!isCaptchaed)
+                .opacity(isCaptchaed ? 1 : 0)
         }
     }
     
@@ -60,6 +70,6 @@ struct LoginView: View {
 
 struct LoginView_Previews: PreviewProvider {
     static var previews: some View {
-        LoginView()
+        LoginView {}
     }
 }

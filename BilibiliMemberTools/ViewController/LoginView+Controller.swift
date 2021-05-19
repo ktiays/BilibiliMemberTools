@@ -12,6 +12,10 @@ extension LoginView {
     
     class Controller: NSObject {
         
+        var telephone: String = .init()
+        
+        var captchaDidVerifyBlock: (() -> Void)?
+        
         fileprivate struct Captcha {
             var key: String = .init()
             var gt: String = .init()
@@ -56,8 +60,14 @@ extension LoginView {
         
         private var captcha: Captcha = Captcha()
         
-        func requestSMSCode(telephone: String) {
+        func requestSMSCode() {
             APIManager.shared.sms(telephone: telephone, captchaCode: (captcha.key, captcha.challenge, captcha.validate, captcha.seccode))
+        }
+        
+        func login(telephone: String, smsCode code: String, completionHandler: @escaping (() -> Void)) {
+            APIManager.shared.login(telephone: telephone, smsCode: code) { errorDescription in
+                completionHandler()
+            }
         }
         
     }
@@ -82,7 +92,9 @@ extension LoginView.Controller: WKNavigationDelegate, WKScriptMessageHandler {
         guard let code = message.body as? [String : String] else { return }
         captcha.validate = code["geetest_validate"] ?? .init()
         captcha.seccode = code["geetest_seccode"] ?? .init()
-        captchaView.removeFromSuperview()
+        if let block = captchaDidVerifyBlock {
+            block()
+        }
         requestSMSCode()
     }
     

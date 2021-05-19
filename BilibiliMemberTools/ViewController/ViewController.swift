@@ -22,7 +22,16 @@ class ViewController: UIViewController {
     }
     
     @objc func login(_ sender: UIButton) {
-        let loginViewController = UIHostingController(rootView: LoginView())
+        class ViewControllerWrapper {
+            var viewController: UIViewController?
+        }
+        let wrapper = ViewControllerWrapper()
+        
+        let loginViewController = UIHostingController(rootView: LoginView {
+            wrapper.viewController?.dismiss(animated: true, completion: nil)
+        })
+        wrapper.viewController = loginViewController
+        
         loginViewController.modalPresentationStyle = .fullScreen
         present(loginViewController, animated: true, completion: nil)
     }
