@@ -20,29 +20,22 @@
                                 <rect key="frame" x="191.5" y="433" width="31" height="30"/>
                                 <state key="normal" title="登录"/>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0yT-a9-nxs">
-                                <rect key="frame" x="176" y="471" width="62" height="30"/>
-                                <state key="normal" title="个人信息"/>
-                            </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3ZE-X4-kpY">
-                                <rect key="frame" x="176" y="509" width="62" height="30"/>
+                                <rect key="frame" x="176" y="471" width="62" height="30"/>
                                 <state key="normal" title="接口列表"/>
                             </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="0yT-a9-nxs" firstAttribute="centerX" secondItem="t7b-sP-29B" secondAttribute="centerX" id="5EK-In-fh5"/>
+                            <constraint firstItem="3ZE-X4-kpY" firstAttribute="top" secondItem="t7b-sP-29B" secondAttribute="bottom" constant="8" symbolic="YES" id="0Lx-IH-lpg"/>
                             <constraint firstItem="t7b-sP-29B" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="8wk-aW-k5s"/>
+                            <constraint firstItem="3ZE-X4-kpY" firstAttribute="centerX" secondItem="t7b-sP-29B" secondAttribute="centerX" id="E0I-sq-lCw"/>
                             <constraint firstItem="t7b-sP-29B" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="N0s-rW-ZUD"/>
-                            <constraint firstItem="0yT-a9-nxs" firstAttribute="top" secondItem="t7b-sP-29B" secondAttribute="bottom" constant="8" symbolic="YES" id="dW2-Nh-Qx6"/>
-                            <constraint firstItem="3ZE-X4-kpY" firstAttribute="centerX" secondItem="0yT-a9-nxs" secondAttribute="centerX" id="gGt-H1-qpo"/>
-                            <constraint firstItem="3ZE-X4-kpY" firstAttribute="top" secondItem="0yT-a9-nxs" secondAttribute="bottom" constant="8" symbolic="YES" id="oFh-hW-gY0"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="apiListEntryButton" destination="3ZE-X4-kpY" id="2OR-2X-HnD"/>
-                        <outlet property="infoButton" destination="0yT-a9-nxs" id="45f-l3-3P5"/>
                         <outlet property="loginButton" destination="t7b-sP-29B" id="TAo-5t-cU1"/>
                     </connections>
                 </viewController>

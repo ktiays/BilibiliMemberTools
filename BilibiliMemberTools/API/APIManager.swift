@@ -20,6 +20,7 @@ final class APIManager {
         fileprivate enum Host : String {
             case api = "api.bilibili.com"
             case passport = "passport.bilibili.com"
+            case member = "member.bilibili.com"
         }
         
         static let captcha = httpPrefix + Host.passport.rawValue + "/web/captcha/combine"
@@ -32,6 +33,13 @@ final class APIManager {
         
         static let info = httpPrefix + Host.api.rawValue + "/x/member/web/account"
         
+        static let upStatus = httpPrefix + Host.member.rawValue + "/x/web/index/stat"
+        
+    }
+    
+    fileprivate enum ErrorDescription: String {
+        case unknown = "Unknown reason."
+        case unexcepted = "Unexcepted response."
     }
     
     private var _countryCode: Int?
@@ -112,7 +120,7 @@ final class APIManager {
         var result: (errorDescription: String?, info: Account.Info?) = (nil, nil)
         AF.request(InterfaceURL.info).responseJSON(queue: responseQueue) { response in
             let errorHandler = {
-                result.errorDescription = "Unexcepted response."
+                result.errorDescription = ErrorDescription.unexcepted.rawValue
                 semaphore.signal()
             }
             
@@ -130,7 +138,7 @@ final class APIManager {
                 errorHandler()
                 return
             }
-            let birthday = Account.Info.format(string: data["birthday"] as? String) ?? Date()
+            let birthday = Account.Info.format(string: data["birthday"] as? String)
             let uid = (data["mid"] as? Int)?.description ?? .init()
             let sign = data["sign"] as? String ?? .init()
             let username = data["uname"] as? String ?? .init()
@@ -138,6 +146,92 @@ final class APIManager {
             let rank = data["rank"] as? String ?? .init()
             let info = Account.Info(birthday: birthday, uid: uid, signature: sign, username: username, userID: userID, rank: rank)
             result.info = info
+            semaphore.signal()
+        }
+        semaphore.wait()
+        return result
+    }
+    
+    func upStatus() -> (errorDescription: String?, upStatus: Account.UpStatus?) {
+        let semaphore = DispatchSemaphore()
+        let responseQueue = DispatchQueue.global(qos: .utility)
+        
+        var result: (String?, Account.UpStatus?) = (nil, nil)
+        
+        AF.request(InterfaceURL.upStatus).responseJSON(queue: responseQueue) { response in
+            guard let value = response.value as? [String : Any] else {
+                result.0 = ErrorDescription.unexcepted.rawValue
+                semaphore.signal()
+                return
+            }
+            
+            print(value)
+            
+            let unexceptedHandler = {
+                result.0 = value["message"] as? String ?? ErrorDescription.unexcepted.rawValue
+                semaphore.signal()
+            }
+            
+            if let code = value["code"] as? Int, code != 0 {
+                unexceptedHandler()
+                return
+            }
+            guard let data = value["data"] as? [String : Any] else {
+                unexceptedHandler()
+                return
+            }
+            let delta = Account.UpStatus.UpData(
+                follower: data["incr_fans"] as? Int ?? 0,
+                replies: data["incr_reply"] as? Int ?? 0,
+                danmakus: data["incr_dm"] as? Int ?? 0,
+                videoViews: data["incr_click"] as? Int ?? 0,
+                coins: data["inc_coin"] as? Int ?? 0,
+                likes: data["inc_like"] as? Int ?? 0,
+                favorites: data["inc_fav"] as? Int ?? 0,
+                shares: data["inc_share"] as? Int ?? 0,
+                batteries: data["inc_elec"] as? Int ?? 0
+            )
+            let total = Account.UpStatus.UpData(
+                follower: data["total_fans"] as? Int ?? 0,
+                replies: data["total_reply"] as? Int ?? 0,
+                danmakus: data["total_dm"] as? Int ?? 0,
+                videoViews: data["total_click"] as? Int ?? 0,
+                coins: data["total_coin"] as? Int ?? 0,
+                likes: data["total_like"] as? Int ?? 0,
+                favorites: data["total_fav"] as? Int ?? 0,
+                shares: data["total_share"] as? Int ?? 0,
+                batteries: data["total_elec"] as? Int ?? 0
+            )
+            
+            typealias FollowerData = Account.UpStatus.FollowerData
+            
+            var trend: (FollowerData, FollowerData) = (.init(), .init())
+            if let followerData = data["fan_recent_thirty"] as? [String : [String : Int]] {
+                trend = (
+                    {
+                        guard let follow = followerData["follow"] else {
+                            return FollowerData()
+                        }
+                        var followData: FollowerData = .init()
+                        for (k, v) in follow {
+                            followData[Account.UpStatus.format(string: k)] = v
+                        }
+                        return followData
+                    }(),
+                    {
+                        guard let unfollow = followerData["unfollow"] else {
+                            return FollowerData()
+                        }
+                        var unfollowData: FollowerData = .init()
+                        for (k, v) in unfollow {
+                            unfollowData[Account.UpStatus.format(string: k)] = v
+                        }
+                        return unfollowData
+                    }()
+                )
+            }
+            
+            result.1 = Account.UpStatus(delta: delta, total: total, followerTrend: trend)
             semaphore.signal()
         }
         semaphore.wait()

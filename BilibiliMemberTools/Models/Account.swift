@@ -15,12 +15,45 @@ struct Account {
         var userID: String
         var rank: String
         
-        static func format(string: String?) -> Date? {
-            guard let string = string else { return nil }
+        static func format(string: String?) -> Date {
+            guard let string = string else { return Date() }
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "yyyy-MM-dd"
             return dateFormatter.date(from: string) ?? Date()
         }
+    }
+    
+    struct UpStatus {
+        
+        struct UpData {
+            var follower: Int
+            var replies: Int
+            var danmakus: Int
+            var videoViews: Int
+
+            var coins: Int
+            var likes: Int
+            var favorites: Int
+            var shares: Int
+            
+            var batteries: Int
+        }
+        
+        typealias FollowerData = [Date : Int]
+        
+        var delta: UpData
+        
+        var total: UpData
+        
+        var followerTrend: (follow: FollowerData, unfollow: FollowerData)
+        
+        static func format(string: String?) -> Date {
+            guard let string = string else { return Date() }
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyyMMdd"
+            return dateFormatter.date(from: string) ?? Date()
+        }
+        
     }
     
 }

@@ -5,59 +5,7 @@
 
 import SwiftUI
 
-fileprivate let apiList = [
-    API(name: "Account Information", invokeHandler: {
-        guard let info = APIManager.shared.info().info else { return AnyView(EmptyView()) }
-        return AnyView(
-            VStack {
-                HStack {
-                    Text("Birthday")
-                        .bold()
-                    Spacer()
-                    Text(info.birthday.description)
-                }
-                .padding(.bottom)
-                HStack {
-                    Text("UID")
-                        .bold()
-                    Spacer()
-                    Text(info.uid)
-                }
-                .padding(.bottom)
-                HStack {
-                    Text("Username")
-                        .bold()
-                    Spacer()
-                    Text(info.username)
-                }
-                .padding(.bottom)
-                HStack {
-                    Text("Signature")
-                        .bold()
-                    Spacer()
-                    Text(info.signature)
-                }
-                .padding(.bottom)
-                HStack {
-                    Text("Rank")
-                        .bold()
-                    Spacer()
-                    Text(info.rank)
-                }
-                .padding(.bottom)
-                HStack {
-                    Text("User ID")
-                        .bold()
-                    Spacer()
-                    Text(info.userID)
-                }
-            }
-            .padding(.horizontal)
-        )
-    })
-]
-
-// MARK: - APIDebugView
+// MARK: APIDebugView
 
 struct APIDebugView: View {
     
@@ -71,22 +19,6 @@ struct APIDebugView: View {
                 }
             }
             .navigationTitle("API List")
-        }
-    }
-    
-}
-
-// MARK: - API
-
-fileprivate struct API: Identifiable {
-    
-    var id: String = UUID().uuidString
-    var name: String
-    var invokeHandler: () -> AnyView
-    
-    func call(completionHandler: @escaping (AnyView) -> Void) {
-        DispatchQueue.global().async {
-            completionHandler(invokeHandler())
         }
     }
     
@@ -125,11 +57,63 @@ fileprivate struct APIDetailView: View {
     
 }
 
+// MARK: - PreviewView
+
+fileprivate struct PreviewView: View {
+    
+    struct Cardd: View {
+        
+        var title: String
+        var data: String
+        var delta: Int = 0
+        
+        var body: some View {
+            VStack {
+                Text(title)
+                    .font(.system(size: 12))
+                    .foregroundColor(.init(.secondaryLabel))
+                Text(data)
+                    .font(.system(size: 24, weight: .bold))
+                    .foregroundColor(.init(.systemBlue))
+                    .padding(.vertical, 1)
+                if (delta != 0) {
+                    HStack {
+                        if (delta > 0) {
+                            Image(systemName: "arrowtriangle.up.fill")
+                                .foregroundColor(Color(.systemRed))
+                            Text(delta.description)
+                                .bold()
+                                .foregroundColor(Color(.systemRed))
+                        } else {
+                            Image(systemName: "arrowtriangle.down.fill")
+                                .foregroundColor(Color(.systemGreen))
+                            Text(abs(delta).description)
+                                .bold()
+                                .foregroundColor(Color(.systemGreen))
+                        }
+                    }
+                }
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .padding(.vertical, 20)
+            .background(Color(.secondarySystemBackground))
+            .clipShape(RoundedRectangle(cornerRadius: 20))
+        }
+    }
+    
+    var body: some View {
+        VStack {
+            Cardd(title: "Text", data: "123")
+        }
+    }
+    
+}
+
 // MARK: - Preview
 
 struct APIDebugView_Previews: PreviewProvider {
     static var previews: some View {
         APIDebugView()
-//        APIDetailView()
+        PreviewView()
     }
 }
