@@ -25,7 +25,7 @@ struct Account {
     
     struct UpStatus {
         
-        struct UpData {
+        struct VideoData {
             var follower: Int
             var replies: Int
             var danmakus: Int
@@ -41,9 +41,9 @@ struct Account {
         
         typealias FollowerData = [Date : Int]
         
-        var delta: UpData
+        var delta: VideoData
         
-        var total: UpData
+        var total: VideoData
         
         var followerTrend: (follow: FollowerData, unfollow: FollowerData)
         

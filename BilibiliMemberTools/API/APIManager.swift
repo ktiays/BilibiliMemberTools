@@ -180,7 +180,7 @@ final class APIManager {
                 unexceptedHandler()
                 return
             }
-            let delta = Account.UpStatus.UpData(
+            let delta = Account.UpStatus.VideoData(
                 follower: data["incr_fans"] as? Int ?? 0,
                 replies: data["incr_reply"] as? Int ?? 0,
                 danmakus: data["incr_dm"] as? Int ?? 0,
@@ -191,7 +191,7 @@ final class APIManager {
                 shares: data["inc_share"] as? Int ?? 0,
                 batteries: data["inc_elec"] as? Int ?? 0
             )
-            let total = Account.UpStatus.UpData(
+            let total = Account.UpStatus.VideoData(
                 follower: data["total_fans"] as? Int ?? 0,
                 replies: data["total_reply"] as? Int ?? 0,
                 danmakus: data["total_dm"] as? Int ?? 0,
