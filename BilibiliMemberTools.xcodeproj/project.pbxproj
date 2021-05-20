@@ -72,8 +72,8 @@
 		55B5831C2654FCD7008D65C5 /* ViewController */ = {
 			isa = PBXGroup;
 			children = (
-				ED4515A32656131600825D8A /* Debug */,
 				55E0756B26539F210047CD8B /* ViewController.swift */,
+				ED4515A32656131600825D8A /* Debug */,
 				ED4515A02655861A00825D8A /* Login */,
 			);
 			path = ViewController;
