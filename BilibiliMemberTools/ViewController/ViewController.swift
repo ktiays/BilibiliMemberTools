@@ -10,12 +10,14 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var loginButton: UIButton!
     @IBOutlet weak var infoButton: UIButton!
+    @IBOutlet weak var apiListEntryButton: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        loginButton.addTarget(self, action: #selector(login), for: .touchUpInside)
-        infoButton.addTarget(self, action: #selector(info), for: .touchUpInside)
+        loginButton.addTarget(self, action: #selector(login(_:)), for: .touchUpInside)
+        infoButton.addTarget(self, action: #selector(info(_:)), for: .touchUpInside)
+        apiListEntryButton.addTarget(self, action: #selector(apiDebug(_:)), for: .touchUpInside)
     }
     
     override func viewDidLayoutSubviews() {
@@ -40,7 +42,13 @@ class ViewController: UIViewController {
     
     @objc func info(_ sender: UIButton) {
         let info = APIManager.shared.info()
-        print(info.info)
+        print(info.info ?? "")
+    }
+    
+    @objc func apiDebug(_ sender: UIButton) {
+        let apiDebugViewControler = UIHostingController(rootView: APIDebugView())
+        apiDebugViewControler.modalPresentationStyle = .fullScreen
+        present(apiDebugViewControler, animated: true, completion: nil)
     }
     
 }

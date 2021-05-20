@@ -96,15 +96,11 @@ final class APIManager {
             guard let result = response.value as? [String : Any] else { return }
             if let code = result["code"] as? Int, code == 0 {
                 print("Login successful.")
-                if let completion = completion {
-                    completion(nil)
-                }
+                completion?(nil)
             } else {
                 let errorDescription = "\(result["message"] as? String ?? "Unknow reason")"
                 print("Login failed.(\(errorDescription))")
-                if let completion = completion {
-                    completion(errorDescription)
-                }
+                completion?(errorDescription)
             }
         }
     }
@@ -140,7 +136,7 @@ final class APIManager {
             let username = data["uname"] as? String ?? .init()
             let userID = data["userid"] as? String ?? .init()
             let rank = data["rank"] as? String ?? .init()
-            let info = Account.Info(birthday: birthday, uid: uid, sign: sign, username: username, userID: userID, rank: rank)
+            let info = Account.Info(birthday: birthday, uid: uid, signature: sign, username: username, userID: userID, rank: rank)
             result.info = info
             semaphore.signal()
         }
@@ -178,10 +174,6 @@ final class APIManager {
         }
         semaphore.wait()
         return _countryCode
-    }
-    
-    private func signature(of params: [String : String?]) -> String {
-        ""
     }
     
 }

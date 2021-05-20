@@ -22,6 +22,7 @@
 		55E0930E2653A48A0047CD8B /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 55E0930D2653A48A0047CD8B /* Alamofire */; };
 		55E093102653A4F00047CD8B /* APIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55E0930F2653A4F00047CD8B /* APIManager.swift */; };
 		ED4515A22655863E00825D8A /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED4515A12655863E00825D8A /* Account.swift */; };
+		ED4515A52656132400825D8A /* APIDebugView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED4515A42656132400825D8A /* APIDebugView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -41,6 +42,7 @@
 		55E0757526539F240047CD8B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		55E0930F2653A4F00047CD8B /* APIManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIManager.swift; sourceTree = "<group>"; };
 		ED4515A12655863E00825D8A /* Account.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
+		ED4515A42656132400825D8A /* APIDebugView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIDebugView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,6 +70,7 @@
 		55B5831C2654FCD7008D65C5 /* ViewController */ = {
 			isa = PBXGroup;
 			children = (
+				ED4515A32656131600825D8A /* Debug */,
 				55E0756B26539F210047CD8B /* ViewController.swift */,
 				ED4515A02655861A00825D8A /* Login */,
 			);
@@ -131,6 +134,14 @@
 				55B5FA6926554A8C008D65C5 /* LoginView+Controller.swift */,
 			);
 			path = Login;
+			sourceTree = "<group>";
+		};
+		ED4515A32656131600825D8A /* Debug */ = {
+			isa = PBXGroup;
+			children = (
+				ED4515A42656132400825D8A /* APIDebugView.swift */,
+			);
+			path = Debug;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -213,6 +224,7 @@
 				55E093102653A4F00047CD8B /* APIManager.swift in Sources */,
 				55B5FA6A26554A8C008D65C5 /* LoginView+Controller.swift in Sources */,
 				55E0756C26539F210047CD8B /* ViewController.swift in Sources */,
+				ED4515A52656132400825D8A /* APIDebugView.swift in Sources */,
 				55B5FA6826554269008D65C5 /* LoginView.swift in Sources */,
 				55E0756826539F210047CD8B /* AppDelegate.swift in Sources */,
 				ED4515A22655863E00825D8A /* Account.swift in Sources */,
@@ -377,7 +389,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = me.ktiays.BilibiliMemberTools;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -397,7 +409,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = me.ktiays.BilibiliMemberTools;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

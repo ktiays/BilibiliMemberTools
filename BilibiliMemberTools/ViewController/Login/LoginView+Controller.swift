@@ -92,9 +92,7 @@ extension LoginView.Controller: WKNavigationDelegate, WKScriptMessageHandler {
         guard let code = message.body as? [String : String] else { return }
         captcha.validate = code["geetest_validate"] ?? .init()
         captcha.seccode = code["geetest_seccode"] ?? .init()
-        if let block = captchaDidVerifyBlock {
-            block()
-        }
+        captchaDidVerifyBlock?()
         requestSMSCode()
     }
     

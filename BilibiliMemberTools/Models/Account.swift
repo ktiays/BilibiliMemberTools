@@ -10,7 +10,7 @@ struct Account {
     struct Info {
         var birthday: Date
         var uid: String
-        var sign: String
+        var signature: String
         var username: String
         var userID: String
         var rank: String
