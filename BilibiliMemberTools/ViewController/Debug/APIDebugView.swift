@@ -37,7 +37,7 @@ fileprivate struct APIDetailView: View {
             VStack {
                 VStack {
                     HStack {
-                        Text("Result")
+                        Text("Result of API:")
                             .bold()
                         Spacer()
                     }

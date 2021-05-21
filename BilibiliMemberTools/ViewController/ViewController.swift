@@ -10,12 +10,14 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var loginButton: UIButton!
     @IBOutlet weak var apiListEntryButton: UIButton!
+    @IBOutlet weak var dashboardEntryButton: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         loginButton.addTarget(self, action: #selector(login(_:)), for: .touchUpInside)
         apiListEntryButton.addTarget(self, action: #selector(apiDebug(_:)), for: .touchUpInside)
+        dashboardEntryButton.addTarget(self, action: #selector(dashboard(_:)), for: .touchUpInside)
     }
     
     override func viewDidLayoutSubviews() {
@@ -42,6 +44,12 @@ class ViewController: UIViewController {
         let apiDebugViewControler = UIHostingController(rootView: APIDebugView())
         apiDebugViewControler.modalPresentationStyle = .fullScreen
         present(apiDebugViewControler, animated: true, completion: nil)
+    }
+    
+    @objc func dashboard(_ sender: UIButton) {
+        let dashboardViewControler = UIHostingController(rootView: DashboardView())
+        dashboardViewControler.modalPresentationStyle = .fullScreen
+        present(dashboardViewControler, animated: true, completion: nil)
     }
     
 }

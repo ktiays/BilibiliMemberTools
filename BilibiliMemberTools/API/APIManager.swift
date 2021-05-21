@@ -28,9 +28,21 @@ final class APIManager {
         
         static let loginSMS = httpPrefix + Host.passport.rawValue + "/web/login/rapid"
         
-        static let info = httpPrefix + Host.api.rawValue + "/x/member/web/account"
+        fileprivate enum Member {
+            
+            static let info = httpPrefix + Host.api.rawValue + "/x/member/web/account"
+            
+            static let upStatus = httpPrefix + Host.member.rawValue + "/x/web/index/stat"
+            
+            static let numberOfUnread = httpPrefix + Host.api.rawValue + "/x/msgfeed/unread"
         
-        static let upStatus = httpPrefix + Host.member.rawValue + "/x/web/index/stat"
+        }
+        
+        fileprivate enum User {
+            
+            static let info = httpPrefix + Host.api.rawValue + "/x/space/acc/info"
+            
+        }
         
     }
     
@@ -110,12 +122,12 @@ final class APIManager {
         }
     }
     
-    func info() -> (errorDescription: String?, info: Account.Info?) {
+    func memberInfo() -> (errorDescription: String?, info: Account.MemberInfo?) {
         let semaphore = DispatchSemaphore()
         let responseQueue = DispatchQueue.global(qos: .utility)
         
-        var result: (errorDescription: String?, info: Account.Info?) = (nil, nil)
-        AF.request(InterfaceURL.info).responseJSON(queue: responseQueue) { response in
+        var result: (errorDescription: String?, info: Account.MemberInfo?) = (nil, nil)
+        AF.request(InterfaceURL.Member.info).responseJSON(queue: responseQueue) { response in
             let errorHandler = {
                 result.errorDescription = ErrorDescription.unexcepted.rawValue
                 semaphore.signal()
@@ -135,13 +147,13 @@ final class APIManager {
                 errorHandler()
                 return
             }
-            let birthday = Account.Info.format(string: data["birthday"] as? String)
+            let birthday = Account.MemberInfo.format(string: data["birthday"] as? String)
             let uid = (data["mid"] as? Int)?.description ?? .init()
             let sign = data["sign"] as? String ?? .init()
             let username = data["uname"] as? String ?? .init()
             let userID = data["userid"] as? String ?? .init()
             let rank = data["rank"] as? String ?? .init()
-            let info = Account.Info(birthday: birthday, uid: uid, signature: sign, username: username, userID: userID, rank: rank)
+            let info = Account.MemberInfo(birthday: birthday, uid: uid, signature: sign, username: username, userID: userID, rank: rank)
             result.info = info
             semaphore.signal()
         }
@@ -155,7 +167,7 @@ final class APIManager {
         
         var result: (String?, Account.UpStatus?) = (nil, nil)
         
-        AF.request(InterfaceURL.upStatus).responseJSON(queue: responseQueue) { response in
+        AF.request(InterfaceURL.Member.upStatus).responseJSON(queue: responseQueue) { response in
             guard let value = response.value as? [String : Any] else {
                 result.0 = ErrorDescription.unexcepted.rawValue
                 semaphore.signal()
@@ -229,6 +241,103 @@ final class APIManager {
             result.1 = Account.UpStatus(delta: delta, total: total, followerTrend: trend)
             semaphore.signal()
         }
+        semaphore.wait()
+        return result
+    }
+    
+    func numberOfUnread() -> (at: Int, like: Int, reply: Int, systemMessage: Int, up: Int) {
+        let semaphore = DispatchSemaphore()
+        let responseQueue = DispatchQueue.global(qos: .utility)
+        
+        var numberOfMessage: (Int, Int, Int, Int, Int) = (0, 0, 0, 0, 0)
+        AF.request(InterfaceURL.Member.numberOfUnread).responseJSON(queue: responseQueue) { response in
+            guard let value = (response.value as? [String : Any])?["data"] as? [String : Int] else {
+                semaphore.signal()
+                return
+            }
+            numberOfMessage.0 = value["at"] ?? 0
+            numberOfMessage.1 = value["like"] ?? 0
+            numberOfMessage.2 = value["reply"] ?? 0
+            numberOfMessage.3 = value["sys_msg"] ?? 0
+            numberOfMessage.4 = value["up"] ?? 0
+            semaphore.signal()
+        }
+        semaphore.wait()
+        return numberOfMessage
+    }
+    
+    func userInfo(uid: String) -> (errorDescription: String?, userInfo: Account.UserInfo?) {
+        let semaphore = DispatchSemaphore()
+        let responseQueue = DispatchQueue.global(qos: .utility)
+        
+        var result: (String?, Account.UserInfo?) = (nil, nil)
+        AF.request(InterfaceURL.User.info, parameters: ["mid": uid]).responseJSON(queue: responseQueue) { response in
+            guard let value = response.value as? [String : Any] else {
+                result.0 = ErrorDescription.unexcepted.rawValue
+                semaphore.signal()
+                return
+            }
+            guard let data = value["data"] as? [String : Any] else {
+                result.0 = value["message"] as? String ?? ErrorDescription.unknown.rawValue
+                semaphore.signal()
+                return
+            }
+            
+            let uid = (data["mid"] as? Int)?.description ?? .init()
+            let username = data["name"] as? String ?? .init()
+            let level = data["level"] as? Int ?? .init()
+            let avatar = data["face"] as? String ?? .init()
+            let sign = data["sign"] as? String ?? .init()
+            let sex: Account.Sex = {
+                var sex: Account.Sex = .unknown
+                let sexDescription = data["sex"] as? String ?? .init()
+                if sexDescription == "男" {
+                    sex = .male
+                } else if sexDescription == "女" {
+                    sex = .female
+                }
+                return sex
+            }()
+            let coins = data["coins"] as? Int ?? .init()
+            
+            typealias Certification = Account.UserInfo.Certification
+            let certification: Certification = {
+                var cert = Certification(type: .none, description: .init(), remake: .init())
+                if let official = data["official"] as? [String : Any] {
+                    cert.type = {
+                        var type: Certification.Role = .none
+                        let typeNumber = official["type"] as? Int ?? .init()
+                        switch typeNumber {
+                        case 0:
+                            type = .none
+                        case 1, 2:
+                            type = .personal
+                        case 3, 4, 5, 6:
+                            type = .institutional
+                        default:
+                            type = .none
+                        }
+                        return type
+                    }()
+                    cert.description = official["title"] as? String ?? .init()
+                    cert.remake = official["desc"] as? String ?? .init()
+                }
+                return cert
+            }()
+            
+            result.1 = Account.UserInfo(
+                uid: uid,
+                username: username,
+                sex: sex,
+                avatarURL: avatar,
+                signature: sign,
+                level: level,
+                coins: coins,
+                certification: certification
+            )
+            semaphore.signal()
+        }
+        
         semaphore.wait()
         return result
     }

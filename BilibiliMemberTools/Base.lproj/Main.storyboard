@@ -24,6 +24,10 @@
                                 <rect key="frame" x="176" y="471" width="62" height="30"/>
                                 <state key="normal" title="接口列表"/>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="z9Z-PY-dWF">
+                                <rect key="frame" x="184" y="509" width="46" height="30"/>
+                                <state key="normal" title="主页面"/>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -32,10 +36,13 @@
                             <constraint firstItem="t7b-sP-29B" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="8wk-aW-k5s"/>
                             <constraint firstItem="3ZE-X4-kpY" firstAttribute="centerX" secondItem="t7b-sP-29B" secondAttribute="centerX" id="E0I-sq-lCw"/>
                             <constraint firstItem="t7b-sP-29B" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="N0s-rW-ZUD"/>
+                            <constraint firstItem="z9Z-PY-dWF" firstAttribute="centerX" secondItem="3ZE-X4-kpY" secondAttribute="centerX" id="YVX-pr-q5i"/>
+                            <constraint firstItem="z9Z-PY-dWF" firstAttribute="top" secondItem="3ZE-X4-kpY" secondAttribute="bottom" constant="8" symbolic="YES" id="jZ6-bU-Vgm"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="apiListEntryButton" destination="3ZE-X4-kpY" id="2OR-2X-HnD"/>
+                        <outlet property="dashboardEntryButton" destination="z9Z-PY-dWF" id="zgR-Kd-WkV"/>
                         <outlet property="loginButton" destination="t7b-sP-29B" id="TAo-5t-cU1"/>
                     </connections>
                 </viewController>

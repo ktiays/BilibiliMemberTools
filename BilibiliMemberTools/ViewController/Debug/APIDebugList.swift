@@ -5,7 +5,7 @@
 
 import SwiftUI
 
-// MARK: API
+// MARK: API Structure
 
 struct API: Identifiable {
     
@@ -21,25 +21,28 @@ struct API: Identifiable {
     
 }
 
-let apiList = [
-    API(name: "Account Information", invokeHandler: {
-        guard let info = APIManager.shared.info().info else { return AnyView(EmptyView()) }
-        
-        struct TextView: View {
-            
-            var title: String
-            var value: String
-            
-            var body: some View {
-                HStack {
-                    Text(title)
-                        .bold()
-                    Spacer()
-                    Text(value)
-                }
-                .padding(.bottom)
-            }
+// MARK: - TextView Structure
+
+struct TextView: View {
+    
+    var title: String
+    var value: String
+    
+    var body: some View {
+        HStack {
+            Text(title)
+                .bold()
+            Spacer()
+            Text(value)
         }
+        .padding(.bottom)
+    }
+}
+
+let apiList = [
+    // MARK: - Account Information
+    API(name: "Account Information") {
+        guard let info = APIManager.shared.memberInfo().info else { return AnyView(EmptyView()) }
         
         return AnyView(
             VStack {
@@ -52,15 +55,16 @@ let apiList = [
             }
             .padding(.horizontal)
         )
-    }),
+    },
     
-    API(name: "UP Status", invokeHandler: {
+    // MARK: - UP Status
+    API(name: "UP Status") {
         guard let status = APIManager.shared.upStatus().upStatus else { return AnyView(EmptyView()) }
         
         struct Card: View {
             
             var title: String
-            var data: String
+            var data: Int = 0
             var delta: Int = 0
             
             var body: some View {
@@ -68,7 +72,7 @@ let apiList = [
                     Text(title)
                         .font(.system(size: 12))
                         .foregroundColor(.init(.secondaryLabel))
-                    Text(data)
+                    Text("\(data)")
                         .font(.system(size: 24, weight: .bold))
                         .foregroundColor(.init(.systemBlue))
                         .padding(.vertical, 1)
@@ -77,13 +81,13 @@ let apiList = [
                             if (delta > 0) {
                                 Image(systemName: "arrowtriangle.up.fill")
                                     .foregroundColor(Color(.systemRed))
-                                Text(delta.description)
+                                Text("\(delta)")
                                     .bold()
                                     .foregroundColor(Color(.systemRed))
                             } else {
                                 Image(systemName: "arrowtriangle.down.fill")
                                     .foregroundColor(Color(.systemGreen))
-                                Text(abs(delta).description)
+                                Text("\(abs(delta))")
                                     .bold()
                                     .foregroundColor(Color(.systemGreen))
                             }
@@ -100,22 +104,57 @@ let apiList = [
         
         return AnyView(
             VStack(spacing: 10) {
-                Card(title: "Follower", data: status.total.followers.description, delta: status.delta.followers)
+                Card(title: "Follower", data: status.total.followers, delta: status.delta.followers)
                 LazyVGrid(columns: [
                     GridItem(.flexible(), spacing: 10),
                     GridItem(.flexible(), spacing: 10)
                 ], spacing: 10, content: {
-                    Card(title: "Video View", data: status.total.videoViews.description, delta: status.delta.videoViews)
-                    Card(title: "Likes", data: status.total.likes.description, delta: status.delta.likes)
-                    Card(title: "Replies", data: status.total.replies.description, delta: status.delta.replies)
-                    Card(title: "Coins", data: status.total.coins.description, delta: status.delta.coins)
-                    Card(title: "Favorites", data: status.total.favorites.description, delta: status.delta.favorites)
-                    Card(title: "Danmakus", data: status.total.danmakus.description, delta: status.delta.danmakus)
-                    Card(title: "Shares", data: status.total.shares.description, delta: status.delta.shares)
-                    Card(title: "Batteries", data: status.total.batteries.description, delta: status.delta.batteries)
+                    Card(title: "Video View", data: status.total.videoViews, delta: status.delta.videoViews)
+                    Card(title: "Likes", data: status.total.likes, delta: status.delta.likes)
+                    Card(title: "Replies", data: status.total.replies, delta: status.delta.replies)
+                    Card(title: "Coins", data: status.total.coins, delta: status.delta.coins)
+                    Card(title: "Favorites", data: status.total.favorites, delta: status.delta.favorites)
+                    Card(title: "Danmakus", data: status.total.danmakus, delta: status.delta.danmakus)
+                    Card(title: "Shares", data: status.total.shares, delta: status.delta.shares)
+                    Card(title: "Batteries", data: status.total.batteries, delta: status.delta.batteries)
                 })
             }
             .padding(.horizontal)
         )
-    })
+    },
+    
+    // MARK: - Number of Unread Message
+    API(name: "Number Of Unread Message") {
+        let unread = APIManager.shared.numberOfUnread()
+        return AnyView(
+            VStack {
+                TextView(title: "Total", value: (unread.0 + unread.1 + unread.2 + unread.3 + unread.4).integerDescription)
+                TextView(title: "@Me", value: unread.at.integerDescription)
+                TextView(title: "Likes", value: unread.like.integerDescription)
+                TextView(title: "Replies", value: unread.reply.integerDescription)
+                TextView(title: "System Message", value: unread.systemMessage.integerDescription)
+                TextView(title: "UP Message Box", value: unread.up.integerDescription)
+            }
+            .padding(.horizontal)
+        )
+    },
+    
+    // MARK: - User Information
+    API(name: "User Information") {
+        guard let userInfo = APIManager.shared.userInfo(uid: "13105369").userInfo else { return AnyView(EmptyView()) }
+                
+        return AnyView(
+            HStack {
+                WebImageView(url: userInfo.avatarURL)
+                    .frame(width: 50, height: 50)
+                    .clipShape(Circle())
+                VStack(alignment: .leading) {
+                    Text(userInfo.username)
+                    Text("Big VIP")
+                        .padding(.vertical, 1)
+                    Text("Coins: \(userInfo.coins)")
+                }
+            }
+        )
+    },
 ]

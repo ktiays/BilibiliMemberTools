@@ -7,7 +7,38 @@ import Foundation
 
 struct Account {
     
-    struct Info {
+    enum Sex {
+        case male
+        case female
+        case unknown
+    }
+    
+    struct UserInfo {
+        
+        struct Certification {
+            
+            enum Role {
+                case none
+                case personal
+                case institutional
+            }
+            
+            var type: Role
+            var description: String
+            var remake: String
+        }
+        
+        var uid: String
+        var username: String
+        var sex: Sex
+        var avatarURL: String
+        var signature: String
+        var level: Int
+        var coins: Int
+        var certification: Certification
+    }
+    
+    struct MemberInfo {
         var birthday: Date
         var uid: String
         var signature: String
