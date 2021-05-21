@@ -99,11 +99,12 @@ let apiList = [
         }
         
         return AnyView(
-            VStack {
+            VStack(spacing: 10) {
+                Card(title: "Follower", data: status.total.followers.description, delta: status.delta.followers)
                 LazyVGrid(columns: [
                     GridItem(.flexible(), spacing: 10),
                     GridItem(.flexible(), spacing: 10)
-                ], spacing: 20, content: {
+                ], spacing: 10, content: {
                     Card(title: "Video View", data: status.total.videoViews.description, delta: status.delta.videoViews)
                     Card(title: "Likes", data: status.total.likes.description, delta: status.delta.likes)
                     Card(title: "Replies", data: status.total.replies.description, delta: status.delta.replies)

@@ -165,8 +165,6 @@ final class APIManager {
                 return
             }
             
-            print(value)
-            
             let unexceptedHandler = {
                 result.0 = value["message"] as? String ?? ErrorDescription.unexcepted.rawValue
                 semaphore.signal()
@@ -181,7 +179,7 @@ final class APIManager {
                 return
             }
             let delta = Account.UpStatus.VideoData(
-                follower: data["incr_fans"] as? Int ?? 0,
+                followers: data["incr_fans"] as? Int ?? 0,
                 replies: data["incr_reply"] as? Int ?? 0,
                 danmakus: data["incr_dm"] as? Int ?? 0,
                 videoViews: data["incr_click"] as? Int ?? 0,
@@ -192,7 +190,7 @@ final class APIManager {
                 batteries: data["inc_elec"] as? Int ?? 0
             )
             let total = Account.UpStatus.VideoData(
-                follower: data["total_fans"] as? Int ?? 0,
+                followers: data["total_fans"] as? Int ?? 0,
                 replies: data["total_reply"] as? Int ?? 0,
                 danmakus: data["total_dm"] as? Int ?? 0,
                 videoViews: data["total_click"] as? Int ?? 0,

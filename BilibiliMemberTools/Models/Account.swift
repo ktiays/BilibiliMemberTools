@@ -26,7 +26,7 @@ struct Account {
     struct UpStatus {
         
         struct VideoData {
-            var follower: Int
+            var followers: Int
             var replies: Int
             var danmakus: Int
             var videoViews: Int
