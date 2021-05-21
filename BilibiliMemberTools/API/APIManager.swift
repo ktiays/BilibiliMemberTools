@@ -10,9 +10,6 @@ final class APIManager {
     
     static let shared = APIManager()
     
-    fileprivate let appkey = "bca7e84c2d947ac6"
-    fileprivate let salt = "60698ba2f68e01ce44738920a0ffe768"
-    
     fileprivate enum InterfaceURL {
         
         static let httpPrefix = "https://"
