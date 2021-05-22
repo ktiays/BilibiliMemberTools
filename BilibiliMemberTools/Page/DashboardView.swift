@@ -27,6 +27,8 @@ struct DashboardView: View {
         
     }
     
+    // MARK: - SectionItem
+    
     fileprivate struct SectionItem: Identifiable {
         
         var id: String { title }
@@ -34,6 +36,8 @@ struct DashboardView: View {
         var data: (Int?, Int?)
         
     }
+    
+    // MARK: - DataSectionView
     
     fileprivate struct DataSectionView: View {
         
@@ -82,6 +86,8 @@ struct DashboardView: View {
         
     }
     
+    // MARK: - DataView
+    
     fileprivate struct DataView: View {
         
         var title: String
@@ -119,6 +125,83 @@ struct DashboardView: View {
         }
         
     }
+    
+    fileprivate struct VideoDashboard: View {
+        
+        var upStatus: Account.UpStatus?
+        
+        @Environment(\.colorScheme) private var colorScheme
+        
+        var body: some View {
+            VStack(spacing: 4) {
+                HStack {
+                    Spacer()
+                    DataView(title: "总播放量",
+                             value: upStatus?.video.total.videoViews ?? .init(count: 5),
+                             delta: upStatus?.video.delta.videoViews ?? .init(count: 3))
+                    Spacer()
+                }
+                .padding(.vertical)
+                .background(cardBackgroundColor(for: colorScheme))
+                .clipShape(RoundedRectangle(cornerRadius: 20))
+                
+                DataSectionView(description: "三连数据概览", items: {
+                    var items = [SectionItem]()
+                    items.append(SectionItem(title: "点赞", data: (upStatus?.video.total.likes, upStatus?.video.delta.likes)))
+                    items.append(SectionItem(title: "评论", data: (upStatus?.video.total.replies, upStatus?.video.delta.replies)))
+                    items.append(SectionItem(title: "收藏", data: (upStatus?.video.total.favorites, upStatus?.video.delta.favorites)))
+                    return items
+                }())
+                
+                DataSectionView(description: "其他视频数据", items: {
+                    var items = [SectionItem]()
+                    items.append(SectionItem(title: "弹幕量", data: (upStatus?.video.total.danmakus, upStatus?.video.delta.danmakus)))
+                    items.append(SectionItem(title: "分享量", data: (upStatus?.video.total.shares, upStatus?.video.delta.shares)))
+                    return items
+                }())
+            }
+            .padding()
+        }
+        
+    }
+    
+    fileprivate struct ArticleDashboard: View {
+        
+        var upStatus: Account.UpStatus?
+        
+        @Environment(\.colorScheme) private var colorScheme
+        
+        var body: some View {
+            VStack(spacing: 4) {
+                HStack {
+                    Spacer()
+                    DataView(title: "总阅读量",
+                             value: upStatus?.article.total.articleViews ?? .init(count: 5),
+                             delta: upStatus?.article.delta.articleViews ?? .init(count: 3))
+                    Spacer()
+                }
+                .padding(.vertical)
+                .background(cardBackgroundColor(for: colorScheme))
+                .clipShape(RoundedRectangle(cornerRadius: 20))
+                
+                DataSectionView(description: "三连数据概览", items: {
+                    var items = [SectionItem]()
+                    items.append(SectionItem(title: "点赞", data: (upStatus?.article.total.likes, upStatus?.article.delta.likes)))
+                    items.append(SectionItem(title: "评论", data: (upStatus?.article.total.replies, upStatus?.article.delta.replies)))
+                    items.append(SectionItem(title: "收藏", data: (upStatus?.article.total.favorites, upStatus?.article.delta.favorites)))
+                    return items
+                }())
+                
+                DataSectionView(description: "其他专栏数据", items: [
+                    SectionItem(title: "分享量", data: (upStatus?.article.total.shares, upStatus?.article.delta.shares))
+                ])
+            }
+            .padding()
+        }
+        
+    }
+    
+    // MARK: - Dashboard View Content
     
     var body: some View {
         VStack(spacing: 0) {
@@ -166,8 +249,8 @@ struct DashboardView: View {
                 VStack {
                     HStack {
                         DataView(title: "粉丝量",
-                                 value: upStatus?.total.followers ?? .init(count: 5),
-                                 delta: upStatus?.delta.followers ?? .init(count: 3))
+                                 value: upStatus?.video.total.followers ?? .init(count: 5),
+                                 delta: upStatus?.video.delta.followers ?? .init(count: 3))
                             .padding(.vertical)
                     }
                     
@@ -182,36 +265,10 @@ struct DashboardView: View {
                     .padding(.horizontal)
                     
                     if selection == 0 {
-                        VStack(spacing: 4) {
-                            HStack {
-                                Spacer()
-                                DataView(title: "总播放量",
-                                         value: upStatus?.total.videoViews ?? .init(count: 5),
-                                         delta: upStatus?.delta.videoViews ?? .init(count: 3))
-                                Spacer()
-                            }
-                            .padding(.vertical)
-                            .background(cardBackgroundColor(for: colorScheme))
-                            .clipShape(RoundedRectangle(cornerRadius: 20))
-                            
-                            DataSectionView(description: "三连数据概览", items: {
-                                var items = [SectionItem]()
-                                items.append(SectionItem(title: "点赞", data: (upStatus?.total.likes, upStatus?.delta.likes)))
-                                items.append(SectionItem(title: "评论", data: (upStatus?.total.replies, upStatus?.delta.replies)))
-                                items.append(SectionItem(title: "收藏", data: (upStatus?.total.favorites, upStatus?.delta.favorites)))
-                                return items
-                            }())
-                            
-                            DataSectionView(description: "其他视频数据", items: {
-                                var items = [SectionItem]()
-                                items.append(SectionItem(title: "弹幕量", data: (upStatus?.total.danmakus, upStatus?.delta.danmakus)))
-                                items.append(SectionItem(title: "分享量", data: (upStatus?.total.shares, upStatus?.delta.shares)))
-                                return items
-                            }())
-                        }
-                        .padding()
+                        VideoDashboard(upStatus: upStatus)
+                    } else if selection == 1 {
+                        ArticleDashboard(upStatus: upStatus)
                     }
-                    
                 }
             }
             .redacted(reason: upStatus == nil ? .placeholder : [])

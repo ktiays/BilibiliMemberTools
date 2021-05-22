@@ -27,8 +27,8 @@ final class AppContext {
         
         DispatchQueue.global().async {
             let memberInfo = APIManager.shared.memberInfo()
-            guard let info = memberInfo.info else {
-                handler(memberInfo.errorDescription)
+            guard let info = try? memberInfo.get() else {
+//                handler(memberInfo.errorDescription)
                 return
             }
             self.memberInfo = info

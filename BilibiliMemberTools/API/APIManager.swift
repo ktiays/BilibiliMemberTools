@@ -28,17 +28,19 @@ final class APIManager {
         
         static let loginSMS = httpPrefix + Host.passport.rawValue + "/web/login/rapid"
         
-        fileprivate enum Member {
+        fileprivate enum User {
             
             static let info = httpPrefix + Host.api.rawValue + "/x/member/web/account"
             
-            static let upStatus = httpPrefix + Host.member.rawValue + "/x/web/index/stat"
+            static let upVideoStatus = httpPrefix + Host.member.rawValue + "/x/web/index/stat"
+            
+            static let upArticleStatus = httpPrefix + Host.member.rawValue + "/x/web/data/article"
             
             static let numberOfUnread = httpPrefix + Host.api.rawValue + "/x/msgfeed/unread"
         
         }
         
-        fileprivate enum User {
+        fileprivate enum Member {
             
             static let info = httpPrefix + Host.api.rawValue + "/x/space/acc/info"
             
@@ -49,6 +51,13 @@ final class APIManager {
     fileprivate enum ErrorDescription: String {
         case unknown = "Unknown reason."
         case unexcepted = "Unexcepted response."
+    }
+    
+    struct APIError: Error {
+        
+        let code: Int
+        let message: String
+        
     }
     
     private var _countryCode: Int?
@@ -122,31 +131,8 @@ final class APIManager {
         }
     }
     
-    func memberInfo() -> (errorDescription: String?, info: Account.MemberInfo?) {
-        let semaphore = DispatchSemaphore()
-        let responseQueue = DispatchQueue.global(qos: .utility)
-        
-        var result: (errorDescription: String?, info: Account.MemberInfo?) = (nil, nil)
-        AF.request(InterfaceURL.Member.info).responseJSON(queue: responseQueue) { response in
-            let errorHandler = {
-                result.errorDescription = ErrorDescription.unexcepted.rawValue
-                semaphore.signal()
-            }
-            
-            guard let value = response.value as? [String : Any] else {
-                errorHandler()
-                return
-            }
-            guard let message = value["message"] as? String else {
-                errorHandler()
-                return
-            }
-            result.errorDescription = message
-            
-            guard let data = value["data"] as? [String : Any] else {
-                errorHandler()
-                return
-            }
+    func memberInfo() -> Result<Account.MemberInfo, APIError> {
+        return commonRequest(url: InterfaceURL.User.info) { data in
             let birthday = Account.MemberInfo.format(string: data["birthday"] as? String)
             let uid = (data["mid"] as? Int)?.description ?? .init()
             let sign = data["sign"] as? String ?? .init()
@@ -154,11 +140,8 @@ final class APIManager {
             let userID = data["userid"] as? String ?? .init()
             let rank = data["rank"] as? String ?? .init()
             let info = Account.MemberInfo(birthday: birthday, uid: uid, signature: sign, username: username, userID: userID, rank: rank)
-            result.info = info
-            semaphore.signal()
+            return info
         }
-        semaphore.wait()
-        return result
     }
     
     func upStatus() -> (errorDescription: String?, upStatus: Account.UpStatus?) {
@@ -167,7 +150,7 @@ final class APIManager {
         
         var result: (String?, Account.UpStatus?) = (nil, nil)
         
-        AF.request(InterfaceURL.Member.upStatus).responseJSON(queue: responseQueue) { response in
+        AF.request(InterfaceURL.User.upVideoStatus).responseJSON(queue: responseQueue) { response in
             guard let value = response.value as? [String : Any] else {
                 result.0 = ErrorDescription.unexcepted.rawValue
                 semaphore.signal()
@@ -187,7 +170,7 @@ final class APIManager {
                 unexceptedHandler()
                 return
             }
-            let delta = Account.UpStatus.VideoData(
+            let videoDelta = Account.UpStatus.VideoData(
                 followers: data["incr_fans"] as? Int ?? 0,
                 replies: data["incr_reply"] as? Int ?? 0,
                 danmakus: data["incr_dm"] as? Int ?? 0,
@@ -198,7 +181,7 @@ final class APIManager {
                 shares: data["inc_share"] as? Int ?? 0,
                 batteries: data["inc_elec"] as? Int ?? 0
             )
-            let total = Account.UpStatus.VideoData(
+            let videoTotal = Account.UpStatus.VideoData(
                 followers: data["total_fans"] as? Int ?? 0,
                 replies: data["total_reply"] as? Int ?? 0,
                 danmakus: data["total_dm"] as? Int ?? 0,
@@ -238,7 +221,32 @@ final class APIManager {
                 )
             }
             
-            result.1 = Account.UpStatus(delta: delta, total: total, followerTrend: trend)
+            typealias Article = Account.UpStatus.ArticleData
+            var article: (Article, Article) = (.init(), .init())
+            if let articleData = try? self.commonRequest(url: InterfaceURL.User.upArticleStatus, dataMapper: { data -> (Article, Article)? in
+                guard let data = data as? [String : Int] else { return nil }
+                let total = Article(
+                    articleViews: data["view"] ?? .init(),
+                    coins: data["coin"] ?? .init(),
+                    likes: data["like"] ?? .init(),
+                    favorites: data["fav"] ?? .init(),
+                    replies: data["reply"] ?? .init(),
+                    shares: data["share"] ?? .init()
+                )
+                let delta = Article(
+                    articleViews: data["incr_view"] ?? .init(),
+                    coins: data["incr_coin"] ?? .init(),
+                    likes: data["incr_like"] ?? .init(),
+                    favorites: data["incr_fav"] ?? .init(),
+                    replies: data["incr_reply"] ?? .init(),
+                    shares: data["incr_share"] ?? .init()
+                )
+                return (total, delta)
+            }).get() {
+                article = articleData
+            }
+            
+            result.1 = Account.UpStatus(video: (videoTotal, videoDelta), article: article, followerTrend: trend)
             semaphore.signal()
         }
         semaphore.wait()
@@ -250,7 +258,7 @@ final class APIManager {
         let responseQueue = DispatchQueue.global(qos: .utility)
         
         var numberOfMessage: (Int, Int, Int, Int, Int) = (0, 0, 0, 0, 0)
-        AF.request(InterfaceURL.Member.numberOfUnread).responseJSON(queue: responseQueue) { response in
+        AF.request(InterfaceURL.User.numberOfUnread).responseJSON(queue: responseQueue) { response in
             guard let value = (response.value as? [String : Any])?["data"] as? [String : Int] else {
                 semaphore.signal()
                 return
@@ -271,7 +279,7 @@ final class APIManager {
         let responseQueue = DispatchQueue.global(qos: .utility)
         
         var result: (String?, Account.UserInfo?) = (nil, nil)
-        AF.request(InterfaceURL.User.info, parameters: ["mid": uid]).responseJSON(queue: responseQueue) { response in
+        AF.request(InterfaceURL.Member.info, parameters: ["mid": uid]).responseJSON(queue: responseQueue) { response in
             guard let value = response.value as? [String : Any] else {
                 result.0 = ErrorDescription.unexcepted.rawValue
                 semaphore.signal()
@@ -358,6 +366,52 @@ final class APIManager {
     }
     
     // MARK: - Private Methods
+    
+    private func commonRequest<T>(url: String, parameters: Parameters = [:], dataMapper: @escaping ([String : Any]) -> T?) -> Result<T, APIError> {
+        let semaphore = DispatchSemaphore()
+        let responseQueue = DispatchQueue.global(qos: .utility)
+        
+        var result: Result<T, APIError>! = nil
+        AF.request(url, parameters: parameters).responseJSON(queue: responseQueue) { response in
+            let errorHandler = { (code: Int, message: String) in
+                result = .failure(APIError(code: code, message: message))
+                semaphore.signal()
+            }
+            
+            guard let value = response.value as? [String : Any] else {
+                errorHandler(-9999, ErrorDescription.unexcepted.rawValue)
+                return
+            }
+            guard let code = value["code"] as? Int else {
+                errorHandler(-9999, ErrorDescription.unexcepted.rawValue)
+                return
+            }
+            guard let message = value["message"] as? String else {
+                errorHandler(-9999, ErrorDescription.unexcepted.rawValue)
+                return
+            }
+            
+            guard code == 0 else {
+                errorHandler(code, message)
+                return
+            }
+            
+            guard let data = value["data"] as? [String : Any] else {
+                errorHandler(-9999, ErrorDescription.unexcepted.rawValue)
+                return
+            }
+            guard let mappedResult = dataMapper(data) else {
+                errorHandler(-9999, ErrorDescription.unexcepted.rawValue)
+                return
+            }
+            
+            result = .success(mappedResult)
+            
+            semaphore.signal()
+        }
+        semaphore.wait()
+        return result
+    }
     
     private func countryCode() -> Int? {
         if let code = _countryCode {

@@ -43,7 +43,7 @@ struct TextView: View {
 let apiList = [
     // MARK: - Account Information
     API(name: "Account Information") {
-        guard let info = APIManager.shared.memberInfo().info else { return AnyView(EmptyView()) }
+        guard let info = try? APIManager.shared.memberInfo().get() else { return AnyView(EmptyView()) }
         
         return AnyView(
             VStack {
@@ -53,72 +53,6 @@ let apiList = [
                 TextView(title: "Signature", value: info.signature)
                 TextView(title: "Rank", value: info.rank)
                 TextView(title: "User ID", value: info.userID)
-            }
-            .padding(.horizontal)
-        )
-    },
-    
-    // MARK: - UP Status
-    API(name: "UP Status") {
-        guard let status = APIManager.shared.upStatus().upStatus else { return AnyView(EmptyView()) }
-        
-        struct Card: View {
-            
-            var title: String
-            var data: Int = 0
-            var delta: Int = 0
-            
-            var body: some View {
-                VStack {
-                    Text(title)
-                        .font(.system(size: 12))
-                        .foregroundColor(.init(.secondaryLabel))
-                    Text("\(data)")
-                        .font(.system(size: 24, weight: .bold))
-                        .foregroundColor(.init(.systemBlue))
-                        .padding(.vertical, 1)
-                    if (delta != 0) {
-                        HStack(spacing: 3) {
-                            if (delta > 0) {
-                                Image(systemName: "arrowtriangle.up.fill")
-                                    .foregroundColor(Color(.systemRed))
-                                Text("\(delta)")
-                                    .bold()
-                                    .foregroundColor(Color(.systemRed))
-                            } else {
-                                Image(systemName: "arrowtriangle.down.fill")
-                                    .foregroundColor(Color(.systemGreen))
-                                Text("\(abs(delta))")
-                                    .bold()
-                                    .foregroundColor(Color(.systemGreen))
-                            }
-                        }
-                        .font(.system(size: 12))
-                    }
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .padding(.vertical, 20)
-                .background(Color(.secondarySystemBackground))
-                .clipShape(RoundedRectangle(cornerRadius: 20))
-            }
-        }
-        
-        return AnyView(
-            VStack(spacing: 10) {
-                Card(title: "Follower", data: status.total.followers, delta: status.delta.followers)
-                LazyVGrid(columns: [
-                    GridItem(.flexible(), spacing: 10),
-                    GridItem(.flexible(), spacing: 10)
-                ], spacing: 10, content: {
-                    Card(title: "Video View", data: status.total.videoViews, delta: status.delta.videoViews)
-                    Card(title: "Likes", data: status.total.likes, delta: status.delta.likes)
-                    Card(title: "Replies", data: status.total.replies, delta: status.delta.replies)
-                    Card(title: "Coins", data: status.total.coins, delta: status.delta.coins)
-                    Card(title: "Favorites", data: status.total.favorites, delta: status.delta.favorites)
-                    Card(title: "Danmakus", data: status.total.danmakus, delta: status.delta.danmakus)
-                    Card(title: "Shares", data: status.total.shares, delta: status.delta.shares)
-                    Card(title: "Batteries", data: status.total.batteries, delta: status.delta.batteries)
-                })
             }
             .padding(.horizontal)
         )
