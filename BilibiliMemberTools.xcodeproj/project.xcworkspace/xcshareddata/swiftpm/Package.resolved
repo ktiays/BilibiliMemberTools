@@ -11,6 +11,15 @@
         }
       },
       {
+        "package": "CyanKit",
+        "repositoryURL": "git@github.com:IcyStudio/CyanKit.git",
+        "state": {
+          "branch": "main",
+          "revision": "6964d8f24f0a061d4fc85932cc26f64fa695de2e",
+          "version": null
+        }
+      },
+      {
         "package": "SDWebImage",
         "repositoryURL": "https://github.com/SDWebImage/SDWebImage.git",
         "state": {

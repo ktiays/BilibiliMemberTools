@@ -11,6 +11,7 @@ final class AppContext {
     
     var memberInfo: Account.MemberInfo?
     var userInfo: Account.UserInfo?
+    var upStatus: Account.UpStatus?
     
     // MARK: - Account Information
     
@@ -39,6 +40,25 @@ final class AppContext {
             }
             self.userInfo = info
             
+            handler(nil)
+        }
+    }
+    
+    // MARK: - UP Status
+    
+    func requestUpStatusIfNeeded(completion handler: @escaping (String?) -> Void) {
+        if upStatus != nil {
+            handler(nil)
+            return
+        }
+        
+        DispatchQueue.global().async {
+            let upStatus = APIManager.shared.upStatus()
+            guard let upStatus = upStatus.upStatus else {
+                handler(upStatus.errorDescription)
+                return
+            }
+            self.upStatus = upStatus            
             handler(nil)
         }
     }

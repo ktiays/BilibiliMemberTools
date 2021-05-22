@@ -25,6 +25,7 @@
 		ED21CA1D265839E800CEABAF /* Int+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED21CA1C265839E800CEABAF /* Int+Extension.swift */; };
 		ED4515A22655863E00825D8A /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED4515A12655863E00825D8A /* Account.swift */; };
 		ED4515A52656132400825D8A /* APIDebugView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED4515A42656132400825D8A /* APIDebugView.swift */; };
+		EDC90E8D265960D8006BF418 /* CyanKit in Frameworks */ = {isa = PBXBuildFile; productRef = EDC90E8C265960D8006BF418 /* CyanKit */; };
 		EDE221052656B87800EBBFF2 /* APIDebugList.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDE221042656B87800EBBFF2 /* APIDebugList.swift */; };
 		EDF46F1B2658CA7300BFA461 /* AppContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDF46F1A2658CA7300BFA461 /* AppContext.swift */; };
 		EDF46F212658D55B00BFA461 /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = EDF46F202658D55B00BFA461 /* SDWebImageSwiftUI */; };
@@ -65,6 +66,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EDC90E8D265960D8006BF418 /* CyanKit in Frameworks */,
 				EDF46F212658D55B00BFA461 /* SDWebImageSwiftUI in Frameworks */,
 				55E0930E2653A48A0047CD8B /* Alamofire in Frameworks */,
 			);
@@ -186,6 +188,7 @@
 			packageProductDependencies = (
 				55E0930D2653A48A0047CD8B /* Alamofire */,
 				EDF46F202658D55B00BFA461 /* SDWebImageSwiftUI */,
+				EDC90E8C265960D8006BF418 /* CyanKit */,
 			);
 			productName = BilibiliMemberTools;
 			productReference = 55E0756426539F210047CD8B /* BilibiliMemberTools.app */;
@@ -217,6 +220,7 @@
 			packageReferences = (
 				55E0930C2653A48A0047CD8B /* XCRemoteSwiftPackageReference "Alamofire" */,
 				EDF46F1F2658D55B00BFA461 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */,
+				EDC90E8B265960D8006BF418 /* XCRemoteSwiftPackageReference "CyanKit" */,
 			);
 			productRefGroup = 55E0756526539F210047CD8B /* Products */;
 			projectDirPath = "";
@@ -479,6 +483,14 @@
 				minimumVersion = 5.4.3;
 			};
 		};
+		EDC90E8B265960D8006BF418 /* XCRemoteSwiftPackageReference "CyanKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "git@github.com:IcyStudio/CyanKit.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 		EDF46F1F2658D55B00BFA461 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SDWebImage/SDWebImageSwiftUI.git";
@@ -494,6 +506,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 55E0930C2653A48A0047CD8B /* XCRemoteSwiftPackageReference "Alamofire" */;
 			productName = Alamofire;
+		};
+		EDC90E8C265960D8006BF418 /* CyanKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EDC90E8B265960D8006BF418 /* XCRemoteSwiftPackageReference "CyanKit" */;
+			productName = CyanKit;
 		};
 		EDF46F202658D55B00BFA461 /* SDWebImageSwiftUI */ = {
 			isa = XCSwiftPackageProductDependency;

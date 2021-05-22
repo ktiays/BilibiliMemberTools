@@ -13,4 +13,8 @@ extension Int {
         return formatter.string(from: NSNumber(value: self)) ?? .init()
     }
     
+    init(count: Int) {
+        self.init(pow(10, Double(count - 1)))
+    }
+    
 }
