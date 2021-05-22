@@ -4,6 +4,7 @@
 // 
 
 import SwiftUI
+import SDWebImageSwiftUI
 
 // MARK: API Structure
 
@@ -77,7 +78,7 @@ let apiList = [
                         .foregroundColor(.init(.systemBlue))
                         .padding(.vertical, 1)
                     if (delta != 0) {
-                        HStack {
+                        HStack(spacing: 3) {
                             if (delta > 0) {
                                 Image(systemName: "arrowtriangle.up.fill")
                                     .foregroundColor(Color(.systemRed))
@@ -145,7 +146,9 @@ let apiList = [
                 
         return AnyView(
             HStack {
-                WebImageView(url: userInfo.avatarURL)
+                WebImage(url: URL(string: userInfo.avatarURL))
+                    .resizable()
+                    .scaledToFit()
                     .frame(width: 50, height: 50)
                     .clipShape(Circle())
                 VStack(alignment: .leading) {

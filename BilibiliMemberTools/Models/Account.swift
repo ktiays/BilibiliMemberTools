@@ -3,7 +3,7 @@
 //  Copyright (c) 2021 ktiays. All rights reserved.
 // 
 
-import Foundation
+import UIKit
 
 struct Account {
     
@@ -28,14 +28,30 @@ struct Account {
             var remake: String
         }
         
+        struct VIP {
+            
+            enum Level: Int {
+                case none = 0
+                case monthly = 1
+                case annual = 2
+            }
+            
+            var type: Level
+            var expired: Date
+            var nickNameColor: UIColor
+            var description: String
+            
+        }
+        
         var uid: String
         var username: String
         var sex: Sex
         var avatarURL: String
         var signature: String
         var level: Int
-        var coins: Int
+        var coins: Double
         var certification: Certification
+        var vip: VIP
     }
     
     struct MemberInfo {
@@ -54,7 +70,7 @@ struct Account {
         }
     }
     
-    struct UpStatus {
+    public struct UpStatus {
         
         struct VideoData {
             var followers: Int

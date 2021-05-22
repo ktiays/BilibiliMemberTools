@@ -47,7 +47,7 @@ class ViewController: UIViewController {
     }
     
     @objc func dashboard(_ sender: UIButton) {
-        let dashboardViewControler = UIHostingController(rootView: DashboardView())
+        let dashboardViewControler = HostingController(wrappedView: DashboardView())
         dashboardViewControler.modalPresentationStyle = .fullScreen
         present(dashboardViewControler, animated: true, completion: nil)
     }

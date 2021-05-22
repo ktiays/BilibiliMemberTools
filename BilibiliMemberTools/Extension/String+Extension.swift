@@ -30,4 +30,11 @@ extension String {
         return [:]
     }
     
+    init(count: Int) {
+        self.init()
+        for _ in 0..<count {
+            self.append(" ")
+        }
+    }
+    
 }

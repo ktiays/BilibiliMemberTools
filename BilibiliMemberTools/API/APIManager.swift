@@ -3,7 +3,7 @@
 //  Copyright (c) 2021 ktiays. All rights reserved.
 //
 
-import Foundation
+import UIKit
 import Alamofire
 
 final class APIManager {
@@ -298,7 +298,7 @@ final class APIManager {
                 }
                 return sex
             }()
-            let coins = data["coins"] as? Int ?? .init()
+            let coins = data["coins"] as? Double ?? .init()
             
             typealias Certification = Account.UserInfo.Certification
             let certification: Certification = {
@@ -325,6 +325,20 @@ final class APIManager {
                 return cert
             }()
             
+            typealias VIP = Account.UserInfo.VIP
+            let vip: VIP = {
+                var vip = VIP(type: .none, expired: .init(), nickNameColor: .clear, description: .init())
+                if let vipData = data["vip"] as? [String : Any] {
+                    vip.type = VIP.Level(rawValue: vipData["type"] as? Int ?? .init()) ?? .none
+                    vip.expired = Date(timeIntervalSince1970: ((vipData["due_date"] as? TimeInterval) ?? .init()) / 1000)
+                    vip.nickNameColor = UIColor(hex: vipData["nickname_color"] as? String ?? .init())
+                    if let vipLabel = vipData["label"] as? [String : Any] {
+                        vip.description = vipLabel["text"] as? String ?? .init()
+                    }
+                }
+                return vip
+            }()
+            
             result.1 = Account.UserInfo(
                 uid: uid,
                 username: username,
@@ -333,7 +347,8 @@ final class APIManager {
                 signature: sign,
                 level: level,
                 coins: coins,
-                certification: certification
+                certification: certification,
+                vip: vip
             )
             semaphore.signal()
         }
