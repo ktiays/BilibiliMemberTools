@@ -15,8 +15,6 @@
 		55B5FA6A26554A8C008D65C5 /* LoginView+Controller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55B5FA6926554A8C008D65C5 /* LoginView+Controller.swift */; };
 		55E0756826539F210047CD8B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55E0756726539F210047CD8B /* AppDelegate.swift */; };
 		55E0756A26539F210047CD8B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55E0756926539F210047CD8B /* SceneDelegate.swift */; };
-		55E0756C26539F210047CD8B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55E0756B26539F210047CD8B /* ViewController.swift */; };
-		55E0756F26539F210047CD8B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 55E0756D26539F210047CD8B /* Main.storyboard */; };
 		55E0757126539F240047CD8B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 55E0757026539F240047CD8B /* Assets.xcassets */; };
 		55E0757426539F240047CD8B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 55E0757226539F240047CD8B /* LaunchScreen.storyboard */; };
 		55E0930E2653A48A0047CD8B /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 55E0930D2653A48A0047CD8B /* Alamofire */; };
@@ -44,8 +42,6 @@
 		55E0756426539F210047CD8B /* BilibiliMemberTools.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BilibiliMemberTools.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		55E0756726539F210047CD8B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		55E0756926539F210047CD8B /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		55E0756B26539F210047CD8B /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		55E0756E26539F210047CD8B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		55E0757026539F240047CD8B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		55E0757326539F240047CD8B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		55E0757526539F240047CD8B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -92,7 +88,6 @@
 		55B5831C2654FCD7008D65C5 /* Page */ = {
 			isa = PBXGroup;
 			children = (
-				55E0756B26539F210047CD8B /* ViewController.swift */,
 				55B5FA6726554269008D65C5 /* LoginView.swift */,
 				ED21CA1726582E5500CEABAF /* DashboardView.swift */,
 				ED4515A32656131600825D8A /* Debug */,
@@ -126,7 +121,6 @@
 				55E0B0A22653A5970047CD8B /* API */,
 				ED45159F2655860F00825D8A /* Models */,
 				553322F82653A94C006FE9B7 /* Extension */,
-				55E0756D26539F210047CD8B /* Main.storyboard */,
 				55B4D1942654CAD0005D1A6B /* Geetest */,
 				55E0757026539F240047CD8B /* Assets.xcassets */,
 				55E0757226539F240047CD8B /* LaunchScreen.storyboard */,
@@ -239,7 +233,6 @@
 				55B4D1952654CAD0005D1A6B /* Geetest in Resources */,
 				55E0757426539F240047CD8B /* LaunchScreen.storyboard in Resources */,
 				55E0757126539F240047CD8B /* Assets.xcassets in Resources */,
-				55E0756F26539F210047CD8B /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -255,7 +248,6 @@
 				EDF46F272658F16300BFA461 /* Double+Extension.swift in Sources */,
 				55B5FA6A26554A8C008D65C5 /* LoginView+Controller.swift in Sources */,
 				EDF46F252658EC9D00BFA461 /* HostingController.swift in Sources */,
-				55E0756C26539F210047CD8B /* ViewController.swift in Sources */,
 				ED4515A52656132400825D8A /* APIDebugView.swift in Sources */,
 				55B5FA6826554269008D65C5 /* LoginView.swift in Sources */,
 				55E0756826539F210047CD8B /* AppDelegate.swift in Sources */,
@@ -274,14 +266,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		55E0756D26539F210047CD8B /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				55E0756E26539F210047CD8B /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		55E0757226539F240047CD8B /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
