@@ -126,6 +126,8 @@ struct DashboardView: View {
         
     }
     
+    // MARK: - Video & Article Dashboard
+    
     fileprivate struct VideoDashboard: View {
         
         var upStatus: Account.UpStatus?
@@ -160,7 +162,6 @@ struct DashboardView: View {
                     return items
                 }())
             }
-            .padding()
         }
         
     }
@@ -196,7 +197,6 @@ struct DashboardView: View {
                     SectionItem(title: "分享量", data: (upStatus?.article.total.shares, upStatus?.article.delta.shares))
                 ])
             }
-            .padding()
         }
         
     }
@@ -266,9 +266,18 @@ struct DashboardView: View {
                     
                     if selection == 0 {
                         VideoDashboard(upStatus: upStatus)
+                            .padding()
                     } else if selection == 1 {
                         ArticleDashboard(upStatus: upStatus)
+                            .padding()
                     }
+                    
+                    DataSectionView(description: "充电详情", items: [
+                        SectionItem(title: "充电数",
+                                    data: (upStatus?.video.total.batteries ?? .init(count: 5),
+                                           upStatus?.video.delta.batteries ?? .init(count: 3)))
+                    ])
+                    .padding(.horizontal)
                 }
             }
             .redacted(reason: upStatus == nil ? .placeholder : [])
