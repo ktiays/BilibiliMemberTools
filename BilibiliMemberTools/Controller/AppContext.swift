@@ -15,25 +15,19 @@ final class AppContext {
     
     // MARK: - Account Information
     
-    private func hasAccountInformation() -> Bool {
-        memberInfo != nil && userInfo != nil
-    }
-    
     func requestAccountInformationIfNeeded(completion handler: @escaping (String?) -> Void) {
-        if hasAccountInformation() {
-            handler(nil)
-            return
-        }
-        
         DispatchQueue.global().async {
-            let memberInfo = APIManager.shared.memberInfo()
-            guard let info = try? memberInfo.get() else {
-//                handler(memberInfo.errorDescription)
-                return
+            if self.memberInfo == nil {
+                let memberInfo = APIManager.shared.memberInfo()
+                guard let info = try? memberInfo.get() else {
+    //                handler(memberInfo.errorDescription)
+                    return
+                }
+                self.memberInfo = info
             }
-            self.memberInfo = info
             
-            let userInfo = APIManager.shared.userInfo(uid: info.uid)
+            guard let memberInfo = self.memberInfo else { return }
+            let userInfo = APIManager.shared.userInfo(uid: memberInfo.uid)
             guard let info = userInfo.userInfo else {
                 handler(userInfo.errorDescription)
                 return
@@ -46,12 +40,7 @@ final class AppContext {
     
     // MARK: - UP Status
     
-    func requestUpStatusIfNeeded(completion handler: @escaping (String?) -> Void) {
-        if upStatus != nil {
-            handler(nil)
-            return
-        }
-        
+    func requestUpStatus(completion handler: @escaping (String?) -> Void) {
         DispatchQueue.global().async {
             let upStatus = APIManager.shared.upStatus()
             guard let upStatus = upStatus.upStatus else {

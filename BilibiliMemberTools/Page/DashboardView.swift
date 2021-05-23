@@ -20,6 +20,8 @@ struct DashboardView: View {
     
     @Environment(\.colorScheme) private var colorScheme
     
+    @Environment(\.innerBottomPadding) private var innerBottomPadding
+    
     fileprivate struct SegmentItem: SegmentedControlItem {
         
         var id: Int
@@ -278,6 +280,8 @@ struct DashboardView: View {
                                            upStatus?.video.delta.batteries ?? .init(count: 3)))
                     ])
                     .padding(.horizontal)
+                    .padding(.bottom)
+                    .padding(innerBottomPadding)
                 }
             }
             .redacted(reason: upStatus == nil ? .placeholder : [])
@@ -286,12 +290,33 @@ struct DashboardView: View {
             let context = AppContext.shared
             context.requestAccountInformationIfNeeded { _ in
                 self.userInfo = context.userInfo
-                context.requestUpStatusIfNeeded { _ in
+                context.requestUpStatus { _ in
                     self.upStatus = context.upStatus
                 }
             }
         }
         .statusBar(style: .lightContent)
+    }
+    
+}
+
+// MARK: - Inner Bottom Padding
+
+fileprivate struct InnerBottomPaddingKey: EnvironmentKey {
+    static let defaultValue: CGFloat = 0
+}
+
+extension EnvironmentValues {
+    var innerBottomPadding: CGFloat {
+        get { self[InnerBottomPaddingKey.self] }
+        set { self[InnerBottomPaddingKey.self] = newValue }
+    }
+}
+
+public extension View {
+    
+    func innerBottomPadding(_ value: CGFloat) -> some View {
+        environment(\.innerBottomPadding, value)
     }
     
 }
