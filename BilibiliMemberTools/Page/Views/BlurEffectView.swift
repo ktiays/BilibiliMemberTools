@@ -17,7 +17,7 @@ class CustomVisualEffectView: UIVisualEffectView {
                 var newFilters = [NSObject]()
                 for filter in filters {
                     if filter.value(forKey: "name") as! NSString == "gaussianBlur" {
-                        filter.setValue(7, forKey: "inputRadius")
+                        filter.setValue(6, forKey: "inputRadius")
                         newFilters.append(filter)
                     }
                 }

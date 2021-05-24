@@ -53,6 +53,7 @@ struct RootTabView: View {
                     }
                     .ignoresSafeArea()
                 )
+                .background(Color(.systemBackground).opacity(0.5).ignoresSafeArea())
             }
         }
         .statusBar(style: currentStatusBarStyle)
