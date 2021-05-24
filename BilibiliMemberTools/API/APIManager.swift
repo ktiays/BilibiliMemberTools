@@ -37,6 +37,10 @@ final class APIManager {
             static let upArticleStatus = httpPrefix + Host.member.rawValue + "/x/web/data/article"
             
             static let numberOfUnread = httpPrefix + Host.api.rawValue + "/x/msgfeed/unread"
+            
+            static let videos = httpPrefix + Host.member.rawValue + "/x/web/archives"
+            
+            static let articles = httpPrefix + Host.api.rawValue + "/x/article/creative/article/list"
         
         }
         
@@ -58,6 +62,12 @@ final class APIManager {
         let code: Int
         let message: String
         
+    }
+    
+    enum ApprovalStatusOption: String {
+        case reviewing = "is_pubing"
+        case published = "pubed"
+        case rejected = "not_pubed"
     }
     
     private var _countryCode: Int?
@@ -170,7 +180,7 @@ final class APIManager {
                 unexceptedHandler()
                 return
             }
-            let videoDelta = Account.UpStatus.VideoData(
+            let videoDelta = Account.UpStatus.VideoStatus(
                 followers: data["incr_fans"] as? Int ?? 0,
                 replies: data["incr_reply"] as? Int ?? 0,
                 danmakus: data["incr_dm"] as? Int ?? 0,
@@ -181,7 +191,7 @@ final class APIManager {
                 shares: data["inc_share"] as? Int ?? 0,
                 batteries: data["inc_elec"] as? Int ?? 0
             )
-            let videoTotal = Account.UpStatus.VideoData(
+            let videoTotal = Account.UpStatus.VideoStatus(
                 followers: data["total_fans"] as? Int ?? 0,
                 replies: data["total_reply"] as? Int ?? 0,
                 danmakus: data["total_dm"] as? Int ?? 0,
@@ -221,7 +231,7 @@ final class APIManager {
                 )
             }
             
-            typealias Article = Account.UpStatus.ArticleData
+            typealias Article = Account.UpStatus.ArticleStatus
             var article: (Article, Article) = (.init(), .init())
             if let articleData = try? self.commonRequest(url: InterfaceURL.User.upArticleStatus, dataMapper: { data -> (Article, Article)? in
                 guard let data = data as? [String : Int] else { return nil }
@@ -363,6 +373,44 @@ final class APIManager {
         
         semaphore.wait()
         return result
+    }
+    
+    func videos(for options: [ApprovalStatusOption]) -> Result<[Video], APIError> {
+        return commonRequest(
+            url: InterfaceURL.User.videos,
+            parameters: ["status": options.map { $0.rawValue }.joined(separator: ",")]
+        ) { data -> [Video]? in
+            guard let videos = data["arc_audits"] as? [[String : Any]] else { return nil }
+            var result: [Video] = []
+            for video in videos {
+                // Get the status data of video.
+                guard let statusData = video["stat"] as? [String : Int] else { return nil }
+                let status = Video.Status(
+                    views: statusData["view"] ?? .init(),
+                    danmaku: statusData["danmaku"] ?? .init(),
+                    replies: statusData["reply"] ?? .init(),
+                    likes: statusData["like"] ?? .init(),
+                    coins: statusData["coin"] ?? .init(),
+                    favorites: statusData["favorite"] ?? .init(),
+                    shares: statusData["share"] ?? .init()
+                )
+                
+                // Get the base information of video.
+                guard let information = video["Archive"] as? [String : Any] else { return nil }
+                let video = Video(
+                    title: information["title"] as? String ?? .init(),
+                    coverURL: information["cover"] as? String ?? .init(),
+                    publishedTime: Date(timeIntervalSince1970: TimeInterval(information["ptime"] as? Int ?? .init())),
+                    av: (statusData["aid"] ?? Int .init()).description,
+                    bv: information["bvid"] as? String ?? .init(),
+                    description: information["desc"] as? String ?? .init(),
+                    duration: information["duration"] as? Int ?? .init(),
+                    status: status
+                )
+                result.append(video)
+            }
+            return result
+        }
     }
     
     // MARK: - Private Methods

@@ -289,9 +289,9 @@ struct DashboardView: View {
         .onAppear {
             let context = AppContext.shared
             context.requestAccountInformationIfNeeded { _ in
-                self.userInfo = context.userInfo
+                self.userInfo = context.account.userInfo
                 context.requestUpStatus { _ in
-                    self.upStatus = context.upStatus
+                    self.upStatus = context.account.upStatus
                 }
             }
         }

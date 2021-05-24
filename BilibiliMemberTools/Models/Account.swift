@@ -72,7 +72,7 @@ struct Account {
     
     public struct UpStatus {
         
-        struct VideoData {
+        struct VideoStatus {
             var followers: Int = 0
             var replies: Int = 0
             var danmakus: Int = 0
@@ -86,7 +86,7 @@ struct Account {
             var batteries: Int = 0
         }
         
-        struct ArticleData {
+        struct ArticleStatus {
             var articleViews: Int = 0
  
             var coins: Int = 0
@@ -98,9 +98,9 @@ struct Account {
         
         typealias FollowerData = [Date : Int]
         
-        var video: (total: VideoData, delta: VideoData)
+        var video: (total: VideoStatus, delta: VideoStatus)
         
-        var article: (total: ArticleData, delta: ArticleData)
+        var article: (total: ArticleStatus, delta: ArticleStatus)
         
         var followerTrend: (follow: FollowerData, unfollow: FollowerData)
         
@@ -112,5 +112,11 @@ struct Account {
         }
         
     }
+    
+    // MARK: - Properties
+    
+    var memberInfo: MemberInfo?
+    var userInfo: UserInfo?
+    var upStatus: UpStatus?
     
 }

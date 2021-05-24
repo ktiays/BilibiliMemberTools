@@ -21,6 +21,10 @@
 		55E093102653A4F00047CD8B /* APIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55E0930F2653A4F00047CD8B /* APIManager.swift */; };
 		ED21CA1826582E5500CEABAF /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED21CA1726582E5500CEABAF /* DashboardView.swift */; };
 		ED21CA1D265839E800CEABAF /* Int+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED21CA1C265839E800CEABAF /* Int+Extension.swift */; };
+		ED27A4C4265BF7CB00EE6559 /* Publication.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED27A4C3265BF7CB00EE6559 /* Publication.swift */; };
+		ED27A4C6265BF98D00EE6559 /* Video.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED27A4C5265BF98D00EE6559 /* Video.swift */; };
+		ED27A4C8265BF99A00EE6559 /* Article.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED27A4C7265BF99A00EE6559 /* Article.swift */; };
+		ED27A4CC265C03A000EE6559 /* VideoDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED27A4CB265C03A000EE6559 /* VideoDetailView.swift */; };
 		ED44A530265A181700AF5089 /* RootTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED44A52F265A181700AF5089 /* RootTabView.swift */; };
 		ED4515A22655863E00825D8A /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED4515A12655863E00825D8A /* Account.swift */; };
 		ED4515A52656132400825D8A /* APIDebugView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED4515A42656132400825D8A /* APIDebugView.swift */; };
@@ -50,6 +54,10 @@
 		55E0930F2653A4F00047CD8B /* APIManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIManager.swift; sourceTree = "<group>"; };
 		ED21CA1726582E5500CEABAF /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
 		ED21CA1C265839E800CEABAF /* Int+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+Extension.swift"; sourceTree = "<group>"; };
+		ED27A4C3265BF7CB00EE6559 /* Publication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Publication.swift; sourceTree = "<group>"; };
+		ED27A4C5265BF98D00EE6559 /* Video.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Video.swift; sourceTree = "<group>"; };
+		ED27A4C7265BF99A00EE6559 /* Article.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Article.swift; sourceTree = "<group>"; };
+		ED27A4CB265C03A000EE6559 /* VideoDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoDetailView.swift; sourceTree = "<group>"; };
 		ED44A52F265A181700AF5089 /* RootTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootTabView.swift; sourceTree = "<group>"; };
 		ED4515A12655863E00825D8A /* Account.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
 		ED4515A42656132400825D8A /* APIDebugView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIDebugView.swift; sourceTree = "<group>"; };
@@ -94,6 +102,7 @@
 			children = (
 				55B5FA6726554269008D65C5 /* LoginView.swift */,
 				ED21CA1726582E5500CEABAF /* DashboardView.swift */,
+				ED27A4CB265C03A000EE6559 /* VideoDetailView.swift */,
 				ED44A52C265A179800AF5089 /* Views */,
 				ED4515A32656131600825D8A /* Debug */,
 			);
@@ -155,6 +164,9 @@
 			isa = PBXGroup;
 			children = (
 				ED4515A12655863E00825D8A /* Account.swift */,
+				ED27A4C3265BF7CB00EE6559 /* Publication.swift */,
+				ED27A4C5265BF98D00EE6559 /* Video.swift */,
+				ED27A4C7265BF99A00EE6559 /* Article.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -257,12 +269,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				ED27A4C8265BF99A00EE6559 /* Article.swift in Sources */,
 				ED21CA1D265839E800CEABAF /* Int+Extension.swift in Sources */,
 				55E093102653A4F00047CD8B /* APIManager.swift in Sources */,
 				EDF46F272658F16300BFA461 /* Double+Extension.swift in Sources */,
 				55B5FA6A26554A8C008D65C5 /* LoginView+Controller.swift in Sources */,
 				ED44A530265A181700AF5089 /* RootTabView.swift in Sources */,
 				EDF46F252658EC9D00BFA461 /* HostingController.swift in Sources */,
+				ED27A4C4265BF7CB00EE6559 /* Publication.swift in Sources */,
 				ED4515A52656132400825D8A /* APIDebugView.swift in Sources */,
 				55B5FA6826554269008D65C5 /* LoginView.swift in Sources */,
 				55E0756826539F210047CD8B /* AppDelegate.swift in Sources */,
@@ -275,6 +289,8 @@
 				EDF46F1B2658CA7300BFA461 /* AppContext.swift in Sources */,
 				ED21CA1826582E5500CEABAF /* DashboardView.swift in Sources */,
 				EDACFD92265ADB41004FC0A6 /* VisualEffectView.swift in Sources */,
+				ED27A4C6265BF98D00EE6559 /* Video.swift in Sources */,
+				ED27A4CC265C03A000EE6559 /* VideoDetailView.swift in Sources */,
 				55B583192654F424008D65C5 /* DispatchSemaphore+Extension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
