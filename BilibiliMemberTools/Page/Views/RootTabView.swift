@@ -10,6 +10,8 @@ struct RootTabView: View {
     var tabItems: [RootTabItem]
     
     @State private var selection: Int = 0
+    @State private var currentStatusBarStyle: UIStatusBarStyle = .default
+    @State private var innerBottomPadding: CGFloat = .zero
     
     init(tabItems: [RootTabItem]) {
         self.tabItems = tabItems
@@ -18,15 +20,20 @@ struct RootTabView: View {
     
     var body: some View {
         ZStack {
-            TabView(selection: $selection) {
-                ForEach(tabItems) { item in
+            ForEach(tabItems) { item in
+                if item.id == selection {
                     item.content
-                        .tag(item.id)
+                        .innerBottomPadding(innerBottomPadding)
                 }
             }
+            .transition(.identity)
+            .onPreferenceChange(StatusBarStyleKey.self, perform: { value in
+                currentStatusBarStyle = value
+            })
             
             VStack {
                 Spacer()
+                
                 VStack {
                     Divider()
                     HStack {
@@ -38,11 +45,17 @@ struct RootTabView: View {
                     }
                 }
                 .background(
-                    BlurEffectView(style: .dark)
-                        .ignoresSafeArea()
+                    GeometryReader { proxy -> BlurEffectView in
+                        DispatchQueue.main.async {
+                            self.innerBottomPadding = proxy.size.height
+                        }
+                        return BlurEffectView()
+                    }
+                    .ignoresSafeArea()
                 )
             }
         }
+        .statusBar(style: currentStatusBarStyle)
     }
     
 }
@@ -110,6 +123,5 @@ struct RootTabView_Previews: PreviewProvider {
                 )
             ),
         ])
-        .preferredColorScheme(.dark)
     }
 }

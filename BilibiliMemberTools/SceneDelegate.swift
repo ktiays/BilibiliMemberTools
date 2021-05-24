@@ -4,6 +4,7 @@
 //
 
 import UIKit
+import SwiftUI
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -15,7 +16,27 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
-        window?.rootViewController = HostingController(wrappedView: DashboardView())
+        window?.rootViewController = HostingController(wrappedView: RootTabView(tabItems: [
+            RootTabItem(
+                id: 0,
+                image: Image(systemName: "chart.bar.xaxis"),
+                label: Text("数据总览"),
+                content: AnyView(
+                    DashboardView()
+                        .statusBar(style: .lightContent)
+                )
+            ),
+            RootTabItem(
+                id: 1,
+                image: Image(systemName: "list.and.film"),
+                label: Text("投稿详情"),
+                content: AnyView(
+                    Circle()
+                        .foregroundColor(.init(.systemBackground))
+                        .statusBar(style: .darkContent)
+                )
+            ),
+        ]))
         window?.makeKeyAndVisible()
     }
 

@@ -5,6 +5,7 @@
 
 import SwiftUI
 import SDWebImageSwiftUI
+import Introspect
 import CyanKit
 
 fileprivate func cardBackgroundColor(for colorScheme: ColorScheme) -> Color {
@@ -281,9 +282,15 @@ struct DashboardView: View {
                     ])
                     .padding(.horizontal)
                     .padding(.bottom)
-                    .padding(innerBottomPadding)
                 }
+                .padding(.bottom, innerBottomPadding)
             }
+            .ignoresSafeArea()
+            .introspectScrollView(customize: { scrollView in
+                scrollView.verticalScrollIndicatorInsets = .init(
+                    top: 0, left: 0, bottom: innerBottomPadding, right: 0
+                )
+            })
             .redacted(reason: upStatus == nil ? .placeholder : [])
         }
         .onAppear {
@@ -295,7 +302,6 @@ struct DashboardView: View {
                 }
             }
         }
-        .statusBar(style: .lightContent)
     }
     
 }
