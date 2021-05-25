@@ -387,7 +387,7 @@ final class APIManager {
                 guard let statusData = video["stat"] as? [String : Int] else { return nil }
                 let status = Video.Status(
                     views: statusData["view"] ?? .init(),
-                    danmaku: statusData["danmaku"] ?? .init(),
+                    danmakus: statusData["danmaku"] ?? .init(),
                     replies: statusData["reply"] ?? .init(),
                     likes: statusData["like"] ?? .init(),
                     coins: statusData["coin"] ?? .init(),

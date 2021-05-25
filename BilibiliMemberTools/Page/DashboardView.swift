@@ -305,7 +305,7 @@ struct DashboardView_Previews: PreviewProvider {
     static var previews: some View {
         DashboardView()
         DashboardView.DataView(title: "Data", value: 30123, delta: -6)
-        DashboardView.DataSectionView(description: "这是一个 Section", items: [
+        DashboardView.DataSectionView(description: "Section", items: [
             DashboardView.SectionItem(title: "点赞", data: (43541351, 1320)),
             DashboardView.SectionItem(title: "分享", data: (421, 21)),
             DashboardView.SectionItem(title: "分享2", data: (421, 21)),

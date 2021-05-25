@@ -10,7 +10,7 @@ struct Video: Publication {
     struct Status {
         
         var views: Int
-        var danmaku: Int
+        var danmakus: Int
         var replies: Int
         
         var likes: Int

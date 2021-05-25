@@ -15,14 +15,15 @@ struct VideoListView: View {
     
     var body: some View {
         ScrollView {
-            VStack(spacing: 24) {
+            VStack(spacing: 16) {
                 Spacer()
                     .frame(height: 0)
                 ForEach(videos.isEmpty ? VideoModel.placeholder : videos) { video in
                     VideoCard(video: video.video)
+                        .padding(.bottom, 20)
                 }
                 Spacer()
-                    .frame(height: max(0, innerBottomPadding - 24))
+                    .frame(height: max(0, innerBottomPadding - 36))
             }
             .padding([.horizontal, .bottom])
         }
@@ -54,7 +55,7 @@ fileprivate let videoPlaceholder: Video = Video(
     duration: .init(),
     status: .init(
         views: .init(count: 6),
-        danmaku: .init(count: 4),
+        danmakus: .init(count: 4),
         replies: .init(count: 6),
         likes: .init(count: 5),
         coins: .init(count: 5),
@@ -88,43 +89,73 @@ fileprivate struct VideoCard: View {
     private let cornerRadius: CGFloat = 8
     
     var body: some View {
-        HStack {
-            ZStack {
-                WebImage(url: URL(string: video.coverURL))
-                    .placeholder {
-                        Image(uiImage: UIImage())
-                            .resizable()
-                            .redacted(reason: .placeholder)
-                    }
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .unredacted()
-                VStack(spacing: 0) {
-                    Spacer()
-                    HStack(spacing: 0) {
+        VStack {
+            HStack(spacing: 12) {
+                ZStack {
+                    WebImage(url: URL(string: video.coverURL))
+                        .placeholder {
+                            Image(uiImage: UIImage())
+                                .resizable()
+                                .redacted(reason: .placeholder)
+                        }
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .unredacted()
+                    VStack(spacing: 0) {
                         Spacer()
-                        Text(formatDuration(video.duration))
-                            .font(.system(size: 10, weight: .medium))
-                            .foregroundColor(.white)
-                            .padding(.horizontal, 6)
-                            .padding(.vertical, 3)
-                            .background(Color.black.opacity(0.45))
-                            .cornerRadius(cornerRadius, corners: .topLeft)
+                        HStack(spacing: 0) {
+                            Spacer()
+                            Text(formatDuration(video.duration))
+                                .font(.system(size: 10, weight: .medium))
+                                .foregroundColor(.white)
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 3)
+                                .background(Color.black.opacity(0.45))
+                                .cornerRadius(cornerRadius, corners: .topLeft)
+                        }
                     }
+                    .frame(width: imageSize.width, height: imageSize.height)
                 }
                 .frame(width: imageSize.width, height: imageSize.height)
-            }
-            .frame(width: imageSize.width, height: imageSize.height)
-            .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
-            
-            VStack(alignment: .leading, spacing: 8) {
-                Text(video.title)
-                    .font(.system(size: 14))
-                Text(formatPublishedTime(video.publishedTime))
+                .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+                
+                VStack(alignment: .leading, spacing: 8) {
+                    Text(video.title)
+                        .foregroundColor(.init(.label))
+                        .font(.system(size: 13))
+                    Text(formatPublishedTime(video.publishedTime))
+                        .font(.system(size: 12))
+                        .foregroundColor(.init(.label).opacity(0.7))
+                    HStack(spacing: 2) {
+                        Image(systemName: "play.rectangle.fill")
+                        Text(video.status.views.integerDescription)
+                    }
                     .font(.system(size: 12))
                     .foregroundColor(.init(.secondaryLabel))
+                }
+                Spacer()
             }
-            Spacer()
+            LazyVGrid(columns: [
+                GridItem(.flexible()),
+                GridItem(.flexible()),
+                GridItem(.flexible()),
+                GridItem(.flexible()),
+                GridItem(.flexible()),
+                GridItem(.flexible())
+            ]) {
+                InteractiveTag(image: Image(systemName: "text.bubble.fill"),
+                               value: video.status.replies.integerDescription)
+                InteractiveTag(image: Image(systemName: "list.bullet.indent"),
+                               value: video.status.danmakus.integerDescription)
+                InteractiveTag(image:Image(systemName: "suit.heart.fill"),
+                               value: video.status.likes.integerDescription)
+                InteractiveTag(image: Image(systemName: "dollarsign.circle.fill"),
+                               value: video.status.coins.integerDescription)
+                InteractiveTag(image: Image(systemName: "star.fill"),
+                               value: video.status.favorites.integerDescription)
+                InteractiveTag(image: Image(systemName: "arrowshape.turn.up.right.fill"),
+                               value: video.status.shares.integerDescription)
+            }
         }
     }
     
@@ -147,6 +178,24 @@ fileprivate struct VideoCard: View {
     
 }
 
+// MARK: - InteractiveTag
+
+fileprivate struct InteractiveTag: View {
+    
+    var image: Image
+    var value: String
+    
+    var body: some View {
+        HStack(spacing: 3) {
+            image
+            Text(value)
+        }
+        .font(.system(size: 10))
+        .foregroundColor(.init(.secondaryLabel))
+    }
+    
+}
+
 // MARK: - Preview
 
 struct VideoListView_Previews: PreviewProvider {
@@ -162,7 +211,7 @@ struct VideoListView_Previews: PreviewProvider {
             duration: 125,
             status: Video.Status(
                 views: 1235134,
-                danmaku: 234,
+                danmakus: 234,
                 replies: 45324,
                 likes: 8345,
                 coins: 2347,
