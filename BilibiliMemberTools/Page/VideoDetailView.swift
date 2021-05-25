@@ -25,10 +25,39 @@ struct VideoDetailView: View {
     
 }
 
+// MARK: - VideoModel
+
+fileprivate let videoPlaceholder: Video = Video(
+    title: .init(count: 8),
+    coverURL: .init(),
+    publishedTime: Date(),
+    av: .init(count: 11),
+    bv: .init(count: 12),
+    description: .init(count: 20),
+    duration: .init(count: 5),
+    status: .init(
+        views: .init(count: 6),
+        danmaku: .init(count: 4),
+        replies: .init(count: 6),
+        likes: .init(count: 5),
+        coins: .init(count: 5),
+        favorites: .init(count: 3),
+        shares: .init(count: 3)
+    )
+)
+
 fileprivate struct VideoModel: Identifiable {
     
     var id: String { video.bv }
     var video: Video
+    
+    static let placeholder: [VideoModel] = {
+        var videoModels: [VideoModel] = []
+        for _ in 0..<10 {
+            videoModels.append(VideoModel(video: videoPlaceholder))
+        }
+        return videoModels
+    }()
     
 }
 
@@ -41,6 +70,12 @@ fileprivate struct VideoCard: View {
     var body: some View {
         HStack {
             WebImage(url: URL(string: video.coverURL))
+                .placeholder {
+                    Image(uiImage: UIImage())
+                        .resizable()
+                        .foregroundColor(.white)
+                        .redacted(reason: .placeholder)
+                }
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(height: 80)
