@@ -6,34 +6,53 @@
 import SwiftUI
 import SDWebImageSwiftUI
 import Introspect
+import CyanKit
 
-struct VideoDetailView: View {
+struct PublicationView: View {
     
     @State private var videos: [VideoModel] = []
     
     @Environment(\.innerBottomPadding) private var innerBottomPadding;
+    
+    @State private var selection: Int = 0
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 16) {
-                ForEach(videos.isEmpty ? VideoModel.placeholder : videos) { video in
-                    VideoCard(video: video.video)
+        VStack {
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack {
+                    SegmentedControl(selection: $selection, content: [
+                        SegmentItem(id: 0, text: "视频管理"),
+                        SegmentItem(id: 1, text: "互动视频管理"),
+                        SegmentItem(id: 2, text: "专栏管理"),
+                        SegmentItem(id: 3, text: "音频管理")
+                    ])
                 }
-                Spacer()
-                    .frame(height: innerBottomPadding)
+                .padding([.horizontal, .top])
             }
-            .padding()
-        }
-        .ignoresSafeArea()
-        .introspectScrollView(customize: { scrollView in
-            scrollView.verticalScrollIndicatorInsets = .init(
-                top: 0, left: 0, bottom: innerBottomPadding, right: 0
-            )
-        })
-        .redacted(reason: videos.isEmpty ? .placeholder : [])
-        .onAppear {
-            AppContext.shared.requestVideoData { videos in
-                self.videos = videos.map { VideoModel(video: $0) }
+            
+            ScrollView {
+                VStack(spacing: 24) {
+                    Spacer()
+                        .frame(height: 0)
+                    ForEach(videos.isEmpty ? VideoModel.placeholder : videos) { video in
+                        VideoCard(video: video.video)
+                    }
+                    Spacer()
+                        .frame(height: max(0, innerBottomPadding - 24))
+                }
+                .padding([.horizontal, .bottom])
+            }
+            .ignoresSafeArea()
+            .introspectScrollView(customize: { scrollView in
+                scrollView.verticalScrollIndicatorInsets = .init(
+                    top: 0, left: 0, bottom: innerBottomPadding, right: 0
+                )
+            })
+            .redacted(reason: videos.isEmpty ? .placeholder : [])
+            .onAppear {
+                AppContext.shared.requestVideoData { videos in
+                    self.videos = videos.map { VideoModel(video: $0) }
+                }
             }
         }
     }
@@ -49,7 +68,7 @@ fileprivate let videoPlaceholder: Video = Video(
     av: .init(count: 11),
     bv: .init(count: 12),
     description: .init(count: 20),
-    duration: .init(count: 5),
+    duration: .init(),
     status: .init(
         views: .init(count: 6),
         danmaku: .init(count: 4),
@@ -101,12 +120,12 @@ fileprivate struct VideoCard: View {
                     Spacer()
                     HStack(spacing: 0) {
                         Spacer()
-                        Text("1203")
-                            .font(.system(size: 11))
+                        Text(formatDuration(video.duration))
+                            .font(.system(size: 10, weight: .medium))
                             .foregroundColor(.white)
-                            .padding(.horizontal, 9)
+                            .padding(.horizontal, 6)
                             .padding(.vertical, 3)
-                            .background(Color.black.opacity(0.4))
+                            .background(Color.black.opacity(0.45))
                             .cornerRadius(cornerRadius, corners: .topLeft)
                     }
                 }
@@ -115,9 +134,12 @@ fileprivate struct VideoCard: View {
             .frame(width: imageSize.width, height: imageSize.height)
             .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
             
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 4) {
                 Text(video.title)
+                    .font(.system(size: 15))
                 Text(formatPublishedTime(video.publishedTime))
+                    .font(.system(size: 12))
+                    .foregroundColor(.init(.secondaryLabel))
             }
             Spacer()
         }
@@ -129,16 +151,24 @@ fileprivate struct VideoCard: View {
         return dateFormatter.string(from: time)
     }
     
+    private func formatDuration(_ duration: Int) -> String {
+        let seconds: Int = duration % 60
+        let minutes: Int = duration / 60 % 24
+        let hours: Int = duration / (60 * 60)
+        if hours == 0 {
+            return String(format: "%02d:%02d", minutes, seconds)
+        } else {
+            return String(format: "%02d:%02d:%02d", hours, minutes, seconds)
+        }
+    }
+    
 }
 
 // MARK: - Preview
 
 struct VideoDetailView_Previews: PreviewProvider {
     static var previews: some View {
-        Group {
-            VideoDetailView()
-            VideoDetailView()
-        }
+        PublicationView()
         VideoCard(video: Video(
                     title: "hahahaha",
                     coverURL: "http://i1.hdslb.com/bfs/archive/270c5219bb7a3ecdfad84f72b99501b85ddf5d05.jpg",

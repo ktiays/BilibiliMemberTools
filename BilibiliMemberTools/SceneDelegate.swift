@@ -31,7 +31,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 image: Image(systemName: "list.and.film"),
                 label: Text("视频详情"),
                 content: AnyView(
-                    VideoDetailView()
+                    PublicationView()
                         .statusBar(style: .darkContent)
                 )
             ),

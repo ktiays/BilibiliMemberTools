@@ -23,13 +23,6 @@ struct DashboardView: View {
     
     @Environment(\.innerBottomPadding) private var innerBottomPadding
     
-    fileprivate struct SegmentItem: SegmentedControlItem {
-        
-        var id: Int
-        var text: String
-        
-    }
-    
     // MARK: - SectionItem
     
     fileprivate struct SectionItem: Identifiable {
