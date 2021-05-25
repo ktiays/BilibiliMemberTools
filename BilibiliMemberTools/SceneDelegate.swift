@@ -29,10 +29,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             RootTabItem(
                 id: 1,
                 image: Image(systemName: "list.and.film"),
-                label: Text("视频详情"),
+                label: Text("稿件详情"),
                 content: AnyView(
                     PublicationView()
-                        .statusBar(style: .darkContent)
+                )
+            ),
+            RootTabItem(
+                id: 2,
+                image: Image(systemName: "ellipsis.bubble"),
+                label: Text("互动管理"),
+                content: AnyView(
+                    EmptyView()
                 )
             ),
         ]))
