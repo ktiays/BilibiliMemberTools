@@ -20,6 +20,8 @@
 		55E0757426539F240047CD8B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 55E0757226539F240047CD8B /* LaunchScreen.storyboard */; };
 		55E0930E2653A48A0047CD8B /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 55E0930D2653A48A0047CD8B /* Alamofire */; };
 		55E093102653A4F00047CD8B /* APIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55E0930F2653A4F00047CD8B /* APIManager.swift */; };
+		55FE0359265CA93E00595F78 /* View+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55FE0358265CA93E00595F78 /* View+Extension.swift */; };
+		55FE5DAD265CD0AC00595F78 /* RoundedCorner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55FE5DAC265CD0AC00595F78 /* RoundedCorner.swift */; };
 		ED21CA1826582E5500CEABAF /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED21CA1726582E5500CEABAF /* DashboardView.swift */; };
 		ED21CA1D265839E800CEABAF /* Int+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED21CA1C265839E800CEABAF /* Int+Extension.swift */; };
 		ED27A4C4265BF7CB00EE6559 /* Publication.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED27A4C3265BF7CB00EE6559 /* Publication.swift */; };
@@ -53,6 +55,8 @@
 		55E0757326539F240047CD8B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		55E0757526539F240047CD8B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		55E0930F2653A4F00047CD8B /* APIManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIManager.swift; sourceTree = "<group>"; };
+		55FE0358265CA93E00595F78 /* View+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Extension.swift"; sourceTree = "<group>"; };
+		55FE5DAC265CD0AC00595F78 /* RoundedCorner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedCorner.swift; sourceTree = "<group>"; };
 		ED21CA1726582E5500CEABAF /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
 		ED21CA1C265839E800CEABAF /* Int+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+Extension.swift"; sourceTree = "<group>"; };
 		ED27A4C3265BF7CB00EE6559 /* Publication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Publication.swift; sourceTree = "<group>"; };
@@ -95,6 +99,7 @@
 				EDF46F222658DE2300BFA461 /* UIColor+Extension.swift */,
 				EDF46F242658EC9D00BFA461 /* HostingController.swift */,
 				EDF46F262658F16300BFA461 /* Double+Extension.swift */,
+				55FE0358265CA93E00595F78 /* View+Extension.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -158,6 +163,7 @@
 			children = (
 				ED44A52F265A181700AF5089 /* RootTabView.swift */,
 				EDACFD91265ADB41004FC0A6 /* BlurEffectView.swift */,
+				55FE5DAC265CD0AC00595F78 /* RoundedCorner.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -275,6 +281,7 @@
 			files = (
 				ED27A4C8265BF99A00EE6559 /* Article.swift in Sources */,
 				ED21CA1D265839E800CEABAF /* Int+Extension.swift in Sources */,
+				55FE5DAD265CD0AC00595F78 /* RoundedCorner.swift in Sources */,
 				55E093102653A4F00047CD8B /* APIManager.swift in Sources */,
 				EDF46F272658F16300BFA461 /* Double+Extension.swift in Sources */,
 				55B5FA6A26554A8C008D65C5 /* LoginView+Controller.swift in Sources */,
@@ -283,6 +290,7 @@
 				ED27A4C4265BF7CB00EE6559 /* Publication.swift in Sources */,
 				ED4515A52656132400825D8A /* APIDebugView.swift in Sources */,
 				55B5FA6826554269008D65C5 /* LoginView.swift in Sources */,
+				55FE0359265CA93E00595F78 /* View+Extension.swift in Sources */,
 				55E0756826539F210047CD8B /* AppDelegate.swift in Sources */,
 				EDF46F232658DE2300BFA461 /* UIColor+Extension.swift in Sources */,
 				EDE221052656B87800EBBFF2 /* APIDebugList.swift in Sources */,

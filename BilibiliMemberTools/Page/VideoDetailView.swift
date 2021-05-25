@@ -5,17 +5,32 @@
 
 import SwiftUI
 import SDWebImageSwiftUI
+import Introspect
 
 struct VideoDetailView: View {
     
     @State private var videos: [VideoModel] = []
     
+    @Environment(\.innerBottomPadding) private var innerBottomPadding;
+
     var body: some View {
-        List {
-            ForEach(videos) { video in
-                VideoCard(video: video.video)
+        ScrollView {
+            VStack(spacing: 16) {
+                ForEach(videos.isEmpty ? VideoModel.placeholder : videos) { video in
+                    VideoCard(video: video.video)
+                }
+                Spacer()
+                    .frame(height: innerBottomPadding)
             }
+            .padding()
         }
+        .ignoresSafeArea()
+        .introspectScrollView(customize: { scrollView in
+            scrollView.verticalScrollIndicatorInsets = .init(
+                top: 0, left: 0, bottom: innerBottomPadding, right: 0
+            )
+        })
+        .redacted(reason: videos.isEmpty ? .placeholder : [])
         .onAppear {
             AppContext.shared.requestVideoData { videos in
                 self.videos = videos.map { VideoModel(video: $0) }
@@ -67,24 +82,51 @@ fileprivate struct VideoCard: View {
     
     var video: Video
     
+    private let imageSize: CGSize = .init(width: 120, height: 75)
+    private let cornerRadius: CGFloat = 8
+    
     var body: some View {
         HStack {
-            WebImage(url: URL(string: video.coverURL))
-                .placeholder {
-                    Image(uiImage: UIImage())
-                        .resizable()
-                        .foregroundColor(.white)
-                        .redacted(reason: .placeholder)
+            ZStack {
+                WebImage(url: URL(string: video.coverURL))
+                    .placeholder {
+                        Image(uiImage: UIImage())
+                            .resizable()
+                            .redacted(reason: .placeholder)
+                    }
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .unredacted()
+                VStack(spacing: 0) {
+                    Spacer()
+                    HStack(spacing: 0) {
+                        Spacer()
+                        Text("1203")
+                            .font(.system(size: 11))
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 9)
+                            .padding(.vertical, 3)
+                            .background(Color.black.opacity(0.4))
+                            .cornerRadius(cornerRadius, corners: .topLeft)
+                    }
                 }
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(height: 80)
+                .frame(width: imageSize.width, height: imageSize.height)
+            }
+            .frame(width: imageSize.width, height: imageSize.height)
+            .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+            
             VStack(alignment: .leading) {
                 Text(video.title)
-                Text(video.publishedTime.description)
+                Text(formatPublishedTime(video.publishedTime))
             }
             Spacer()
         }
+    }
+    
+    private func formatPublishedTime(_ time: Date) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        return dateFormatter.string(from: time)
     }
     
 }
@@ -93,7 +135,10 @@ fileprivate struct VideoCard: View {
 
 struct VideoDetailView_Previews: PreviewProvider {
     static var previews: some View {
-        VideoDetailView()
+        Group {
+            VideoDetailView()
+            VideoDetailView()
+        }
         VideoCard(video: Video(
                     title: "hahahaha",
                     coverURL: "http://i1.hdslb.com/bfs/archive/270c5219bb7a3ecdfad84f72b99501b85ddf5d05.jpg",

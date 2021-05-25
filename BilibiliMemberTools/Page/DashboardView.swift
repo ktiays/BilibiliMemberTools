@@ -133,7 +133,7 @@ struct DashboardView: View {
     
     fileprivate struct VideoDashboard: View {
         
-        var upStatus: Account.UpStatus?
+        let upStatus: Account.UpStatus?
         
         @Environment(\.colorScheme) private var colorScheme
         
@@ -302,27 +302,6 @@ struct DashboardView: View {
                 }
             }
         }
-    }
-    
-}
-
-// MARK: - Inner Bottom Padding
-
-fileprivate struct InnerBottomPaddingKey: EnvironmentKey {
-    static let defaultValue: CGFloat = 0
-}
-
-extension EnvironmentValues {
-    var innerBottomPadding: CGFloat {
-        get { self[InnerBottomPaddingKey.self] }
-        set { self[InnerBottomPaddingKey.self] = newValue }
-    }
-}
-
-public extension View {
-    
-    func innerBottomPadding(_ value: CGFloat) -> some View {
-        environment(\.innerBottomPadding, value)
     }
     
 }

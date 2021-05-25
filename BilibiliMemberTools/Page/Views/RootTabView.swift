@@ -89,10 +89,10 @@ fileprivate struct _TabItem: View {
                     .renderingMode(.template)
                     .foregroundColor(currentIndex == index ? .accentColor : .secondary.opacity(0.6))
                     .aspectRatio(contentMode: .fit)
-                    .frame(height: 25)
+                    .frame(height: 20)
                 if currentIndex == index {
                     label
-                        .fontWeight(.bold)
+                        .font(.system(size: 14, weight: .bold))
                         .foregroundColor(.accentColor)
                 }
             }
