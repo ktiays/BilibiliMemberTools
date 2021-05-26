@@ -1,8 +1,6 @@
 //
-//  LoginView+Controller.swift
-//  BilibiliMemberTools
-//
 //  Created by ktiays on 2021/5/19.
+//  Copyright (c) 2021 ktiays. All rights reserved.
 //
 
 import WebKit
