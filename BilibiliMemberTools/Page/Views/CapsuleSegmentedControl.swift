@@ -106,7 +106,7 @@ public class CapsuleSegmentedControl: UIControl {
         scrollView.addSubview(selectedBackgroundView)
         shapeMaskContainerView.addSubview(shapeMaskView)
         
-        var segmentsSize: CGSize = .zero
+        var segmentsSize: CGSize = .init(width: 0, height: 1)
         
         for (index, item) in items.enumerated() {
             var isMask: Bool = false
