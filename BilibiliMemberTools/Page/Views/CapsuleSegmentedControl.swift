@@ -21,6 +21,14 @@ func * (lhs: CGSize, rhs: Int) -> CGSize {
 
 // MARK: - SegmentedControl
 
+fileprivate class _ScrollView: UIScrollView {
+    
+    override func touchesShouldCancel(in view: UIView) -> Bool {
+        return true
+    }
+    
+}
+
 public class CapsuleSegmentedControl: UIControl {
     
     public var selectedSegmentIndex: Int = 0 {
@@ -66,11 +74,12 @@ public class CapsuleSegmentedControl: UIControl {
         return maskView
     }()
     
-    private lazy var scrollView: UIScrollView = {
-        let scrollView = UIScrollView()
+    private lazy var scrollView: _ScrollView = {
+        let scrollView = _ScrollView()
         scrollView.showsVerticalScrollIndicator = false
         scrollView.showsHorizontalScrollIndicator = false
         scrollView.alwaysBounceVertical = false
+        scrollView.delaysContentTouches = false
         scrollView.contentInset = UIEdgeInsets(top: 0, left: defaultSpacingOfSegments, bottom: 0, right: defaultSpacingOfSegments)
         return scrollView
     }()
@@ -128,7 +137,7 @@ public class CapsuleSegmentedControl: UIControl {
                 }
             }
             
-            segmentsSize = segmentsSize + buttonSize
+            segmentsSize.width += buttonSize.width
             
             // Update selected segment background view.
             if index == selectedSegmentIndex {
