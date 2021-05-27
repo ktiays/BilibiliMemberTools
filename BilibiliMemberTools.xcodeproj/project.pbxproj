@@ -32,6 +32,7 @@
 		ED44A530265A181700AF5089 /* RootTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED44A52F265A181700AF5089 /* RootTabView.swift */; };
 		ED4515A22655863E00825D8A /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED4515A12655863E00825D8A /* Account.swift */; };
 		ED4515A52656132400825D8A /* APIDebugView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED4515A42656132400825D8A /* APIDebugView.swift */; };
+		ED51CBA4265F43400064A6EE /* CapsuleSegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED51CBA3265F43400064A6EE /* CapsuleSegmentedControl.swift */; };
 		ED881C4A265D6D7E00A290C1 /* VideoListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED881C49265D6D7E00A290C1 /* VideoListView.swift */; };
 		EDACFD92265ADB41004FC0A6 /* BlurEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDACFD91265ADB41004FC0A6 /* BlurEffectView.swift */; };
 		EDC90E8D265960D8006BF418 /* CyanKit in Frameworks */ = {isa = PBXBuildFile; productRef = EDC90E8C265960D8006BF418 /* CyanKit */; };
@@ -69,6 +70,7 @@
 		ED44A52F265A181700AF5089 /* RootTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootTabView.swift; sourceTree = "<group>"; };
 		ED4515A12655863E00825D8A /* Account.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
 		ED4515A42656132400825D8A /* APIDebugView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIDebugView.swift; sourceTree = "<group>"; };
+		ED51CBA3265F43400064A6EE /* CapsuleSegmentedControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CapsuleSegmentedControl.swift; sourceTree = "<group>"; };
 		ED881C49265D6D7E00A290C1 /* VideoListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoListView.swift; sourceTree = "<group>"; };
 		EDACFD91265ADB41004FC0A6 /* BlurEffectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlurEffectView.swift; sourceTree = "<group>"; };
 		EDE221042656B87800EBBFF2 /* APIDebugList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIDebugList.swift; sourceTree = "<group>"; };
@@ -170,6 +172,7 @@
 				EDACFD91265ADB41004FC0A6 /* BlurEffectView.swift */,
 				55FE5DAC265CD0AC00595F78 /* RoundedCorner.swift */,
 				55FE9948265CDC1000595F78 /* SegmentItem.swift */,
+				ED51CBA3265F43400064A6EE /* CapsuleSegmentedControl.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -295,6 +298,7 @@
 				ED44A530265A181700AF5089 /* RootTabView.swift in Sources */,
 				EDF46F252658EC9D00BFA461 /* HostingController.swift in Sources */,
 				ED27A4C4265BF7CB00EE6559 /* Publication.swift in Sources */,
+				ED51CBA4265F43400064A6EE /* CapsuleSegmentedControl.swift in Sources */,
 				ED4515A52656132400825D8A /* APIDebugView.swift in Sources */,
 				55B5FA6826554269008D65C5 /* LoginView.swift in Sources */,
 				55FE0359265CA93E00595F78 /* View+Extension.swift in Sources */,
