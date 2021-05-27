@@ -5,24 +5,23 @@
 
 import SwiftUI
 import CyanKit
+import Introspect
 
 struct PublicationView: View {
     
     @State private var selection: Int = 0
+    
+    @State private var scrollView: UIScrollView?
 
     var body: some View {
         VStack {
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack {
-                    SegmentedControl(selection: $selection, content: [
-                        SegmentItem(id: 0, text: "视频管理"),
-                        SegmentItem(id: 1, text: "互动视频管理"),
-                        SegmentItem(id: 2, text: "专栏管理"),
-                        SegmentItem(id: 3, text: "音频管理")
-                    ])
-                }
-                .padding([.horizontal, .top])
-            }
+            CyanKit.SegmentedControl(selection: $selection, content: [
+                SegmentItem(id: 0, text: "视频管理"),
+                SegmentItem(id: 1, text: "互动视频管理"),
+                SegmentItem(id: 2, text: "专栏管理"),
+                SegmentItem(id: 3, text: "音频管理")
+            ], scrollable: true)
+            .padding(.top)
             
             if selection == 0 {
                 VideoListView()

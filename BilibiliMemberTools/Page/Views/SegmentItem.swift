@@ -8,6 +8,8 @@ import CyanKit
 
 struct SegmentItem: SegmentedControlItem {
     
+    typealias ID = Int
+    
     var id: Int
     var text: String
     

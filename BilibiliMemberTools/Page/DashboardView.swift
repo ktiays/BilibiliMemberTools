@@ -251,14 +251,13 @@ struct DashboardView: View {
                     }
                     
                     HStack {
-                        SegmentedControl(selection: $selection, content: [
+                        CyanKit.SegmentedControl(selection: $selection, content: [
                             SegmentItem(id: 0, text: "视频数据"),
                             SegmentItem(id: 1, text: "专栏数据"),
                         ])
                         .selectedBackgroundColor(.accentColor)
                         Spacer()
                     }
-                    .padding(.horizontal)
                     
                     if selection == 0 {
                         VideoDashboard(upStatus: upStatus)
