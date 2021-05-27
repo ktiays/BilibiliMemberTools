@@ -84,12 +84,25 @@ fileprivate struct _TabItem: View {
             }
         }, label: {
             HStack(spacing: 10) {
-                image
-                    .resizable()
-                    .renderingMode(.template)
-                    .foregroundColor(currentIndex == index ? .accentColor : .secondary.opacity(0.6))
-                    .aspectRatio(contentMode: .fit)
-                    .frame(height: 20)
+                ZStack {
+                    image
+                        .resizable()
+                        .renderingMode(.template)
+                        .foregroundColor(currentIndex == index ? .accentColor : .secondary.opacity(0.6))
+                        .aspectRatio(contentMode: .fit)
+                        .frame(height: 20)
+                    Text("99+")
+                        .font(.system(size: 12))
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 2)
+                        .background(Color.init(.systemRed))
+                        .clipShape(Capsule())
+                        .fixedSize()
+                        .offset(x: 16, y: -10)
+                }
+                .zIndex(.infinity)
+                
                 if currentIndex == index {
                     label
                         .font(.system(size: 14, weight: .bold))
@@ -119,6 +132,14 @@ struct RootTabView_Previews: PreviewProvider {
                 id: 1,
                 image: Image(systemName: "waveform.path.ecg.rectangle"),
                 label: Text("Tab B"),
+                content: AnyView(
+                    Rectangle()
+                )
+            ),
+            RootTabItem(
+                id: 2,
+                image: Image(systemName: "ellipsis.bubble"),
+                label: Text("Tab C"),
                 content: AnyView(
                     Rectangle()
                 )

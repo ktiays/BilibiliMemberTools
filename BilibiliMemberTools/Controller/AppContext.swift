@@ -23,9 +23,13 @@ final class AppContext {
                         return try memberInfo.get()
                     } catch {
                         guard let error = error as? APIManager.APIError else { return nil }
+                        // If user is not logged in,
+                        // the login view will pop up.
                         if error.code == ErrorCode.notAuthorized.rawValue {
                             DispatchQueue.main.async {
+                                #if !targetEnvironment(simulator)
                                 showLoginView()
+                                #endif
                             }
                         }
                         return nil
