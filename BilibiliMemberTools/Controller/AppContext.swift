@@ -17,10 +17,20 @@ final class AppContext {
         DispatchQueue.global().async {
             if self.account.memberInfo == nil {
                 let memberInfo = APIManager.shared.memberInfo()
-                guard let info = try? memberInfo.get() else {
-    //                handler(memberInfo.errorDescription)
-                    return
-                }
+                
+                guard let info: Account.MemberInfo? = {
+                    do {
+                        return try memberInfo.get()
+                    } catch {
+                        guard let error = error as? APIManager.APIError else { return nil }
+                        if error.code == ErrorCode.notAuthorized.rawValue {
+                            DispatchQueue.main.async {
+                                showLoginView()
+                            }
+                        }
+                        return nil
+                    }
+                }() else { return }
                 self.account.memberInfo = info
             }
             

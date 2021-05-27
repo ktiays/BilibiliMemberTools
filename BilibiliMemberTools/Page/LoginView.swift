@@ -14,7 +14,7 @@ struct LoginView: View {
     
     @State private var controller: Controller = Controller()
     
-    @State var isCaptchaed = false
+    @State private var isCaptchaed = false
     
     var body: some View {
         ZStack {
@@ -64,6 +64,27 @@ struct LoginView: View {
         }
     }
     
+}
+
+func showLoginView() {
+    class Wrapper {
+        var controller: UIViewController?
+    }
+    
+    let controllerWrapper = Wrapper()
+    
+    let loginViewController = HostingController(wrappedView: LoginView {
+        controllerWrapper.controller?.dismiss(animated: true, completion: nil)
+    })
+    loginViewController.modalPresentationStyle = .fullScreen
+    
+    guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene else { return }
+    var topViewController = scene.windows.filter { $0.isKeyWindow }.first?.rootViewController
+    while topViewController?.presentedViewController != nil {
+        topViewController = topViewController?.presentedViewController
+    }
+    controllerWrapper.controller = topViewController
+    topViewController?.present(loginViewController, animated: true, completion: nil)
 }
 
 // MARK: - Preview
