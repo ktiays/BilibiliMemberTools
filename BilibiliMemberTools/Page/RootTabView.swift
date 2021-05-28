@@ -13,6 +13,8 @@ struct RootTabView: View {
     @State private var currentStatusBarStyle: UIStatusBarStyle = .default
     @State private var innerBottomPadding: CGFloat = .zero
     
+    @StateObject private var badgeValue = BadgeValue()
+    
     init(tabItems: [RootTabItem]) {
         self.tabItems = tabItems
         UITabBar.appearance().isHidden = true
@@ -24,6 +26,7 @@ struct RootTabView: View {
                 if item.id == selection {
                     item.content
                         .innerBottomPadding(innerBottomPadding)
+                        .environmentObject(badgeValue)
                 }
             }
             .transition(.identity)
@@ -39,7 +42,13 @@ struct RootTabView: View {
                     HStack {
                         Spacer()
                         ForEach(tabItems) { item in
-                            _TabItem(image: item.image, label: item.label, index: item.id, currentIndex: $selection)
+                            _TabItem(
+                                image: item.image,
+                                label: item.label,
+                                index: item.id,
+                                currentIndex: $selection
+                            )
+                            .environmentObject(badgeValue)
                             Spacer()
                         }
                     }
@@ -57,6 +66,15 @@ struct RootTabView: View {
             }
         }
         .statusBar(style: currentStatusBarStyle)
+        .onAppear {
+            let context = AppContext.shared
+            context.requestAccountInformationIfNeeded { _ in
+                context.requestUpStatus { _ in }
+                context.requestUnreadQuantity { quantity in
+                    badgeValue.value = quantity.description
+                }
+            }
+        }
     }
     
 }
@@ -77,6 +95,10 @@ fileprivate struct _TabItem: View {
     var index: Int
     @Binding var currentIndex: Int
     
+    @State private var badgeOffset: CGFloat = 10
+    
+    @EnvironmentObject var badgeValue: BadgeValue
+    
     var body: some View {
         Button(action: {
             withAnimation(.spring()) {
@@ -91,15 +113,25 @@ fileprivate struct _TabItem: View {
                         .foregroundColor(currentIndex == index ? .accentColor : .secondary.opacity(0.6))
                         .aspectRatio(contentMode: .fit)
                         .frame(height: 20)
-                    Text("99+")
-                        .font(.system(size: 12))
-                        .foregroundColor(.white)
-                        .padding(.horizontal, 6)
-                        .padding(.vertical, 2)
-                        .background(Color.init(.systemRed))
-                        .clipShape(Capsule())
-                        .fixedSize()
-                        .offset(x: 16, y: -10)
+                    if badgeValue.value.count > 0 && index == 2 {
+                        Text(badgeValue.value)
+                            .font(.system(size: 12))
+                            .foregroundColor(.white)
+                            .frame(alignment: .leading)
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .fixedSize()
+                            .background(
+                                GeometryReader { proxy in
+                                    Color.init(.systemRed)
+                                        .onAppear {
+                                            badgeOffset = proxy.size.width / 2
+                                        }
+                                }
+                            )
+                            .clipShape(Capsule())
+                            .offset(x: badgeOffset, y: -10)
+                    }
                 }
                 .zIndex(.infinity)
                 

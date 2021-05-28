@@ -39,9 +39,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 image: Image(systemName: "ellipsis.bubble"),
                 label: Text("互动管理"),
                 content: AnyView(
-                    EmptyView()
+                    InteractionView()
                 )
-            ),
+            )
         ]))
         window?.makeKeyAndVisible()
     }

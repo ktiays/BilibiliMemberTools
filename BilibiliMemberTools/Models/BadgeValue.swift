@@ -3,11 +3,10 @@
 //  Copyright (c) 2021 ktiays. All rights reserved.
 // 
 
-import Foundation
+import SwiftUI
 
-enum ErrorCode: Int {
+class BadgeValue: ObservableObject {
     
-    // Account is not logged in.
-    case notAuthorized = -101
+    @Published var value: String = .init()
     
 }

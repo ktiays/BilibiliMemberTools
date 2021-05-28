@@ -41,12 +41,15 @@ final class AppContext {
             guard let memberInfo = self.account.memberInfo else { return }
             let userInfo = APIManager.shared.userInfo(uid: memberInfo.uid)
             guard let info = userInfo.userInfo else {
-                handler(userInfo.errorDescription)
+                DispatchQueue.main.async {
+                    handler(userInfo.errorDescription)
+                }
                 return
             }
             self.account.userInfo = info
-            
-            handler(nil)
+            DispatchQueue.main.async {
+                handler(nil)
+            }
         }
     }
     
@@ -72,6 +75,15 @@ final class AppContext {
                 return
             }
             handler(videos)
+        }
+    }
+    
+    func requestUnreadQuantity(completion handler: @escaping (Int) -> Void) {
+        DispatchQueue.global().async {
+            let quantity = APIManager.shared.numberOfUnread()
+            DispatchQueue.main.async {
+                handler(quantity.0 + quantity.1 + quantity.2 + quantity.3 + quantity.4)
+            }
         }
     }
     
