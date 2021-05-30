@@ -5,11 +5,17 @@
 
 import Foundation
 
-final class AppContext {
+func withMainQueue(_ handler: @escaping () -> Void) {
+    DispatchQueue.main.async {
+        handler()
+    }
+}
+
+final class AppContext: ObservableObject {
     
     static let shared = AppContext()
     
-    var account: Account = Account()
+    @Published var account: Account = Account()
     
     // MARK: - Account Information
     
@@ -35,19 +41,21 @@ final class AppContext {
                         return nil
                     }
                 }() else { return }
-                self.account.memberInfo = info
+                withMainQueue {
+                    self.account.memberInfo = info
+                }
             }
             
             guard let memberInfo = self.account.memberInfo else { return }
             let userInfo = APIManager.shared.userInfo(uid: memberInfo.uid)
             guard let info = userInfo.userInfo else {
-                DispatchQueue.main.async {
+                withMainQueue {
                     handler(userInfo.errorDescription)
                 }
                 return
             }
-            self.account.userInfo = info
-            DispatchQueue.main.async {
+            withMainQueue {
+                self.account.userInfo = info
                 handler(nil)
             }
         }
@@ -62,8 +70,10 @@ final class AppContext {
                 handler(upStatus.errorDescription)
                 return
             }
-            self.account.upStatus = upStatus            
-            handler(nil)
+            withMainQueue {
+                self.account.upStatus = upStatus
+                handler(nil)
+            }
         }
     }
     
@@ -74,7 +84,10 @@ final class AppContext {
                 handler([])
                 return
             }
-            handler(videos)
+            withMainQueue {
+                self.account.videos = videos
+                handler(videos)
+            }
         }
     }
     

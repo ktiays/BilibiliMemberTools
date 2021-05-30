@@ -14,8 +14,14 @@ fileprivate func cardBackgroundColor(for colorScheme: ColorScheme) -> Color {
 
 struct DashboardView: View {
     
-    @State private var userInfo: Account.UserInfo?
-    @State private var upStatus: Account.UpStatus?
+    @StateObject private var appContext = AppContext.shared
+    
+    private var userInfo: Account.UserInfo? {
+        appContext.account.userInfo
+    }
+    private var upStatus: Account.UpStatus? {
+        appContext.account.upStatus
+    }
     
     @State private var selection: Int = 0
     
@@ -286,12 +292,10 @@ struct DashboardView: View {
             .redacted(reason: upStatus == nil ? .placeholder : [])
         }
         .onAppear {
-            let context = AppContext.shared
-            context.requestAccountInformationIfNeeded { _ in
-                self.userInfo = context.account.userInfo
-                context.requestUpStatus { _ in
-                    self.upStatus = context.account.upStatus
-                }
+            if appContext.account.userInfo != nil &&
+                appContext.account.upStatus != nil { return }
+            appContext.requestAccountInformationIfNeeded { _ in
+                appContext.requestUpStatus { _ in }
             }
         }
     }

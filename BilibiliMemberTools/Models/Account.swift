@@ -13,6 +13,8 @@ struct Account {
         case unknown
     }
     
+    // MARK: User Information
+    
     struct UserInfo {
         
         struct Certification {
@@ -54,6 +56,8 @@ struct Account {
         var vip: VIP
     }
     
+    // MARK: Member Information
+    
     struct MemberInfo {
         var birthday: Date
         var uid: String
@@ -69,6 +73,8 @@ struct Account {
             return dateFormatter.date(from: string) ?? Date()
         }
     }
+    
+    // MARK: Up Status
     
     public struct UpStatus {
         
@@ -118,5 +124,6 @@ struct Account {
     var memberInfo: MemberInfo?
     var userInfo: UserInfo?
     var upStatus: UpStatus?
+    var videos: [Video] = []
     
 }

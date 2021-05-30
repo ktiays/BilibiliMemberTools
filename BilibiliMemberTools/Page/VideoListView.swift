@@ -9,7 +9,11 @@ import Introspect
 
 struct VideoListView: View {
     
-    @State private var videos: [VideoModel] = []
+    @StateObject private var appContext = AppContext.shared
+    
+    private var videos: [VideoModel] {
+        appContext.account.videos.map { VideoModel(video: $0) }
+    }
     
     @Environment(\.innerBottomPadding) private var innerBottomPadding;
     
@@ -33,11 +37,10 @@ struct VideoListView: View {
                 top: 0, left: 0, bottom: innerBottomPadding, right: 0
             )
         })
-        .redacted(reason: videos.isEmpty ? .placeholder : [])
+        .redacted(reason: AppContext.shared.account.videos.isEmpty ? .placeholder : [])
         .onAppear {
-            AppContext.shared.requestVideoData { videos in
-                self.videos = videos.map { VideoModel(video: $0) }
-            }
+            if !appContext.account.videos.isEmpty { return }
+            appContext.requestVideoData { _ in }
         }
     }
     
