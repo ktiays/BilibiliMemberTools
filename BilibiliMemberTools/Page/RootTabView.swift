@@ -67,10 +67,8 @@ struct RootTabView: View {
         }
         .statusBar(style: currentStatusBarStyle)
         .onAppear {
-            print("RootTabView onAppear")
             let context = AppContext.shared
             context.requestAccountInformationIfNeeded { _ in
-                print("RootTabView requestAccountInformationIfNeeded")
                 context.requestUpStatus { _ in }
                 context.requestUnreadQuantity { quantity in
                     badgeValue.value = quantity.description
