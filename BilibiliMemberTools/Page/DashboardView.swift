@@ -294,7 +294,9 @@ struct DashboardView: View {
         .onAppear {
             if appContext.account.userInfo != nil &&
                 appContext.account.upStatus != nil { return }
-            appContext.requestAccountInformationIfNeeded { _ in
+            print("DashboardView requestAccountInformationIfNeeded")
+            appContext.requestAccountInformationIfNeeded { string in
+                print("DashboardView request:\(string)")
                 appContext.requestUpStatus { _ in }
             }
         }

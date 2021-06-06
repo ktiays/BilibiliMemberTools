@@ -5,7 +5,7 @@
 
 import Foundation
 
-func withMainQueue(_ handler: @escaping () -> Void) {
+fileprivate func withMainQueue(_ handler: @escaping () -> Void) {
     DispatchQueue.main.async {
         handler()
     }
@@ -20,43 +20,53 @@ final class AppContext: ObservableObject {
     // MARK: - Account Information
     
     func requestAccountInformationIfNeeded(completion handler: @escaping (String?) -> Void) {
-        DispatchQueue.global().async {
-            if self.account.memberInfo == nil {
-                let memberInfo = APIManager.shared.memberInfo()
+        DispatchQueue.global().async { [self] in
+            var memberInfo = account.memberInfo
+            
+            if memberInfo == nil {
+                let sharedMemberInfo = APIManager.shared.memberInfo()
                 
                 guard let info: Account.MemberInfo? = {
                     do {
-                        return try memberInfo.get()
+                        return try sharedMemberInfo.get()
                     } catch {
-                        guard let error = error as? APIManager.APIError else { return nil }
+                        guard let error = error as? APIManager.APIError else {
+                            withMainQueue { handler(nil) }
+                            return nil
+                        }
                         // If user is not logged in,
                         // the login view will pop up.
                         if error.code == ErrorCode.notAuthorized.rawValue {
-                            DispatchQueue.main.async {
-                                #if !targetEnvironment(simulator)
-                                showLoginView()
-                                #endif
+                            withMainQueue {
+                                LoginAssistant.login()
                             }
                         }
+                        withMainQueue { handler(nil) }
                         return nil
                     }
-                }() else { return }
-                withMainQueue {
-                    self.account.memberInfo = info
+                }() else {
+                    withMainQueue { handler(nil) }
+                    return
                 }
+                memberInfo = info
             }
             
-            guard let memberInfo = self.account.memberInfo else { return }
-            let userInfo = APIManager.shared.userInfo(uid: memberInfo.uid)
-            guard let info = userInfo.userInfo else {
-                withMainQueue {
-                    handler(userInfo.errorDescription)
-                }
+            guard let memberInfo = memberInfo else {
+                withMainQueue { handler(nil) }
                 return
             }
-            withMainQueue {
-                self.account.userInfo = info
-                handler(nil)
+            let sharedUserInfo = APIManager.shared.userInfo(uid: memberInfo.uid)
+            guard let info = sharedUserInfo.userInfo else {
+                withMainQueue { handler(sharedUserInfo.errorDescription) }
+                return
+            }
+            
+            // The request is complete,
+            // throw the data back to the main thread to refresh.
+            withMainQueue { [self] in
+                account.memberInfo = memberInfo
+                account.userInfo = info
+                handler("Request Completed.")
             }
         }
     }
