@@ -37,6 +37,7 @@
 		ED4515A52656132400825D8A /* APIDebugView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED4515A42656132400825D8A /* APIDebugView.swift */; };
 		ED881C4A265D6D7E00A290C1 /* VideoListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED881C49265D6D7E00A290C1 /* VideoListView.swift */; };
 		EDACFD92265ADB41004FC0A6 /* BlurEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDACFD91265ADB41004FC0A6 /* BlurEffectView.swift */; };
+		EDAD90972691E5830030B7C3 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDAD90962691E5830030B7C3 /* LoginViewController.swift */; };
 		EDC90E8D265960D8006BF418 /* CyanKit in Frameworks */ = {isa = PBXBuildFile; productRef = EDC90E8C265960D8006BF418 /* CyanKit */; };
 		EDE221052656B87800EBBFF2 /* APIDebugList.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDE221042656B87800EBBFF2 /* APIDebugList.swift */; };
 		EDF46F1B2658CA7300BFA461 /* AppContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDF46F1A2658CA7300BFA461 /* AppContext.swift */; };
@@ -77,6 +78,7 @@
 		ED4515A42656132400825D8A /* APIDebugView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIDebugView.swift; sourceTree = "<group>"; };
 		ED881C49265D6D7E00A290C1 /* VideoListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoListView.swift; sourceTree = "<group>"; };
 		EDACFD91265ADB41004FC0A6 /* BlurEffectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlurEffectView.swift; sourceTree = "<group>"; };
+		EDAD90962691E5830030B7C3 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		EDE221042656B87800EBBFF2 /* APIDebugList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIDebugList.swift; sourceTree = "<group>"; };
 		EDF46F1A2658CA7300BFA461 /* AppContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppContext.swift; sourceTree = "<group>"; };
 		EDF46F222658DE2300BFA461 /* UIColor+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
@@ -119,6 +121,7 @@
 			children = (
 				ED44A52F265A181700AF5089 /* RootTabView.swift */,
 				55B5FA6726554269008D65C5 /* LoginView.swift */,
+				EDAD90962691E5830030B7C3 /* LoginViewController.swift */,
 				ED21CA1726582E5500CEABAF /* DashboardView.swift */,
 				ED27A4CB265C03A000EE6559 /* PublicationView.swift */,
 				ED881C49265D6D7E00A290C1 /* VideoListView.swift */,
@@ -307,6 +310,7 @@
 				EDF46F252658EC9D00BFA461 /* HostingController.swift in Sources */,
 				ED27A4C4265BF7CB00EE6559 /* Publication.swift in Sources */,
 				ED4515A52656132400825D8A /* APIDebugView.swift in Sources */,
+				EDAD90972691E5830030B7C3 /* LoginViewController.swift in Sources */,
 				55B5FA6826554269008D65C5 /* LoginView.swift in Sources */,
 				55FE0359265CA93E00595F78 /* View+Extension.swift in Sources */,
 				55E0756826539F210047CD8B /* AppDelegate.swift in Sources */,

@@ -92,6 +92,8 @@ fileprivate struct EditText: View {
                 }
             }
         }
+        .padding()
+        .background(Color.blue)
     }
     
 }
@@ -111,9 +113,10 @@ public class LoginAssistant {
     public class func login() {
         if shared.hasLogged { return }
         
-        let loginViewController = HostingController(wrappedView: LoginView {
-            shared.controller?.dismiss(animated: true, completion: nil)
-        })
+//        let loginViewController = HostingController(wrappedView: LoginView {
+//            shared.controller?.dismiss(animated: true, completion: nil)
+//        })
+        let loginViewController = LoginViewController()
         loginViewController.modalPresentationStyle = .fullScreen
         
         guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene else { return }

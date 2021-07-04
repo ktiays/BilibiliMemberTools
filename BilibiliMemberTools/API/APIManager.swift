@@ -72,6 +72,10 @@ final class APIManager {
     
     private var _countryCode: Int?
     
+    private let standardHeaders = [
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Safari/605.1.15"
+    ]
+    
     // MARK: - Public Methods
     
     func captcha() -> (challenge: String, gt: String, key: String) {
@@ -79,7 +83,7 @@ final class APIManager {
         
         var captchaArgs: (String, String, String) = (.init(), .init(), .init())
         let responseQueue = DispatchQueue.global(qos: .utility)
-        AF.request(InterfaceURL.captcha, parameters: ["plat": 6]).responseJSON(queue: responseQueue) { response in
+        AF.request(InterfaceURL.captcha, parameters: ["plat": 6], headers: .init(standardHeaders)).responseJSON(queue: responseQueue) { response in
             guard let result = response.value as? [String : Any] else {
                 semaphore.signal()
                 return
@@ -99,7 +103,7 @@ final class APIManager {
     }
     
     func sms(telephone: String, captchaCode: (key: String, challenge: String, validate: String, seccode: String)) {
-        DispatchQueue.global().async {
+        DispatchQueue.global().async { [self] in
             // Send SMS code.
             let params = [
                 "tel": telephone,
@@ -111,7 +115,7 @@ final class APIManager {
                 "validate": captchaCode.validate,
                 "seccode": captchaCode.seccode
             ]
-            AF.request(InterfaceURL.sms, method: .post, parameters: params).responseJSON { response in
+            AF.request(InterfaceURL.sms, method: .post, parameters: params, headers: .init(standardHeaders)).responseJSON { response in
                 guard let result = response.value as? [String : Any] else { return }
                 if let code = result["code"] as? Int, code == 0 {
                     print("The SMS code request was successful.")
@@ -128,7 +132,7 @@ final class APIManager {
             "tel": telephone,
             "smsCode": smsCode
         ]
-        AF.request(InterfaceURL.loginSMS, method: .post, parameters: params).responseJSON { response in
+        AF.request(InterfaceURL.loginSMS, method: .post, parameters: params, headers: .init(standardHeaders)).responseJSON { response in
             guard let result = response.value as? [String : Any] else { return }
             if let code = result["code"] as? Int, code == 0 {
                 print("Login successful.")
@@ -160,7 +164,7 @@ final class APIManager {
         
         var result: (String?, Account.UpStatus?) = (nil, nil)
         
-        AF.request(InterfaceURL.User.upVideoStatus).responseJSON(queue: responseQueue) { response in
+        AF.request(InterfaceURL.User.upVideoStatus, headers: .init(standardHeaders)).responseJSON(queue: responseQueue) { response in
             guard let value = response.value as? [String : Any] else {
                 result.0 = ErrorDescription.unexcepted.rawValue
                 semaphore.signal()
@@ -268,7 +272,7 @@ final class APIManager {
         let responseQueue = DispatchQueue.global(qos: .utility)
         
         var numberOfMessage: (Int, Int, Int, Int, Int) = (0, 0, 0, 0, 0)
-        AF.request(InterfaceURL.User.numberOfUnread).responseJSON(queue: responseQueue) { response in
+        AF.request(InterfaceURL.User.numberOfUnread, headers: .init(standardHeaders)).responseJSON(queue: responseQueue) { response in
             guard let value = (response.value as? [String : Any])?["data"] as? [String : Int] else {
                 semaphore.signal()
                 return
@@ -289,7 +293,7 @@ final class APIManager {
         let responseQueue = DispatchQueue.global(qos: .utility)
         
         var result: (String?, Account.UserInfo?) = (nil, nil)
-        AF.request(InterfaceURL.Member.info, parameters: ["mid": uid]).responseJSON(queue: responseQueue) { response in
+        AF.request(InterfaceURL.Member.info, parameters: ["mid": uid], headers: .init(standardHeaders)).responseJSON(queue: responseQueue) { response in
             guard let value = response.value as? [String : Any] else {
                 result.0 = ErrorDescription.unexcepted.rawValue
                 semaphore.signal()
@@ -420,7 +424,7 @@ final class APIManager {
         let responseQueue = DispatchQueue.global(qos: .utility)
         
         var result: Result<T, APIError>! = nil
-        AF.request(url, parameters: parameters).responseJSON(queue: responseQueue) { response in
+        AF.request(url, parameters: parameters, headers: .init(standardHeaders)).responseJSON(queue: responseQueue) { response in
             let errorHandler = { (code: Int, message: String) in
                 result = .failure(APIError(code: code, message: message))
                 semaphore.signal()
@@ -469,7 +473,7 @@ final class APIManager {
         let handlerQueue = DispatchQueue.global(qos: .utility)
         
         // Get country code of China.
-        AF.request(InterfaceURL.countryList).responseJSON(queue: handlerQueue) { response in
+        AF.request(InterfaceURL.countryList, headers: .init(standardHeaders)).responseJSON(queue: handlerQueue) { response in
             guard let list = (response.value as? [String : Any])?["data"] as? [String : [[String : Any]]] else {
                 semaphore.signal()
                 return

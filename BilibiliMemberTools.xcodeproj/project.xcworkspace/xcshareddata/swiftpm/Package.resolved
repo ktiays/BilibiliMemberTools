@@ -38,7 +38,7 @@
         }
       },
       {
-        "package": "Introspect",
+        "package": "SwiftUI-Introspect",
         "repositoryURL": "https://github.com/siteline/SwiftUI-Introspect.git",
         "state": {
           "branch": null,
