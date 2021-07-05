@@ -5,6 +5,8 @@
 
 import SwiftUI
 
+// MARK: Root Tab View
+
 struct RootTabView: View {
     
     var tabItems: [RootTabItem]
@@ -71,14 +73,15 @@ struct RootTabView: View {
             context.requestAccountInformationIfNeeded { _ in
                 context.requestUpStatus { _ in }
                 context.requestUnreadQuantity { quantity in
-                    badgeValue.value = quantity.description
-                    print(badgeValue.value)
+                    badgeValue.value = quantity == 0 ? .init() : quantity.description
                 }
             }
         }
     }
     
 }
+
+// MARK: - Root Tab Item
 
 struct RootTabItem: Identifiable {
     
