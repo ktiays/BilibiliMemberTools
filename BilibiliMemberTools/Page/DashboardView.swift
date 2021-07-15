@@ -284,11 +284,12 @@ struct DashboardView: View {
                 .padding(.bottom, innerBottomPadding)
             }
             .ignoresSafeArea()
-            .introspectScrollView(customize: { scrollView in
+            .introspectScrollView { scrollView in
+                scrollView.automaticallyAdjustsScrollIndicatorInsets = false
                 scrollView.verticalScrollIndicatorInsets = .init(
                     top: 0, left: 0, bottom: innerBottomPadding, right: 0
                 )
-            })
+            }
             .redacted(reason: upStatus == nil ? .placeholder : [])
         }
         .onAppear {

@@ -7,6 +7,12 @@ import SwiftUI
 import SDWebImageSwiftUI
 import Introspect
 
+class VideoListViewController: UITableViewController {
+    
+    
+    
+}
+
 struct VideoListView: View {
     
     @StateObject private var appContext = AppContext.shared
@@ -16,25 +22,22 @@ struct VideoListView: View {
     @Environment(\.innerBottomPadding) private var innerBottomPadding;
     
     var body: some View {
-        ScrollView {
-            VStack(spacing: 16) {
-                Spacer()
-                    .frame(height: 0)
-                ForEach(videos.isEmpty ? VideoModel.placeholder : videos) { video in
-                    VideoCard(video: video.video)
-                        .padding(.bottom, 20)
-                }
-                Spacer()
-                    .frame(height: max(0, innerBottomPadding - 36))
+        List {
+            ForEach(videos.isEmpty ? VideoModel.placeholder : videos) { video in
+                VideoCard(video: video.video)
+                    .padding(.bottom, 20)
             }
-            .padding([.horizontal, .bottom])
+            .listRowSeparator(.hidden)
         }
+        .listStyle(.plain)
         .ignoresSafeArea()
-        .introspectScrollView(customize: { scrollView in
-            scrollView.verticalScrollIndicatorInsets = .init(
+        .introspectTableView { tableView in
+            tableView.automaticallyAdjustsScrollIndicatorInsets = false
+            tableView.verticalScrollIndicatorInsets = .init(
                 top: 0, left: 0, bottom: innerBottomPadding, right: 0
             )
-        })
+            tableView.contentInset = .init(top: 16, left: 0, bottom: innerBottomPadding - 36, right: 0)
+        }
         .redacted(reason: AppContext.shared.account.videos.isEmpty ? .placeholder : [])
         .onAppear {
             if !videos.isEmpty { return }
@@ -124,6 +127,7 @@ fileprivate struct VideoCard: View {
                     Text(video.title)
                         .foregroundColor(.init(.label))
                         .font(.system(size: 13))
+                        .lineSpacing(4)
                     Text(formatPublishedTime(video.publishedTime))
                         .font(.system(size: 12))
                         .foregroundColor(.init(.label).opacity(0.7))
