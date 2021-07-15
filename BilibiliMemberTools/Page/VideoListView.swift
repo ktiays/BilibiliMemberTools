@@ -11,9 +11,7 @@ struct VideoListView: View {
     
     @StateObject private var appContext = AppContext.shared
     
-    private var videos: [VideoModel] {
-        appContext.account.videos.map { VideoModel(video: $0) }
-    }
+    private var videos: [VideoModel] { appContext.account.videos.map { VideoModel(video: $0) } }
     
     @Environment(\.innerBottomPadding) private var innerBottomPadding;
     
@@ -39,7 +37,7 @@ struct VideoListView: View {
         })
         .redacted(reason: AppContext.shared.account.videos.isEmpty ? .placeholder : [])
         .onAppear {
-            if !appContext.account.videos.isEmpty { return }
+            if !videos.isEmpty { return }
             appContext.requestVideoData { _ in }
         }
     }
@@ -203,7 +201,9 @@ fileprivate struct InteractiveTag: View {
 
 struct VideoListView_Previews: PreviewProvider {
     static var previews: some View {
-        VideoListView()
+        ScrollView {
+            VideoListView()
+        }
         VideoCard(video: Video(
             title: "hahahaha",
             coverURL: "http://i1.hdslb.com/bfs/archive/270c5219bb7a3ecdfad84f72b99501b85ddf5d05.jpg",

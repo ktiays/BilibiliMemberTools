@@ -10,7 +10,7 @@ import UIKit
 class LoginViewController: UIViewController {
     
     private lazy var animatedTextField: AnimatedTextField = {
-        let textField = AnimatedTextField(frame: .init(origin: .zero, size: .init(width: 200, height: 100)))
+        let textField = AnimatedTextField()
         textField.placeholder = "Animated Text Field"
         return textField
     }()
@@ -38,8 +38,8 @@ class AnimatedTextField: UIControl, UITextFieldDelegate {
     var placeholder: String? {
         didSet {
             descrptionLabel.text = placeholder
-            
             textField.frame.size = descrptionLabel.bounds.size
+            sizeToFit()
         }
     }
     
@@ -78,15 +78,36 @@ class AnimatedTextField: UIControl, UITextFieldDelegate {
         let width = bounds.width
         let height = bounds.height
         
+        let labelSize = sizeOfPlaceholder()
+        
         if !isTextFieldFocused && !textField.hasText {
+            // Change text color of label to placeholder style.
             descrptionLabel.textColor = .secondaryLabel
-            descrptionLabel.frame = .init(x: padding, y: 0, width: width - padding * 2, height: height)
             
-            textField.frame = descrptionLabel.frame
-
+            descrptionLabel.frame = .init(x: padding, y: 0, width: width - padding * 2, height: labelSize.height)
+            descrptionLabel.center.y = height / 2
+            textField.frame = .init(origin: descrptionLabel.frame.origin, size: .init(width: width - padding * 2, height: labelSize.height))
         } else {
+            // Change text color of label to title style.
             descrptionLabel.textColor = .label
+            
+            descrptionLabel.frame.origin = .init(x: padding, y: padding)
+            textField.frame.origin = .init(x: descrptionLabel.frame.origin.x, y: height - padding - labelSize.height)
         }
+    }
+    
+    override var intrinsicContentSize: CGSize {
+        let textSize = sizeOfPlaceholder()
+        return .init(width: textSize.width + padding * 2, height: textSize.height * 2 + padding * 2)
+    }
+    
+    override func sizeThatFits(_ size: CGSize) -> CGSize { intrinsicContentSize }
+    
+    // MARK: Private Methods
+    
+    private func sizeOfPlaceholder() -> CGSize {
+        let systemFont = UIFont.systemFont(ofSize: 17)
+        return (placeholder as NSString?)?.boundingRect(with: bounds.size, options: .usesLineFragmentOrigin, attributes: [.font: systemFont], context: nil).size ?? .zero
     }
     
     // MARK: UITextFieldDelegate

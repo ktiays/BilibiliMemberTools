@@ -379,42 +379,59 @@ final class APIManager {
         return result
     }
     
-    func videos(for options: [ApprovalStatusOption]) -> Result<[Video], APIError> {
-        return commonRequest(
-            url: InterfaceURL.User.videos,
-            parameters: ["status": options.map { $0.rawValue }.joined(separator: ",")]
-        ) { data -> [Video]? in
-            guard let videos = data["arc_audits"] as? [[String : Any]] else { return nil }
-            var result: [Video] = []
-            for video in videos {
-                // Get the status data of video.
-                guard let statusData = video["stat"] as? [String : Int] else { return nil }
-                let status = Video.Status(
-                    views: statusData["view"] ?? .init(),
-                    danmakus: statusData["danmaku"] ?? .init(),
-                    replies: statusData["reply"] ?? .init(),
-                    likes: statusData["like"] ?? .init(),
-                    coins: statusData["coin"] ?? .init(),
-                    favorites: statusData["favorite"] ?? .init(),
-                    shares: statusData["share"] ?? .init()
-                )
-                
-                // Get the base information of video.
-                guard let information = video["Archive"] as? [String : Any] else { return nil }
-                let video = Video(
-                    title: information["title"] as? String ?? .init(),
-                    coverURL: information["cover"] as? String ?? .init(),
-                    publishedTime: Date(timeIntervalSince1970: TimeInterval(information["ptime"] as? Int ?? .init())),
-                    av: (statusData["aid"] ?? Int .init()).description,
-                    bv: information["bvid"] as? String ?? .init(),
-                    description: information["desc"] as? String ?? .init(),
-                    duration: information["duration"] as? Int ?? .init(),
-                    status: status
-                )
-                result.append(video)
-            }
-            return result
-        }
+    func videos(for options: [ApprovalStatusOption], videoHandler: (Result<[Video], APIError>) -> Void) {
+        // Number of videos has requested.
+        var count = 0
+        // The total number of videos that need to be requested.
+        var total = 0
+        
+        let pageSize = 10
+        var pageIndex = 1
+        repeat {
+            videoHandler(commonRequest(
+                url: InterfaceURL.User.videos,
+                parameters: ["status": options.map { $0.rawValue }.joined(separator: ","),
+                             "pn": pageIndex.description,
+                             "ps": pageSize.description]
+            ) { data -> [Video]? in
+                // Videos data.
+                guard let videos = data["arc_audits"] as? [[String : Any]] else { return nil }
+                var result: [Video] = []
+                for video in videos {
+                    // Get the status data of video.
+                    guard let statusData = video["stat"] as? [String : Int] else { return nil }
+                    let status = Video.Status(
+                        views: statusData["view"] ?? .init(),
+                        danmakus: statusData["danmaku"] ?? .init(),
+                        replies: statusData["reply"] ?? .init(),
+                        likes: statusData["like"] ?? .init(),
+                        coins: statusData["coin"] ?? .init(),
+                        favorites: statusData["favorite"] ?? .init(),
+                        shares: statusData["share"] ?? .init()
+                    )
+                    
+                    // Get the base information of video.
+                    guard let information = video["Archive"] as? [String : Any] else { return nil }
+                    let video = Video(
+                        title: information["title"] as? String ?? .init(),
+                        coverURL: information["cover"] as? String ?? .init(),
+                        publishedTime: Date(timeIntervalSince1970: TimeInterval(information["ptime"] as? Int ?? .init())),
+                        av: (statusData["aid"] ?? Int .init()).description,
+                        bv: information["bvid"] as? String ?? .init(),
+                        description: information["desc"] as? String ?? .init(),
+                        duration: information["duration"] as? Int ?? .init(),
+                        status: status
+                    )
+                    result.append(video)
+                }
+                // Pages data.
+                guard let pages = data["page"] as? [String : Int] else { return nil }
+                count += result.count
+                total = pages["count"] ?? .zero
+                pageIndex += 1
+                return result
+            })
+        } while count < total
     }
     
     // MARK: - Private Methods

@@ -88,15 +88,17 @@ final class AppContext: ObservableObject {
     }
     
     func requestVideoData(completion handler: @escaping ([Video]) -> Void) {
+        self.account.videos = []
         DispatchQueue.global().async {
-            let videoResult = APIManager.shared.videos(for: [.published, .rejected, .reviewing])
-            guard let videos = try? videoResult.get() else {
-                handler([])
-                return
-            }
-            withMainQueue {
-                self.account.videos = videos
-                handler(videos)
+            APIManager.shared.videos(for: [.published, .rejected, .reviewing]) { result in
+                guard let videos = try? result.get() else {
+                    handler([])
+                    return
+                }
+                withMainQueue {
+                    self.account.videos.append(contentsOf: videos)
+                    handler(videos)
+                }
             }
         }
     }
