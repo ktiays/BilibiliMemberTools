@@ -7,11 +7,7 @@ import SwiftUI
 import SDWebImageSwiftUI
 import Introspect
 
-class VideoListViewController: UITableViewController {
-    
-    
-    
-}
+// MARK: Video List View
 
 struct VideoListView: View {
     
@@ -47,7 +43,7 @@ struct VideoListView: View {
     
 }
 
-// MARK: - VideoModel
+// MARK: - Video Model
 
 fileprivate let videoPlaceholder: Video = Video(
     title: .init(count: 8),
@@ -83,7 +79,7 @@ fileprivate struct VideoModel: Identifiable {
     
 }
 
-// MARK: - VideoCard
+// MARK: - Video Card View
 
 fileprivate struct VideoCard: View {
     
@@ -183,7 +179,7 @@ fileprivate struct VideoCard: View {
     
 }
 
-// MARK: - InteractiveTag
+// MARK: - Interactive Tag View
 
 fileprivate struct InteractiveTag: View {
     
