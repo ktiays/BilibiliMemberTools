@@ -11,11 +11,18 @@ fileprivate func withMainQueue(_ handler: @escaping () -> Void) {
     }
 }
 
+fileprivate func withAsync(_ handler: @escaping () -> Void) {
+    DispatchQueue.global().async {
+        handler()
+    }
+}
+
 final class AppContext: ObservableObject {
     
     static let shared = AppContext()
     
-    @Published var account: Account = Account()
+    @Published var account: Account = .init()
+    @Published var messageFeed: MessageFeed = .init()
     
     // MARK: - Account Information
     
@@ -74,7 +81,7 @@ final class AppContext: ObservableObject {
     // MARK: - UP Status
     
     func requestUpStatus(completion handler: @escaping (String?) -> Void) {
-        DispatchQueue.global().async {
+        withAsync {
             let upStatus = APIManager.shared.upStatus()
             guard let upStatus = upStatus.upStatus else {
                 handler(upStatus.errorDescription)
@@ -89,7 +96,7 @@ final class AppContext: ObservableObject {
     
     func requestVideoData(completion handler: @escaping ([Video]) -> Void) {
         self.account.videos = []
-        DispatchQueue.global().async {
+        withAsync {
             APIManager.shared.videos(for: [.published, .rejected, .reviewing]) { result in
                 guard let videos = try? result.get() else {
                     handler([])
@@ -104,10 +111,23 @@ final class AppContext: ObservableObject {
     }
     
     func requestUnreadQuantity(completion handler: @escaping (Int) -> Void) {
-        DispatchQueue.global().async {
+        withAsync {
             let quantity = APIManager.shared.numberOfUnread()
-            DispatchQueue.main.async {
+            withMainQueue {
                 handler(quantity.0 + quantity.1 + quantity.2 + quantity.3 + quantity.4)
+            }
+        }
+    }
+
+    func requestReplyFeed(completion handler: @escaping ([Reply]) -> Void) {
+        withAsync {
+            guard let replies = try? APIManager.shared.replyFeed().get() else {
+                handler([])
+                return
+            }
+            withMainQueue {
+                self.messageFeed.replies = replies
+                handler(replies)
             }
         }
     }

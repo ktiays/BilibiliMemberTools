@@ -32,7 +32,7 @@ struct VideoListView: View {
             tableView.verticalScrollIndicatorInsets = .init(
                 top: 0, left: 0, bottom: innerBottomPadding, right: 0
             )
-            tableView.contentInset = .init(top: 16, left: 0, bottom: innerBottomPadding - 36, right: 0)
+            tableView.contentInset = .init(top: 8, left: 0, bottom: innerBottomPadding - 36, right: 0)
         }
         .redacted(reason: AppContext.shared.account.videos.isEmpty ? .placeholder : [])
         .onAppear {
@@ -72,7 +72,9 @@ fileprivate struct VideoModel: Identifiable {
     static let placeholder: [VideoModel] = {
         var videoModels: [VideoModel] = []
         for _ in 0..<10 {
-            videoModels.append(VideoModel(video: videoPlaceholder))
+            var placeholder = videoPlaceholder
+            placeholder.bv = UUID().uuidString[..<placeholder.bv.count]
+            videoModels.append(VideoModel(video: placeholder))
         }
         return videoModels
     }()

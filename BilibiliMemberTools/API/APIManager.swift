@@ -28,6 +28,7 @@ final class APIManager {
         
         static let loginSMS = httpPrefix + Host.passport.rawValue + "/web/login/rapid"
         
+        // Bilibili user data APIs.
         fileprivate enum User {
             
             static let info = httpPrefix + Host.api.rawValue + "/x/member/web/account"
@@ -36,14 +37,29 @@ final class APIManager {
             
             static let upArticleStatus = httpPrefix + Host.member.rawValue + "/x/web/data/article"
             
-            static let numberOfUnread = httpPrefix + Host.api.rawValue + "/x/msgfeed/unread"
-            
+            // Details of video content.
             static let videos = httpPrefix + Host.member.rawValue + "/x/web/archives"
             
+            // Details of article content.
             static let articles = httpPrefix + Host.api.rawValue + "/x/article/creative/article/list"
+            
+            static let relation = httpPrefix + Host.api.rawValue + "/x/space/acc/relation"
+            
+            fileprivate enum MessageFeed {
+                
+                private static let prefix = httpPrefix + Host.api.rawValue + "/x/msgfeed"
+                
+                static let numberOfUnread = `prefix` + "/unread"
+                
+                static let reply = `prefix` + "/reply"
+                
+                static let like = `prefix` + "/like"
+                
+            }
         
         }
         
+        // Bilibili account data APIs.
         fileprivate enum Member {
             
             static let info = httpPrefix + Host.api.rawValue + "/x/space/acc/info"
@@ -267,27 +283,6 @@ final class APIManager {
         return result
     }
     
-    func numberOfUnread() -> (at: Int, like: Int, reply: Int, systemMessage: Int, up: Int) {
-        let semaphore = DispatchSemaphore()
-        let responseQueue = DispatchQueue.global(qos: .utility)
-        
-        var numberOfMessage: (Int, Int, Int, Int, Int) = (0, 0, 0, 0, 0)
-        AF.request(InterfaceURL.User.numberOfUnread, headers: standardHeaders).responseJSON(queue: responseQueue) { response in
-            guard let value = (response.value as? [String : Any])?["data"] as? [String : Int] else {
-                semaphore.signal()
-                return
-            }
-            numberOfMessage.0 = value["at"] ?? 0
-            numberOfMessage.1 = value["like"] ?? 0
-            numberOfMessage.2 = value["reply"] ?? 0
-            numberOfMessage.3 = value["sys_msg"] ?? 0
-            numberOfMessage.4 = value["up"] ?? 0
-            semaphore.signal()
-        }
-        semaphore.wait()
-        return numberOfMessage
-    }
-    
     func userInfo(uid: String) -> (errorDescription: String?, userInfo: Account.UserInfo?) {
         let semaphore = DispatchSemaphore()
         let responseQueue = DispatchQueue.global(qos: .utility)
@@ -434,7 +429,111 @@ final class APIManager {
         } while count < total
     }
     
+    // MARK: - Message Feed
+    
+    func numberOfUnread() -> (at: Int, like: Int, reply: Int, systemMessage: Int, up: Int) {
+        (try? commonRequest(url: InterfaceURL.User.MessageFeed.numberOfUnread, dataMapper: { data -> (Int, Int, Int, Int, Int) in
+            var numberOfMessage: (Int, Int, Int, Int, Int) = (0, 0, 0, 0, 0)
+            guard let value = data as? [String : Int] else { return numberOfMessage }
+            numberOfMessage.0 = value["at"] ?? 0
+            numberOfMessage.1 = value["like"] ?? 0
+            numberOfMessage.2 = value["reply"] ?? 0
+            numberOfMessage.3 = value["sys_msg"] ?? 0
+            numberOfMessage.4 = value["up"] ?? 0
+            return numberOfMessage
+        }).get()) ?? (0, 0, 0, 0, 0)
+    }
+    
+    func replyFeed() -> Result<[Reply], APIError> {
+        commonRequest(url: InterfaceURL.User.MessageFeed.reply, dataMapper: { replyData -> [Reply] in
+            guard let replies = replyData["items"] as? [[String : Any]] else { return [] }
+            var result: [Reply] = []
+            for reply in replies {
+                let id = (reply["id"] as? Int)?.description ?? .init()
+                
+                guard let userData = reply["user"] as? [String : Any] else { return [] }
+                let uid = (userData["mid"] as? Int)?.description ?? .init()
+                let username = userData["nickname"] as? String ?? .init()
+                let avatarURL = userData["avatar"] as? String ?? .init()
+                
+                let user = User(uid: uid, username: username, avatarURL: avatarURL)
+                
+                guard let comment = reply["item"] as? [String : Any] else { return [] }
+                let content = comment["source_content"] as? String ?? .init()
+                
+                let timestamp = Double(reply["reply_time"] as? Int ?? .zero)
+                let time = Date(timeIntervalSince1970: timestamp)
+                
+                result.append(Reply(id: id, user: user, content: content, time: time))
+            }
+            return result
+        })
+    }
+    
+    // MARK: - Relation
+    
+    func relation(with uid: String, completion: @escaping (Result<TimestampedState<Relation>, APIError>) -> Void)  {
+        commonRequest(url: InterfaceURL.User.relation, parameters: ["mid": uid], dataMapper: { relationData -> TimestampedState<Relation> in
+            var state: TimestampedState<Relation> = .init(state: .none, timestamp: .zero)
+            guard let _relation = relationData["relation"] as? [String : Any] else { return state }
+            let attr = _relation["attribute"] as? Int ?? .zero
+            switch attr {
+            case 2:
+                state.state = .following
+            case 6:
+                state.state = .friend
+            case 128...:
+                state.state = .blacklist
+            default:
+                break
+            }
+            guard let _related = relationData["be_relation"] as? [String : Any] else { return state }
+            if state.state == .none && _related["attribute"] as? Int ?? .zero == 2 {
+                state.state = .followed
+            }
+            state.timestamp = TimeInterval(min(_relation["mtime"] as? Int ?? .zero, _related["mtime"] as? Int ?? .zero))
+            return state
+        }, completion: completion)
+    }
+    
     // MARK: - Private Methods
+    
+    private func commonRequest<T>(url: String, parameters: Parameters = [:], dataMapper: @escaping ([String : Any]) -> T?, completion: @escaping (Result<T, APIError>) -> Void) {
+        AF.request(url, parameters: parameters, headers: standardHeaders).responseJSON { response in
+            let errorHandler = { (code: Int, message: String) in
+                completion(.failure(APIError(code: code, message: message)))
+            }
+            
+            guard let value = response.value as? [String : Any] else {
+                errorHandler(-9999, ErrorDescription.unexcepted.rawValue)
+                return
+            }
+            guard let code = value["code"] as? Int else {
+                errorHandler(-9999, ErrorDescription.unexcepted.rawValue)
+                return
+            }
+            guard let message = value["message"] as? String else {
+                errorHandler(-9999, ErrorDescription.unexcepted.rawValue)
+                return
+            }
+            
+            guard code == 0 else {
+                errorHandler(code, message)
+                return
+            }
+            
+            guard let data = value["data"] as? [String : Any] else {
+                errorHandler(-9999, ErrorDescription.unexcepted.rawValue)
+                return
+            }
+            guard let mappedResult = dataMapper(data) else {
+                errorHandler(-9999, ErrorDescription.unexcepted.rawValue)
+                return
+            }
+            
+            completion(.success(mappedResult))
+        }
+    }
     
     private func commonRequest<T>(url: String, parameters: Parameters = [:], dataMapper: @escaping ([String : Any]) -> T?) -> Result<T, APIError> {
         let semaphore = DispatchSemaphore()

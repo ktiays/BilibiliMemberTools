@@ -11,4 +11,10 @@ extension Date {
         Int(self.timeIntervalSince1970)
     }
     
+    func stringFrom(format: String) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = format
+        return formatter.string(from: self)
+    }
+    
 }

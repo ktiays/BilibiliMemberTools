@@ -225,7 +225,7 @@ struct DashboardView: View {
                         .foregroundColor(.white)
                         .bold()
                     Text(userInfo?.vip.description ?? .init(count: 5))
-                        .font(.system(size: 11))
+                        .font(.system(size: 10))
                         .padding(.horizontal, userInfo == nil ? 0 : 4)
                         .padding(.vertical, 3)
                         .foregroundColor(userInfo == nil ? .white : .accentColor)
