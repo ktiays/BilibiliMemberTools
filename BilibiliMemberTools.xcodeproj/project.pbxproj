@@ -24,7 +24,6 @@
 		55FE5DAD265CD0AC00595F78 /* RoundedCorner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55FE5DAC265CD0AC00595F78 /* RoundedCorner.swift */; };
 		55FE9949265CDC1000595F78 /* SegmentItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55FE9948265CDC1000595F78 /* SegmentItem.swift */; };
 		ED15739526601C0C00B5266A /* ErrorCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED15739426601C0C00B5266A /* ErrorCode.swift */; };
-		ED1AE7F526A3E79300CBB19B /* SVGKitSwift in Frameworks */ = {isa = PBXBuildFile; productRef = ED1AE7F426A3E79300CBB19B /* SVGKitSwift */; };
 		ED1AE7FC26A3E90000CBB19B /* SVG in Resources */ = {isa = PBXBuildFile; fileRef = ED1AE7FB26A3E90000CBB19B /* SVG */; };
 		ED1AE7FE26A3EDA800CBB19B /* AnimatedTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED1AE7FD26A3EDA800CBB19B /* AnimatedTextField.swift */; };
 		ED1AE80126A3F89900CBB19B /* Operator.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED1AE80026A3F89900CBB19B /* Operator.swift */; };
@@ -57,6 +56,7 @@
 		EDF46F232658DE2300BFA461 /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDF46F222658DE2300BFA461 /* UIColor+Extension.swift */; };
 		EDF46F252658EC9D00BFA461 /* HostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDF46F242658EC9D00BFA461 /* HostingController.swift */; };
 		EDF46F272658F16300BFA461 /* Double+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDF46F262658F16300BFA461 /* Double+Extension.swift */; };
+		EDF9AE9926A4247200689C31 /* SVGKit in Frameworks */ = {isa = PBXBuildFile; productRef = EDF9AE9826A4247200689C31 /* SVGKit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -114,9 +114,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EDF9AE9926A4247200689C31 /* SVGKit in Frameworks */,
 				EDC90E8D265960D8006BF418 /* CyanKit in Frameworks */,
 				55A763B9265B75E100FC54F0 /* Introspect in Frameworks */,
-				ED1AE7F526A3E79300CBB19B /* SVGKitSwift in Frameworks */,
 				EDF46F212658D55B00BFA461 /* SDWebImageSwiftUI in Frameworks */,
 				55E0930E2653A48A0047CD8B /* Alamofire in Frameworks */,
 			);
@@ -279,7 +279,7 @@
 				EDF46F202658D55B00BFA461 /* SDWebImageSwiftUI */,
 				EDC90E8C265960D8006BF418 /* CyanKit */,
 				55A763B8265B75E100FC54F0 /* Introspect */,
-				ED1AE7F426A3E79300CBB19B /* SVGKitSwift */,
+				EDF9AE9826A4247200689C31 /* SVGKit */,
 			);
 			productName = BilibiliMemberTools;
 			productReference = 55E0756426539F210047CD8B /* BilibiliMemberTools.app */;
@@ -313,7 +313,7 @@
 				EDF46F1F2658D55B00BFA461 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */,
 				EDC90E8B265960D8006BF418 /* XCRemoteSwiftPackageReference "CyanKit" */,
 				55A763B7265B75E000FC54F0 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */,
-				ED1AE7F326A3E79300CBB19B /* XCRemoteSwiftPackageReference "SVGKit" */,
+				EDF9AE9726A4247200689C31 /* XCRemoteSwiftPackageReference "SVGKit" */,
 			);
 			productRefGroup = 55E0756526539F210047CD8B /* Products */;
 			projectDirPath = "";
@@ -599,14 +599,6 @@
 				minimumVersion = 5.4.3;
 			};
 		};
-		ED1AE7F326A3E79300CBB19B /* XCRemoteSwiftPackageReference "SVGKit" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/SVGKit/SVGKit.git";
-			requirement = {
-				branch = 3.x;
-				kind = branch;
-			};
-		};
 		EDC90E8B265960D8006BF418 /* XCRemoteSwiftPackageReference "CyanKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "git@github.com:IcyStudio/CyanKit.git";
@@ -623,6 +615,14 @@
 				minimumVersion = 2.0.2;
 			};
 		};
+		EDF9AE9726A4247200689C31 /* XCRemoteSwiftPackageReference "SVGKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SVGKit/SVGKit.git";
+			requirement = {
+				branch = 3.x;
+				kind = branch;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -636,11 +636,6 @@
 			package = 55E0930C2653A48A0047CD8B /* XCRemoteSwiftPackageReference "Alamofire" */;
 			productName = Alamofire;
 		};
-		ED1AE7F426A3E79300CBB19B /* SVGKitSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = ED1AE7F326A3E79300CBB19B /* XCRemoteSwiftPackageReference "SVGKit" */;
-			productName = SVGKitSwift;
-		};
 		EDC90E8C265960D8006BF418 /* CyanKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = EDC90E8B265960D8006BF418 /* XCRemoteSwiftPackageReference "CyanKit" */;
@@ -650,6 +645,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = EDF46F1F2658D55B00BFA461 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */;
 			productName = SDWebImageSwiftUI;
+		};
+		EDF9AE9826A4247200689C31 /* SVGKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EDF9AE9726A4247200689C31 /* XCRemoteSwiftPackageReference "SVGKit" */;
+			productName = SVGKit;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
