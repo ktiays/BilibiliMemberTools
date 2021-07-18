@@ -5,13 +5,13 @@
 
 import Foundation
 
-fileprivate func withMainQueue(_ handler: @escaping () -> Void) {
+func withMainQueue(_ handler: @escaping () -> Void) {
     DispatchQueue.main.async {
         handler()
     }
 }
 
-fileprivate func withAsync(_ handler: @escaping () -> Void) {
+func withAsync(_ handler: @escaping () -> Void) {
     DispatchQueue.global().async {
         handler()
     }

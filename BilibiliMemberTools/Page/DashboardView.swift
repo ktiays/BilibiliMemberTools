@@ -224,8 +224,13 @@ struct DashboardView: View {
                     Text(userInfo?.username ?? .init(count: 5))
                         .foregroundColor(.white)
                         .bold()
-                    Text(userInfo?.vip.description ?? .init(count: 5))
-                        .font(.system(size: 10))
+                    Text({ () -> String in
+                        var text = userInfo?.level == 0 ? "普通用户" : "正式会员"
+                        if let vipDescription = userInfo?.vip.description, vipDescription.count > 0 {
+                            text = vipDescription
+                        }
+                        return text
+                    }()).font(.system(size: 10))
                         .padding(.horizontal, userInfo == nil ? 0 : 4)
                         .padding(.vertical, 3)
                         .foregroundColor(userInfo == nil ? .white : .accentColor)
