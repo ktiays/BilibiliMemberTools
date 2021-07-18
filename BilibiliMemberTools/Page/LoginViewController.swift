@@ -4,127 +4,114 @@
 // 
 
 import UIKit
+import SVGKit
 
 // MARK: Login View Controller
 
 class LoginViewController: UIViewController {
     
-    private lazy var animatedTextField: AnimatedTextField = {
+    private lazy var containerView: UIView = {
+        let view = UIView()
+        view.addSubview(telTextField)
+        view.addSubview(passwordTextField)
+        view.addSubview(sendButton)
+        view.addSubview(loginButton)
+        return view
+    }()
+    
+    private lazy var telTextField: AnimatedTextField = {
         let textField = AnimatedTextField()
-        textField.placeholder = "Animated Text Field"
+        textField.cornerRadius = 10
+        textField.placeholder = "手机号码"
+        textField.maximumTextLength = phoneNumberLength
+        textField.keyboardType = .numberPad
+        textField.addTarget(self, action: #selector(textDidChange(_:)), for: .editingChanged)
         return textField
     }()
+    
+    private lazy var passwordTextField: AnimatedTextField = {
+        let textField = AnimatedTextField()
+        textField.cornerRadius = 10
+        textField.placeholder = "短信验证码"
+        textField.keyboardType = .numberPad
+        textField.maximumTextLength = 6
+        return textField
+    }()
+    
+    private lazy var sendButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("发送验证码", for: .normal)
+        button.addTarget(self, action: #selector(sendCode(_:)), for: .touchUpInside)
+        button.isEnabled = false
+        return button
+    }()
+    
+    private lazy var loginButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("登录", for: .normal)
+        button.titleLabel?.font = .boldSystemFont(ofSize: 16)
+        button.setTitleColor(.white, for: .normal)
+        button.setBackgroundColor(.systemBlue, for: .normal)
+        button.addTarget(self, action: #selector(login(_:)), for: .touchUpInside)
+        button.layer.masksToBounds = true
+        return button
+    }()
+    
+    private lazy var textFieldIllustrationView: SVGKFastImageView = { .init(svgkImage: .init(named: "SVG/33.svg")) }()
+    
+    private lazy var backgroundIllustrationView: SVGKFastImageView = { .init(svgkImage: .init(named: "SVG/6699.svg")) }()
+    
+    private let phoneNumberLength: Int = 11
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         view.backgroundColor = .systemBackground
         
-        view.addSubview(animatedTextField)
+        view.addSubview(containerView)
+        view.addSubview(textFieldIllustrationView)
+        view.addSubview(backgroundIllustrationView)
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        animatedTextField.center = view.center
-    }
-    
-}
-
-// MARK: - Animated Text Field
-
-class AnimatedTextField: UIControl, UITextFieldDelegate {
-    
-    var placeholder: String? {
-        didSet {
-            descrptionLabel.text = placeholder
-            textField.frame.size = descrptionLabel.bounds.size
-            sizeToFit()
-        }
-    }
-    
-    private lazy var textField: UITextField = {
-        let textField = UITextField()
-        textField.delegate = self
-        return textField
-    }()
-    
-    private lazy var descrptionLabel: UILabel = {
-        let label = UILabel()
-        label.isUserInteractionEnabled = false
-        label.textAlignment = .left
-        label.textColor = .secondaryLabel
-        return label
-    }()
-    
-    private var isTextFieldFocused: Bool = false
-    
-    private let padding: CGFloat = 20
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+        let padding: CGFloat = 20
+        telTextField.frame = .init(x: padding, y: 0, width: view.bounds.width - padding * 2, height: telTextField.frame.height)
+        passwordTextField.frame = .init(x: telTextField.frame.origin.x, y: telTextField.frame.maxY + padding, width: view.bounds.width - padding * 2 - 120, height: passwordTextField.frame.height)
+        sendButton.frame = .init(x: passwordTextField.frame.maxX, y: passwordTextField.frame.origin.y, width: telTextField.frame.width - passwordTextField.frame.width, height: passwordTextField.frame.height)
         
-        addSubview(descrptionLabel)
-        addSubview(textField)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
+        let loginButtonHeight: CGFloat = 50
+        loginButton.frame = .init(x: 0, y: passwordTextField.frame.maxY + padding * 1.5, width: telTextField.frame.width, height: loginButtonHeight)
+        loginButton.layer.cornerRadius = loginButtonHeight / 2
+        loginButton.center.x = telTextField.center.x
         
-        let width = bounds.width
-        let height = bounds.height
+        containerView.frame.size = .init(width: view.bounds.width, height: loginButton.frame.maxY)
+        containerView.center = view.center
         
-        let labelSize = sizeOfPlaceholder()
+        let textFieldIllustrationSize: CGSize = textFieldIllustrationView.image.size * 0.1
+        textFieldIllustrationView.frame = .init(x: view.bounds.width - textFieldIllustrationSize.width - 60, y: containerView.frame.minY - textFieldIllustrationSize.height, width: textFieldIllustrationSize.width, height: textFieldIllustrationSize.height)
         
-        if !isTextFieldFocused && !textField.hasText {
-            // Change text color of label to placeholder style.
-            descrptionLabel.textColor = .secondaryLabel
-            
-            descrptionLabel.frame = .init(x: padding, y: 0, width: width - padding * 2, height: labelSize.height)
-            descrptionLabel.center.y = height / 2
-            textField.frame = .init(origin: descrptionLabel.frame.origin, size: .init(width: width - padding * 2, height: labelSize.height))
-        } else {
-            // Change text color of label to title style.
-            descrptionLabel.textColor = .label
-            
-            descrptionLabel.frame.origin = .init(x: padding, y: padding)
-            textField.frame.origin = .init(x: descrptionLabel.frame.origin.x, y: height - padding - labelSize.height)
-        }
+        let backgroundIllustrationSize: CGSize = backgroundIllustrationView.image.size * 0.2
+        backgroundIllustrationView.frame = .init(x: 30, y: view.bounds.height - backgroundIllustrationSize.height - view.safeAreaInsets.bottom, width: backgroundIllustrationSize.width, height: backgroundIllustrationSize.height)
     }
     
-    override var intrinsicContentSize: CGSize {
-        let textSize = sizeOfPlaceholder()
-        return .init(width: textSize.width + padding * 2, height: textSize.height * 2 + padding * 2)
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        containerView.endEditing(false)
     }
     
-    override func sizeThatFits(_ size: CGSize) -> CGSize { intrinsicContentSize }
+    // MARK: Actions
     
-    // MARK: Private Methods
-    
-    private func sizeOfPlaceholder() -> CGSize {
-        let systemFont = UIFont.systemFont(ofSize: 17)
-        return (placeholder as NSString?)?.boundingRect(with: bounds.size, options: .usesLineFragmentOrigin, attributes: [.font: systemFont], context: nil).size ?? .zero
+    @objc private func textDidChange(_ sender: AnimatedTextField) {
+        sendButton.isEnabled = (sender.text?.count == phoneNumberLength)
     }
     
-    // MARK: UITextFieldDelegate
-    
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-        isTextFieldFocused = true
-        setNeedsLayout()
+    @objc private func sendCode(_ sender: UIButton) {
+        
     }
     
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        isTextFieldFocused = false
-        setNeedsLayout()
-    }
-    
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
-        return true
+    @objc private func login(_ sender: UIButton) {
+        
     }
     
 }

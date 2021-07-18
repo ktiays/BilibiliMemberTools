@@ -5,6 +5,8 @@
 
 import UIKit
 
+// MARK: Initialization Method
+
 extension UIColor {
     
     convenience init(hex: String) {
