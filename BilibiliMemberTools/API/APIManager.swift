@@ -20,13 +20,22 @@ final class APIManager {
             case member = "member.bilibili.com"
         }
         
-        static let captcha = httpPrefix + Host.passport.rawValue + "/web/captcha/combine"
+        // Authentication related.
+        fileprivate enum Auth {
         
-        static let countryList = httpPrefix + Host.passport.rawValue + "/web/generic/country/list"
-        
-        static let sms = httpPrefix + Host.passport.rawValue + "/web/sms/general/v2/send"
-        
-        static let loginSMS = httpPrefix + Host.passport.rawValue + "/web/login/rapid"
+            static let captcha = httpPrefix + Host.passport.rawValue + "/web/captcha/combine"
+            
+            static let countryList = httpPrefix + Host.passport.rawValue + "/web/generic/country/list"
+            
+            static let sms = httpPrefix + Host.passport.rawValue + "/web/sms/general/v2/send"
+            
+            static let loginSMS = httpPrefix + Host.passport.rawValue + "/web/login/rapid"
+            
+            static let qrCode = httpPrefix + Host.passport.rawValue + "/qrcode/getLoginUrl"
+            
+            static let authStatus = httpPrefix + Host.passport.rawValue + "/qrcode/getLoginInfo"
+            
+        }
         
         // Bilibili user data APIs.
         fileprivate enum User {
@@ -71,6 +80,7 @@ final class APIManager {
     fileprivate enum ErrorDescription: String {
         case unknown = "Unknown reason."
         case unexcepted = "Unexcepted response."
+        case unresolved = "An error occurred while parsing the data."
     }
     
     struct APIError: Error {
@@ -99,7 +109,7 @@ final class APIManager {
         
         var captchaArgs: (String, String, String) = (.init(), .init(), .init())
         let responseQueue = DispatchQueue.global(qos: .utility)
-        AF.request(InterfaceURL.captcha, parameters: ["plat": 6], headers: standardHeaders).responseJSON(queue: responseQueue) { response in
+        AF.request(InterfaceURL.Auth.captcha, parameters: ["plat": 6], headers: standardHeaders).responseJSON(queue: responseQueue) { response in
             guard let result = response.value as? [String : Any] else {
                 semaphore.signal()
                 return
@@ -131,7 +141,7 @@ final class APIManager {
                 "validate": captchaCode.validate,
                 "seccode": captchaCode.seccode
             ]
-            AF.request(InterfaceURL.sms, method: .post, parameters: params, headers: standardHeaders).responseJSON { response in
+            AF.request(InterfaceURL.Auth.sms, method: .post, parameters: params, headers: standardHeaders).responseJSON { response in
                 guard let result = response.value as? [String : Any] else { return }
                 if let code = result["code"] as? Int, code == 0 {
                     print("The SMS code request was successful.")
@@ -148,7 +158,7 @@ final class APIManager {
             "tel": telephone,
             "smsCode": smsCode
         ]
-        AF.request(InterfaceURL.loginSMS, method: .post, parameters: params, headers: standardHeaders).responseJSON { response in
+        AF.request(InterfaceURL.Auth.loginSMS, method: .post, parameters: params, headers: standardHeaders).responseJSON { response in
             guard let result = response.value as? [String : Any] else { return }
             if let code = result["code"] as? Int, code == 0 {
                 print("Login successful.")
@@ -158,6 +168,38 @@ final class APIManager {
                 print("Login failed.(\(errorDescription))")
                 completion?(errorDescription)
             }
+        }
+    }
+    
+    func qrCode() async throws -> LoginQRCode {
+        let qrCode = try await AF.request(InterfaceURL.Auth.qrCode, headers: standardHeaders).responseJSON().result.get() as? [String : Any]
+        // Determine whether there is an error in the status code.
+        let statusCode = qrCode?["code"] as? Int ?? -1
+        if statusCode != 0 { throw APIError(code: statusCode, message: "An error occurred while requesting to log in to the QR code.") }
+        let timestamp = qrCode?["ts"] as? Int ?? .zero
+        // Extract url of the QR code.
+        let codeData = qrCode?["data"] as? [String : String]
+        let url = codeData?["url"] ?? .init()
+        let oauthKey = codeData?["oauthKey"] ?? .init()
+        return LoginQRCode(url: url, oauthKey: oauthKey, timestamp: timestamp)
+    }
+    
+    func authStatus(oauthKey: String, to redirection: String = "https://www.bilibili.com") async throws -> AuthStatus {
+        let statusData = try await AF.request(InterfaceURL.Auth.authStatus, method: .post, parameters: [
+            "oauthKey": oauthKey,
+            "gourl": redirection
+        ], headers: standardHeaders).responseJSON().result.get() as? [String : Any]
+        let error = APIError(code: -9999, message: ErrorDescription.unexcepted.rawValue)
+        guard let data = statusData?["data"] else { throw error }
+        if let errorCode = data as? Int {
+            // Authentication failed.
+            guard let message = statusData?["message"] as? String else { throw error }
+            return .init(message: message, data: errorCode)
+        } else if let gameURL = (data as? [String : String])?["url"] {
+            // Authentication succeeded.
+            return .init(data: gameURL)
+        } else {
+            throw error
         }
     }
     
@@ -498,6 +540,45 @@ final class APIManager {
     
     // MARK: - Private Methods
     
+    private func commonRequest<T>(url: String, parameters: Parameters = [:], dataMapper: @escaping ([String : Any]) -> T?) async throws -> T {
+        try await withCheckedThrowingContinuation { continuation in
+            AF.request(url, parameters: parameters, headers: standardHeaders).responseJSON { response in
+                let errorHandler = { (code: Int, message: String) in
+                    continuation.resume(throwing: APIError(code: code, message: message))
+                }
+
+                guard let value = response.value as? [String : Any] else {
+                    errorHandler(-9999, ErrorDescription.unexcepted.rawValue)
+                    return
+                }
+                guard let code = value["code"] as? Int else {
+                    errorHandler(-9999, ErrorDescription.unexcepted.rawValue)
+                    return
+                }
+                guard let message = value["message"] as? String else {
+                    errorHandler(-9999, ErrorDescription.unexcepted.rawValue)
+                    return
+                }
+                
+                guard code == 0 else {
+                    errorHandler(code, message)
+                    return
+                }
+                
+                guard let data = value["data"] as? [String : Any] else {
+                    errorHandler(-9999, ErrorDescription.unexcepted.rawValue)
+                    return
+                }
+                guard let mappedResult = dataMapper(data) else {
+                    errorHandler(-9999, ErrorDescription.unresolved.rawValue)
+                    return
+                }
+                
+                continuation.resume(returning: mappedResult)
+            }
+        }
+    }
+    
     private func commonRequest<T>(url: String, parameters: Parameters = [:], dataMapper: @escaping ([String : Any]) -> T?, completion: @escaping (Result<T, APIError>) -> Void) {
         AF.request(url, parameters: parameters, headers: standardHeaders).responseJSON { response in
             let errorHandler = { (code: Int, message: String) in
@@ -527,7 +608,7 @@ final class APIManager {
                 return
             }
             guard let mappedResult = dataMapper(data) else {
-                errorHandler(-9999, ErrorDescription.unexcepted.rawValue)
+                errorHandler(-9999, ErrorDescription.unresolved.rawValue)
                 return
             }
             
@@ -569,7 +650,7 @@ final class APIManager {
                 return
             }
             guard let mappedResult = dataMapper(data) else {
-                errorHandler(-9999, ErrorDescription.unexcepted.rawValue)
+                errorHandler(-9999, ErrorDescription.unresolved.rawValue)
                 return
             }
             
@@ -589,7 +670,7 @@ final class APIManager {
         let handlerQueue = DispatchQueue.global(qos: .utility)
         
         // Get country code of China.
-        AF.request(InterfaceURL.countryList, headers: standardHeaders).responseJSON(queue: handlerQueue) { response in
+        AF.request(InterfaceURL.Auth.countryList, headers: standardHeaders).responseJSON(queue: handlerQueue) { response in
             guard let list = (response.value as? [String : Any])?["data"] as? [String : [[String : Any]]] else {
                 semaphore.signal()
                 return

@@ -15,10 +15,6 @@ public class AnimatedTextField: UIControl, UITextFieldDelegate {
         }
     }
     
-    public var cornerRadius: CGFloat = 6 {
-        didSet { layer.cornerRadius = cornerRadius }
-    }
-    
     public var text: String? {
         set {
             textField.text = newValue
@@ -38,6 +34,11 @@ public class AnimatedTextField: UIControl, UITextFieldDelegate {
     public var keyboardType: UIKeyboardType {
         set { textField.keyboardType = newValue }
         get { textField.keyboardType }
+    }
+    
+    public var textContentType: UITextContentType {
+        set { textField.textContentType = newValue }
+        get { textField.textContentType }
     }
     
     public var clearButtonMode: UITextField.ViewMode {
@@ -70,8 +71,6 @@ public class AnimatedTextField: UIControl, UITextFieldDelegate {
         
         addSubview(descrptionLabel)
         addSubview(textField)
-        
-        layer.cornerRadius = cornerRadius
     }
     
     public required init?(coder: NSCoder) {

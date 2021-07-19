@@ -21,44 +21,6 @@ protocol Loadable: ObservableObject {
     
 }
 
-//class PublishedObject<P>: Loadable where P : Publisher {
-//
-//    @Published var state: LoadingState<P.Output, P.Failure> = .idle
-//
-//    private let publisher: P
-//    private var cancellable: AnyCancellable?
-//
-//    init(publisher: P) {
-//        self.publisher = publisher
-//    }
-//
-//    func load() {
-//        state = .loading
-//
-//        let StateType = type(of: state)
-//        cancellable = publisher
-//            .map(StateType.success)
-//            .catch { error in
-//                Just(StateType.failed(error))
-//            }
-//            .sink { [weak self] state in
-//                self?.state = state
-//            }
-//    }
-//
-//}
-
-//fileprivate struct LoadingViewKey: EnvironmentKey {
-//    static let defaultValue: () -> AnyView = { return AnyView(Optional<AnyView>.none) }
-//}
-//
-//extension EnvironmentValues {
-//    var loadingView: () -> AnyView {
-//        get { self[LoadingViewKey.self] }
-//        set { self[LoadingViewKey.self] = newValue }
-//    }
-//}
-
 struct LoadableView<Source, Content>: View where Source: Loadable, Content: View {
     
     private enum SourceState {
@@ -113,12 +75,6 @@ struct LoadableView<Source, Content>: View where Source: Loadable, Content: View
     }
     
 }
-
-//extension View {
-//
-//    func loadingViwe
-//
-//}
 
 // MARK: - Preview
 

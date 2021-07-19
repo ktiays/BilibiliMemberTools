@@ -33,6 +33,10 @@
 		ED27A4C6265BF98D00EE6559 /* Video.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED27A4C5265BF98D00EE6559 /* Video.swift */; };
 		ED27A4C8265BF99A00EE6559 /* Article.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED27A4C7265BF99A00EE6559 /* Article.swift */; };
 		ED27A4CC265C03A000EE6559 /* PublicationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED27A4CB265C03A000EE6559 /* PublicationView.swift */; };
+		ED32607C26A53B630067D681 /* UIView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED32607B26A53B630067D681 /* UIView+Extension.swift */; };
+		ED32607E26A572470067D681 /* Alamofire+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED32607D26A572470067D681 /* Alamofire+Extension.swift */; };
+		ED32608126A578C80067D681 /* LoginQRCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED32608026A578C80067D681 /* LoginQRCode.swift */; };
+		ED32608326A5A9270067D681 /* BilibiliURLScheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED32608226A5A9270067D681 /* BilibiliURLScheme.swift */; };
 		ED392CEE2660D5A200D1D0A2 /* BadgeValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED392CED2660D5A200D1D0A2 /* BadgeValue.swift */; };
 		ED392CF02660E7CF00D1D0A2 /* InteractionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED392CEF2660E7CF00D1D0A2 /* InteractionView.swift */; };
 		ED44A530265A181700AF5089 /* RootTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED44A52F265A181700AF5089 /* RootTabView.swift */; };
@@ -42,6 +46,7 @@
 		ED881C4A265D6D7E00A290C1 /* VideoListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED881C49265D6D7E00A290C1 /* VideoListView.swift */; };
 		EDACFD92265ADB41004FC0A6 /* BlurEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDACFD91265ADB41004FC0A6 /* BlurEffectView.swift */; };
 		EDAD90972691E5830030B7C3 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDAD90962691E5830030B7C3 /* LoginViewController.swift */; };
+		EDBC9A9926A5CD79007E2553 /* AuthStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDBC9A9826A5CD79007E2553 /* AuthStatus.swift */; };
 		EDC90E8D265960D8006BF418 /* CyanKit in Frameworks */ = {isa = PBXBuildFile; productRef = EDC90E8C265960D8006BF418 /* CyanKit */; };
 		EDCD61BC26A2BC87007DECFC /* MessageFeed.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDCD61BB26A2BC87007DECFC /* MessageFeed.swift */; };
 		EDCD61C026A2E974007DECFC /* UserDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDCD61BF26A2E974007DECFC /* UserDataManager.swift */; };
@@ -82,6 +87,10 @@
 		ED27A4C5265BF98D00EE6559 /* Video.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Video.swift; sourceTree = "<group>"; };
 		ED27A4C7265BF99A00EE6559 /* Article.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Article.swift; sourceTree = "<group>"; };
 		ED27A4CB265C03A000EE6559 /* PublicationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicationView.swift; sourceTree = "<group>"; };
+		ED32607B26A53B630067D681 /* UIView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extension.swift"; sourceTree = "<group>"; };
+		ED32607D26A572470067D681 /* Alamofire+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Alamofire+Extension.swift"; sourceTree = "<group>"; };
+		ED32608026A578C80067D681 /* LoginQRCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginQRCode.swift; sourceTree = "<group>"; };
+		ED32608226A5A9270067D681 /* BilibiliURLScheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BilibiliURLScheme.swift; sourceTree = "<group>"; };
 		ED392CED2660D5A200D1D0A2 /* BadgeValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BadgeValue.swift; sourceTree = "<group>"; };
 		ED392CEF2660E7CF00D1D0A2 /* InteractionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractionView.swift; sourceTree = "<group>"; };
 		ED44A52F265A181700AF5089 /* RootTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootTabView.swift; sourceTree = "<group>"; };
@@ -91,6 +100,7 @@
 		ED881C49265D6D7E00A290C1 /* VideoListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoListView.swift; sourceTree = "<group>"; };
 		EDACFD91265ADB41004FC0A6 /* BlurEffectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlurEffectView.swift; sourceTree = "<group>"; };
 		EDAD90962691E5830030B7C3 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		EDBC9A9826A5CD79007E2553 /* AuthStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthStatus.swift; sourceTree = "<group>"; };
 		EDCD61BB26A2BC87007DECFC /* MessageFeed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageFeed.swift; sourceTree = "<group>"; };
 		EDCD61BF26A2E974007DECFC /* UserDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDataManager.swift; sourceTree = "<group>"; };
 		EDCD61C126A2EDD0007DECFC /* LoadableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadableView.swift; sourceTree = "<group>"; };
@@ -131,6 +141,7 @@
 				ED1AE80026A3F89900CBB19B /* Operator.swift */,
 				ED1AE80226A4102A00CBB19B /* UIButton+Extension.swift */,
 				ED1AE80426A4106C00CBB19B /* UIImage+Extension.swift */,
+				ED32607B26A53B630067D681 /* UIView+Extension.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -139,7 +150,7 @@
 			isa = PBXGroup;
 			children = (
 				ED44A52F265A181700AF5089 /* RootTabView.swift */,
-				EDAD90962691E5830030B7C3 /* LoginViewController.swift */,
+				EDBC9A9626A5CD5D007E2553 /* Login */,
 				ED21CA1726582E5500CEABAF /* DashboardView.swift */,
 				ED27A4CB265C03A000EE6559 /* PublicationView.swift */,
 				ED881C49265D6D7E00A290C1 /* VideoListView.swift */,
@@ -190,6 +201,7 @@
 			children = (
 				55E0930F2653A4F00047CD8B /* APIManager.swift */,
 				ED15739426601C0C00B5266A /* ErrorCode.swift */,
+				ED32607D26A572470067D681 /* Alamofire+Extension.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -221,10 +233,29 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
+		EDBC9A9626A5CD5D007E2553 /* Login */ = {
+			isa = PBXGroup;
+			children = (
+				EDAD90962691E5830030B7C3 /* LoginViewController.swift */,
+				EDBC9A9726A5CD68007E2553 /* Models */,
+			);
+			path = Login;
+			sourceTree = "<group>";
+		};
+		EDBC9A9726A5CD68007E2553 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				ED32608026A578C80067D681 /* LoginQRCode.swift */,
+				EDBC9A9826A5CD79007E2553 /* AuthStatus.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		EDCD61C326A33B8E007DECFC /* Utils */ = {
 			isa = PBXGroup;
 			children = (
 				EDCD61C426A33BA0007DECFC /* LoadableResource.swift */,
+				ED32608226A5A9270067D681 /* BilibiliURLScheme.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -323,9 +354,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				ED32608326A5A9270067D681 /* BilibiliURLScheme.swift in Sources */,
 				ED27A4C8265BF99A00EE6559 /* Article.swift in Sources */,
 				ED21CA1D265839E800CEABAF /* Int+Extension.swift in Sources */,
 				55FE5DAD265CD0AC00595F78 /* RoundedCorner.swift in Sources */,
+				ED32608126A578C80067D681 /* LoginQRCode.swift in Sources */,
 				ED15739526601C0C00B5266A /* ErrorCode.swift in Sources */,
 				ED5D8DDA26A29C8B0030AE98 /* User.swift in Sources */,
 				55E093102653A4F00047CD8B /* APIManager.swift in Sources */,
@@ -335,6 +368,7 @@
 				ED392CF02660E7CF00D1D0A2 /* InteractionView.swift in Sources */,
 				ED44A530265A181700AF5089 /* RootTabView.swift in Sources */,
 				EDF46F252658EC9D00BFA461 /* HostingController.swift in Sources */,
+				ED32607C26A53B630067D681 /* UIView+Extension.swift in Sources */,
 				ED1AE80326A4102A00CBB19B /* UIButton+Extension.swift in Sources */,
 				ED27A4C4265BF7CB00EE6559 /* Publication.swift in Sources */,
 				EDAD90972691E5830030B7C3 /* LoginViewController.swift in Sources */,
@@ -347,9 +381,11 @@
 				ED1AE7FE26A3EDA800CBB19B /* AnimatedTextField.swift in Sources */,
 				ED5D8DDC26A29DAF0030AE98 /* Reply.swift in Sources */,
 				EDCD61C226A2EDD0007DECFC /* LoadableView.swift in Sources */,
+				ED32607E26A572470067D681 /* Alamofire+Extension.swift in Sources */,
 				55FE9949265CDC1000595F78 /* SegmentItem.swift in Sources */,
 				ED1AE80526A4106C00CBB19B /* UIImage+Extension.swift in Sources */,
 				ED1AE80126A3F89900CBB19B /* Operator.swift in Sources */,
+				EDBC9A9926A5CD79007E2553 /* AuthStatus.swift in Sources */,
 				553322FA2653A970006FE9B7 /* String+Extension.swift in Sources */,
 				55E0756A26539F210047CD8B /* SceneDelegate.swift in Sources */,
 				553322FC2653B953006FE9B7 /* Date+Extension.swift in Sources */,

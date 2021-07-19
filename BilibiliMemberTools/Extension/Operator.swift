@@ -10,4 +10,6 @@ func > (_ lhs: Int?, _ rhs: Int) -> Bool { if let lhs = lhs { return lhs > rhs }
 
 func <= (_ lhs: Int?, _ rhs: Int) -> Bool { if let lhs = lhs { return lhs <= rhs } else { return false } }
 
+func - (_ lhs: Double, _ rhs: Int?) -> Double { lhs - Double(rhs ?? .zero) }
+
 func * (_ lhs: CGSize, _ rhs: CGFloat) -> CGSize { .init(width: lhs.width * rhs, height: lhs.height * rhs) }
