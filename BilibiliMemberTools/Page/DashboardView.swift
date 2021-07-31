@@ -302,6 +302,11 @@ struct DashboardView: View {
             }
             .redacted(reason: upStatus == nil ? .placeholder : [])
         }
+        .introspectViewController { viewController in
+            // Solving the problem that `accentColor` become the gray color,
+            // when the view controller as a presenting view controller.
+            viewController.view.tintAdjustmentMode = .normal
+        }
     }
     
 }

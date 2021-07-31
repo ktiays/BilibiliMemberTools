@@ -7,8 +7,8 @@ import UIKit
 import CyanKit
 
 func present(_ viewControllerToPresent: UIViewController, animated flag: Bool = true, completion: (() -> Void)? = nil) {
-    DispatchQueue.main.async {
-        let topViewController = UIApplication.shared.cyan.keyWindow?.cyan.topViewController
-        topViewController?.present(viewControllerToPresent, animated: flag, completion: completion)
-    }
+    let topViewController = UIApplication.shared.cyan.keyWindow?.cyan.topViewController
+    // Avoid the top view controller presenting other view controller when the top view controller was not completely dismissed.
+    if topViewController?.isBeingDismissed == true { return }
+    topViewController?.present(viewControllerToPresent, animated: flag, completion: completion)
 }

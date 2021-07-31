@@ -68,13 +68,12 @@ struct RootTabView: View {
             }
         }
         .statusBar(style: currentStatusBarStyle)
-        .onAppear {
+        .task {
             let context = AppContext.shared
-            context.requestAccountInformationIfNeeded { _ in
-                context.requestUpStatus { _ in }
-                context.requestUnreadQuantity { quantity in
-                    badgeValue.value = quantity == 0 ? .init() : quantity.description
-                }
+            await context.requestAccountInformationIfNeeded()
+            context.requestUpStatus { _ in }
+            context.requestUnreadQuantity { quantity in
+                badgeValue.value = quantity == 0 ? .init() : quantity.description
             }
         }
     }

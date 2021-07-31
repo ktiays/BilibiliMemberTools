@@ -33,56 +33,34 @@ final class AppContext: ObservableObject {
     
     // MARK: - Account Information
     
-    func requestAccountInformationIfNeeded(completion handler: @escaping (String?) -> Void) {
-        DispatchQueue.global().async { [self] in
-            var memberInfo = account.memberInfo
+    func requestAccountInformationIfNeeded() async {
+        
+        var memberInfo = account.memberInfo
             
-            if memberInfo == nil {
-                let sharedMemberInfo = APIManager.shared.memberInfo()
-                
-                guard let info: Account.MemberInfo? = {
-                    do {
-                        return try sharedMemberInfo.get()
-                    } catch {
-                        guard let error = error as? APIManager.APIError else {
-                            withMainQueue { handler(nil) }
-                            return nil
-                        }
-                        // If user is not logged in,
-                        // the login view will pop up.
-                        if error.code == ErrorCode.notAuthorized.rawValue {
-                            withMainQueue {
-                                LoginAssistant.login()
-                            }
-                        }
-                        withMainQueue { handler(nil) }
-                        return nil
-                    }
-                }() else {
-                    withMainQueue { handler(nil) }
+        if memberInfo == nil {
+            do {
+                memberInfo = try await APIManager.shared.memberInfo()
+            } catch {
+                guard let error = error as? APIManager.APIError else {
+                    assertionFailure("The type of error cannot be recognized")
                     return
                 }
-                memberInfo = info
-            }
-            
-            guard let memberInfo = memberInfo else {
-                withMainQueue { handler(nil) }
+                // If user is not logged in,
+                // the login view will pop up.
+                if error.code == ErrorCode.notAuthorized.rawValue {
+                    LoginAssistant.login()
+                } else {
+                    print("An unknown error occurred while fetching data.")
+                }
                 return
-            }
-            let sharedUserInfo = APIManager.shared.userInfo(uid: memberInfo.uid)
-            guard let info = sharedUserInfo.userInfo else {
-                withMainQueue { handler(sharedUserInfo.errorDescription) }
-                return
-            }
-            
-            // The request is complete,
-            // throw the data back to the main thread to refresh.
-            withMainQueue { [self] in
-                account.memberInfo = memberInfo
-                account.userInfo = info
-                handler("Request Completed.")
             }
         }
+        
+        guard let memberInfo = memberInfo else { return }
+        account.memberInfo = memberInfo
+        do {
+            account.userInfo = try await APIManager.shared.userInfo(uid: memberInfo.uid)
+        } catch { print(error) }
     }
     
     // MARK: - UP Status

@@ -11,7 +11,8 @@ extension UIImage {
         let size: CGSize = .init(width: 1, height: 1)
         UIGraphicsBeginImageContext(size)
         guard let context = UIGraphicsGetCurrentContext() else {
-            assert(false, "Get current graphics context failed.")
+            assertionFailure("Get current graphics context failed.")
+            return nil
         }
         context.setFillColor(color.cgColor)
         context.fill(.init(origin: .zero, size: size))

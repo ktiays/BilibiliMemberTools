@@ -187,8 +187,8 @@ final class APIManager {
         }
     }
     
-    func memberInfo() -> Result<Account.MemberInfo, APIError> {
-        return commonRequest(url: InterfaceURL.User.info) { data in
+    func memberInfo() async throws -> Account.MemberInfo {
+        try await commonRequest(url: InterfaceURL.User.info) { data in
             let birthday = Account.MemberInfo.format(string: data["birthday"] as? String)
             let uid = (data["mid"] as? Int)?.description ?? .init()
             let sign = data["sign"] as? String ?? .init()
@@ -309,23 +309,8 @@ final class APIManager {
         return result
     }
     
-    func userInfo(uid: String) -> (errorDescription: String?, userInfo: Account.UserInfo?) {
-        let semaphore = DispatchSemaphore()
-        let responseQueue = DispatchQueue.global(qos: .utility)
-        
-        var result: (String?, Account.UserInfo?) = (nil, nil)
-        AF.request(InterfaceURL.Member.info, parameters: ["mid": uid], headers: standardHeaders).responseJSON(queue: responseQueue) { response in
-            guard let value = response.value as? [String : Any] else {
-                result.0 = ErrorDescription.unexcepted.rawValue
-                semaphore.signal()
-                return
-            }
-            guard let data = value["data"] as? [String : Any] else {
-                result.0 = value["message"] as? String ?? ErrorDescription.unknown.rawValue
-                semaphore.signal()
-                return
-            }
-            
+    func userInfo(uid: String) async throws -> Account.UserInfo {
+        try await commonRequest(url: InterfaceURL.Member.info, parameters: ["mid": uid]) { data in
             let uid = (data["mid"] as? Int)?.description ?? .init()
             let username = data["name"] as? String ?? .init()
             let level = data["level"] as? Int ?? .init()
@@ -382,7 +367,7 @@ final class APIManager {
                 return vip
             }()
             
-            result.1 = Account.UserInfo(
+            return Account.UserInfo(
                 uid: uid,
                 username: username,
                 sex: sex,
@@ -393,11 +378,7 @@ final class APIManager {
                 certification: certification,
                 vip: vip
             )
-            semaphore.signal()
         }
-        
-        semaphore.wait()
-        return result
     }
     
     func videos(for options: [ApprovalStatusOption], videoHandler: (Result<[Video], APIError>) -> Void) {
