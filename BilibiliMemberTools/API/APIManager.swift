@@ -104,72 +104,56 @@ final class APIManager {
     
     // MARK: - Public Methods
     
-    func captcha() -> (challenge: String, gt: String, key: String) {
-        let semaphore = DispatchSemaphore()
-        
+    func captcha() async -> (challenge: String, gt: String, key: String) {
         var captchaArgs: (String, String, String) = (.init(), .init(), .init())
-        let responseQueue = DispatchQueue.global(qos: .utility)
-        AF.request(InterfaceURL.Auth.captcha, parameters: ["plat": 6], headers: standardHeaders).responseJSON(queue: responseQueue) { response in
-            guard let result = response.value as? [String : Any] else {
-                semaphore.signal()
-                return
-            }
-            guard let args = (result["data"] as? [String : Any])?["result"] as? [String : Any] else {
-                semaphore.signal()
-                return
-            }
-            captchaArgs.0 = args["challenge"] as? String ?? .init()
-            captchaArgs.1 = args["gt"] as? String ?? .init()
-            captchaArgs.2 = args["key"] as? String ?? .init()
-            semaphore.signal()
-        }
-        semaphore.wait()
-        
+        let response = await AF.request(InterfaceURL.Auth.captcha, parameters: ["plat": 6], headers: standardHeaders).responseJSON()
+        guard let result = response.value as? [String : Any] else { return captchaArgs }
+        guard let args = (result["data"] as? [String : Any])?["result"] as? [String : Any] else { return captchaArgs }
+        captchaArgs.0 = args["challenge"] as? String ?? .init()
+        captchaArgs.1 = args["gt"] as? String ?? .init()
+        captchaArgs.2 = args["key"] as? String ?? .init()
         return captchaArgs
     }
     
-    func sms(telephone: String, captchaCode: (key: String, challenge: String, validate: String, seccode: String)) {
-        DispatchQueue.global().async { [self] in
-            // Send SMS code.
-            let params = [
-                "tel": telephone,
-                "cid": self.countryCode()?.description ?? .init(),
-                "type": "21",
-                "captchaType": "6",
-                "key": captchaCode.key,
-                "challenge": captchaCode.challenge,
-                "validate": captchaCode.validate,
-                "seccode": captchaCode.seccode
-            ]
-            AF.request(InterfaceURL.Auth.sms, method: .post, parameters: params, headers: standardHeaders).responseJSON { response in
-                guard let result = response.value as? [String : Any] else { return }
-                if let code = result["code"] as? Int, code == 0 {
-                    print("The SMS code request was successful.")
-                } else {
-                    print("Failed to request SMS code.(\(result["message"] as? String ?? "Unknow reason"))")
-                }
-            }
+    func sms(telephone: String, captchaCode: (key: String, challenge: String, validate: String, seccode: String)) async {
+        // Send SMS code.
+        let params = [
+            "tel": telephone,
+            "cid": self.countryCode()?.description ?? .init(),
+            "type": "21",
+            "captchaType": "6",
+            "key": captchaCode.key,
+            "challenge": captchaCode.challenge,
+            "validate": captchaCode.validate,
+            "seccode": captchaCode.seccode
+        ]
+        let response = await AF.request(InterfaceURL.Auth.sms, method: .post, parameters: params, headers: standardHeaders).responseJSON()
+        guard let result = response.value as? [String : Any] else { return }
+        if let code = result["code"] as? Int, code == 0 {
+            print("The SMS code request was successful.")
+        } else {
+            print("Failed to request SMS code.(\(result["message"] as? String ?? "Unknow reason"))")
         }
     }
     
-    func login(telephone: String, smsCode: String, completion: ((String?) -> Void)? = nil) {
+    func login(telephone: String, smsCode: String) async -> String? {
         let params = [
             "cid": self.countryCode()?.description ?? .init(),
             "tel": telephone,
             "smsCode": smsCode
         ]
-        AF.request(InterfaceURL.Auth.loginSMS, method: .post, parameters: params, headers: standardHeaders).responseJSON { response in
-            guard let result = response.value as? [String : Any] else { return }
-            if let code = result["code"] as? Int, code == 0 {
-                print("Login successful.")
-                completion?(nil)
-            } else {
-                let errorDescription = "\(result["message"] as? String ?? "Unknow reason")"
-                print("Login failed.(\(errorDescription))")
-                completion?(errorDescription)
-            }
+        let response = await AF.request(InterfaceURL.Auth.loginSMS, method: .post, parameters: params, headers: standardHeaders).responseJSON()
+        guard let result = response.value as? [String : Any] else { return nil }
+        if let code = result["code"] as? Int, code == 0 {
+            print("Login successful.")
+            return nil
+        } else {
+            let errorDescription = "\(result["message"] as? String ?? "Unknow reason")"
+            print("Login failed.(\(errorDescription))")
+            return errorDescription
         }
     }
+    
     
     func qrCode() async throws -> LoginQRCode {
         let qrCode = try await AF.request(InterfaceURL.Auth.qrCode, headers: standardHeaders).responseJSON().result.get() as? [String : Any]
@@ -471,6 +455,65 @@ final class APIManager {
         } while count < total
     }
     
+    func articles(_ articlesHandler: (Result<[Article], APIError>) -> Void) {
+        // Number of articles has requested.
+        var count = 0
+        // The total number of articles that need to be requested.
+        var total = 0
+        
+        var pageIndex = 1
+        repeat {
+            articlesHandler(commonRequest(
+                url: InterfaceURL.User.articles,
+                parameters: ["group": "0",
+                             "pn": pageIndex.description,
+                             "sort": "",
+                             "mobi_app": "pc"]
+            ) { data -> [Article]? in
+                // Articles data.
+                guard let articles = data["articles"] as? [[String : Any]] else { return nil }
+                var result: [Article] = []
+                for article in articles {
+                    // Get the status data of article.
+                    guard let statusData = article["stats"] as? [String : Int] else { return nil }
+                    let status = Article.Status(
+                        views: statusData["view"] ?? .zero,
+                        replies: statusData["reply"] ?? .zero,
+                        likes: statusData["like"] ?? .zero,
+                        dislikes: statusData["dislike"] ?? .zero,
+                        coins: statusData["coin"] ?? .zero,
+                        favorites: statusData["favorite"] ?? .zero,
+                        shares: statusData["share"] ?? .zero
+                    )
+                    
+                    // Get the base information of article.
+                    let id = (article["id"] as? Int ?? .init()).description
+                    let title = article["title"] as? String ?? .init()
+                    let summary = article["summary"] as? String ?? .init()
+                    let publishTime = Date(timeIntervalSince1970: TimeInterval(article["publish_time"] as? Int ?? .init()))
+                    let imageURL = (article["origin_image_urls"] as? [String])?.first ?? .init()
+                    let viewURL = article["view_url"] as? String ?? .init()
+                    
+                    result.append(Article(
+                        cv: id,
+                        title: title,
+                        summary: summary,
+                        coverURL: imageURL,
+                        url: viewURL,
+                        publishedTime: publishTime,
+                        status: status)
+                    )
+                }
+                // Pages data.
+                guard let pages = data["page"] as? [String : Int] else { return nil }
+                count += result.count
+                total = pages["total"] ?? .zero
+                pageIndex += 1
+                return result
+            })
+        } while count < total
+    }
+    
     // MARK: - Message Feed
     
     func numberOfUnread() -> (at: Int, like: Int, reply: Int, systemMessage: Int, up: Int) {
@@ -542,39 +585,8 @@ final class APIManager {
     
     private func commonRequest<T>(url: String, parameters: Parameters = [:], dataMapper: @escaping ([String : Any]) -> T?) async throws -> T {
         try await withCheckedThrowingContinuation { continuation in
-            AF.request(url, parameters: parameters, headers: standardHeaders).responseJSON { response in
-                let errorHandler = { (code: Int, message: String) in
-                    continuation.resume(throwing: APIError(code: code, message: message))
-                }
-
-                guard let value = response.value as? [String : Any] else {
-                    errorHandler(-9999, ErrorDescription.unexcepted.rawValue)
-                    return
-                }
-                guard let code = value["code"] as? Int else {
-                    errorHandler(-9999, ErrorDescription.unexcepted.rawValue)
-                    return
-                }
-                guard let message = value["message"] as? String else {
-                    errorHandler(-9999, ErrorDescription.unexcepted.rawValue)
-                    return
-                }
-                
-                guard code == 0 else {
-                    errorHandler(code, message)
-                    return
-                }
-                
-                guard let data = value["data"] as? [String : Any] else {
-                    errorHandler(-9999, ErrorDescription.unexcepted.rawValue)
-                    return
-                }
-                guard let mappedResult = dataMapper(data) else {
-                    errorHandler(-9999, ErrorDescription.unresolved.rawValue)
-                    return
-                }
-                
-                continuation.resume(returning: mappedResult)
+            commonRequest(url: url, parameters: parameters, dataMapper: dataMapper) { result in
+                continuation.resume(with: result)
             }
         }
     }
@@ -607,6 +619,7 @@ final class APIManager {
                 errorHandler(-9999, ErrorDescription.unexcepted.rawValue)
                 return
             }
+            
             guard let mappedResult = dataMapper(data) else {
                 errorHandler(-9999, ErrorDescription.unresolved.rawValue)
                 return
@@ -645,7 +658,18 @@ final class APIManager {
                 return
             }
             
-            guard let data = value["data"] as? [String : Any] else {
+            // Since the Bilibili interface format is not uniform,
+            // an additional filter layer correction data is added.
+            let dataInterceptor: () -> Any? = {
+                switch url {
+                case InterfaceURL.User.articles:
+                    return value["artlist"]
+                default:
+                    return value["data"]
+                }
+            }
+            
+            guard let data = dataInterceptor() as? [String : Any] else {
                 errorHandler(-9999, ErrorDescription.unexcepted.rawValue)
                 return
             }

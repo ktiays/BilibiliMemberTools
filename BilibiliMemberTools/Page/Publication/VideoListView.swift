@@ -11,33 +11,44 @@ import Introspect
 
 struct VideoListView: View {
     
-    @StateObject private var appContext = AppContext.shared
+    @StateObject private var cacher = UserDataManager.cacher
+    private var videos: [VideoModel] { cacher.videos.map { VideoModel(video: $0) } }
     
-    private var videos: [VideoModel] { appContext.account.videos.map { VideoModel(video: $0) } }
-    
-    @Environment(\.innerBottomPadding) private var innerBottomPadding;
+    @Environment(\.innerBottomPadding) private var innerBottomPadding
     
     var body: some View {
-        List {
-            ForEach(videos.isEmpty ? VideoModel.placeholder : videos) { video in
-                VideoCard(video: video.video)
-                    .padding(.bottom, 20)
+        if videos.isEmpty {
+            List {
+                ForEach(VideoModel.placeholder) { video in
+                    VideoCard(video: video.video)
+                        .padding(.bottom, 20)
+                }
+                .listRowSeparator(.hidden)
             }
-            .listRowSeparator(.hidden)
-        }
-        .listStyle(.plain)
-        .ignoresSafeArea()
-        .introspectTableView { tableView in
-            tableView.automaticallyAdjustsScrollIndicatorInsets = false
-            tableView.verticalScrollIndicatorInsets = .init(
-                top: 0, left: 0, bottom: innerBottomPadding, right: 0
-            )
-            tableView.contentInset = .init(top: 8, left: 0, bottom: innerBottomPadding - 36, right: 0)
-        }
-        .redacted(reason: AppContext.shared.account.videos.isEmpty ? .placeholder : [])
-        .onAppear {
-            if !videos.isEmpty { return }
-            appContext.requestVideoData { _ in }
+            .listStyle(.plain)
+            .ignoresSafeArea()
+            .redacted(reason: cacher.videos.isEmpty ? .placeholder : [])
+            .onAppear {
+                if !videos.isEmpty { return }
+                UserDataManager.default.requestVideos()
+            }
+        } else {
+            List {
+                ForEach(videos) { video in
+                    VideoCard(video: video.video)
+                        .padding(.bottom, 20)
+                }
+                .listRowSeparator(.hidden)
+            }
+            .listStyle(.plain)
+            .ignoresSafeArea()
+            .introspectTableView { tableView in
+                tableView.automaticallyAdjustsScrollIndicatorInsets = false
+                tableView.verticalScrollIndicatorInsets = .init(
+                    top: 0, left: 0, bottom: innerBottomPadding, right: 0
+                )
+                tableView.contentInset = .init(top: 8, left: 0, bottom: innerBottomPadding - 36, right: 0)
+            }
         }
     }
     
@@ -116,7 +127,6 @@ fileprivate struct VideoCard: View {
                                 .cornerRadius(cornerRadius, corners: .topLeft)
                         }
                     }
-                    .frame(width: imageSize.width, height: imageSize.height)
                 }
                 .frame(width: imageSize.width, height: imageSize.height)
                 .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
@@ -126,7 +136,7 @@ fileprivate struct VideoCard: View {
                         .foregroundColor(.init(.label))
                         .font(.system(size: 13))
                         .lineSpacing(4)
-                    Text(formatPublishedTime(video.publishedTime))
+                    Text(video.publishedTime.formattedString)
                         .font(.system(size: 12))
                         .foregroundColor(.init(.label).opacity(0.7))
                     HStack(spacing: 2) {
@@ -160,12 +170,6 @@ fileprivate struct VideoCard: View {
                                value: video.status.shares.integerDescription)
             }
         }
-    }
-    
-    private func formatPublishedTime(_ time: Date) -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        return dateFormatter.string(from: time)
     }
     
     private func formatDuration(_ duration: Int) -> String {

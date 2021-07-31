@@ -24,6 +24,13 @@ final class AppContext: ObservableObject {
     @Published var account: Account = .init()
     @Published var messageFeed: MessageFeed = .init()
     
+    func reset() {
+        account = .init()
+        messageFeed = .init()
+        UserDataManager.default.removeAllCaches()
+        UserDataManager.cacher.removeAll()
+    }
+    
     // MARK: - Account Information
     
     func requestAccountInformationIfNeeded(completion handler: @escaping (String?) -> Void) {
@@ -90,22 +97,6 @@ final class AppContext: ObservableObject {
             withMainQueue {
                 self.account.upStatus = upStatus
                 handler(nil)
-            }
-        }
-    }
-    
-    func requestVideoData(completion handler: @escaping ([Video]) -> Void) {
-        self.account.videos = []
-        withAsync {
-            APIManager.shared.videos(for: [.published, .rejected, .reviewing]) { result in
-                guard let videos = try? result.get() else {
-                    handler([])
-                    return
-                }
-                withMainQueue {
-                    self.account.videos.append(contentsOf: videos)
-                    handler(videos)
-                }
             }
         }
     }

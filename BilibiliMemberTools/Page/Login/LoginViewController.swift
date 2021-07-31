@@ -7,6 +7,8 @@ import UIKit
 import SVGKit
 import WebKit
 import Combine
+import CyanKit
+import Alamofire
 
 // MARK: Login View Controller
 
@@ -196,11 +198,7 @@ class LoginViewController: UIViewController {
             default:
                 break
             }
-        } completion: { _ in
-            
-        }
-
-        
+        } completion: { _ in }
     }
     
     @objc private func sendCode(_ sender: UIButton) {
@@ -214,9 +212,9 @@ class LoginViewController: UIViewController {
         guard let telephone = telTextField.text else { return }
         guard let smsCode = captchaTextField.text else { return }
         if telephone.count != phoneNumberLength || smsCode.count <= 0 { return }
-        APIManager.shared.login(telephone: telephone, smsCode: smsCode) { errorDescription in
-            if errorDescription == nil {
-                self.dismiss(animated: true, completion: nil)
+        Task.detached {
+            if await APIManager.shared.login(telephone: telephone, smsCode: smsCode) == nil {
+                await self.dismiss(animated: true, completion: nil)
             }
         }
     }
@@ -238,7 +236,7 @@ class LoginViewController: UIViewController {
         }
     }
     
-    func pollingAuthStatus() {
+    private func pollingAuthStatus() {
         guard oauthTimerCancellable == nil else { return }
         
         oauthTimerCancellable = Timer.publish(every: 1, on: .main, in: .common)
@@ -256,18 +254,24 @@ class LoginViewController: UIViewController {
                         await oauthTimerCancellable?.cancel()
                         await dismiss(animated: true, completion: nil)
                     } catch let error as AuthStatus.AuthError {
+                        let cleanHandler = {
+                            await MainActor.run { self.loginQRCode = nil }
+                            await oauthTimerCancellable?.cancel()
+                        }
                         switch error {
                         case .incorrectKey:
                             print("OAuth key is not correct.")
+                            await cleanHandler()
                         case .expiredKey:
                             print("OAuth key is expired. Please try again.")
-                            await oauthTimerCancellable?.cancel()
+                            await cleanHandler()
                         case .notScanned:
                             print("The QR code has not been scanned yet.")
                         case .unauthorized:
                             print("The QR code has been scanned, but the authorization has not been confirmed.")
                         default:
                             print("Unknown reason for failure.")
+                            await cleanHandler()
                         }
                     }
                 }
@@ -311,6 +315,8 @@ fileprivate class CAPTCHAViewController: UIViewController {
     
     fileprivate lazy var captchaView: WKWebView = {
         let webView = WKWebView(frame: .zero, configuration: captchaViewConfiguration)
+        webView.isOpaque = false
+        webView.backgroundColor = .systemBackground
         webView.navigationDelegate = self
         guard let path = geetestHTMLPath else {
             assert(false, "The HTML file of the Geetest captcha page was not found.")
@@ -328,8 +334,8 @@ fileprivate class CAPTCHAViewController: UIViewController {
         view = captchaView
     }
     
-    @inline(__always) func requestSMSCode() {
-        APIManager.shared.sms(telephone: telephone, captchaCode: (captcha.key, captcha.challenge, captcha.validate, captcha.seccode))
+    @inline(__always) func requestSMSCode() async {
+        await APIManager.shared.sms(telephone: telephone, captchaCode: (captcha.key, captcha.challenge, captcha.validate, captcha.seccode))
     }
     
 }
@@ -339,11 +345,15 @@ fileprivate class CAPTCHAViewController: UIViewController {
 extension CAPTCHAViewController: WKNavigationDelegate {
     
     fileprivate func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        let args = APIManager.shared.captcha()
-        captcha.key = args.key
-        captcha.gt = args.gt
-        captcha.challenge = args.challenge
-        webView.evaluateJavaScript("showGeetest(\"\(args.gt)\", \"\(args.challenge)\")")
+        Task.detached {
+            let args = await APIManager.shared.captcha()
+            await MainActor.run { [self] in
+                captcha.key = args.key
+                captcha.gt = args.gt
+                captcha.challenge = args.challenge
+                webView.evaluateJavaScript("showGeetest(\"\(args.gt)\", \"\(args.challenge)\")")
+            }
+        }
     }
     
 }
@@ -357,7 +367,9 @@ extension CAPTCHAViewController: WKScriptMessageHandler {
         captcha.validate = code["geetest_validate"] ?? .init()
         captcha.seccode = code["geetest_seccode"] ?? .init()
         captchaDidVerifyBlock?()
-        requestSMSCode()
+        Task.detached {
+            await self.requestSMSCode()
+        }
     }
     
 }
@@ -378,14 +390,16 @@ public class LoginAssistant {
         let loginViewController = LoginViewController()
         loginViewController.modalPresentationStyle = .fullScreen
         
-        guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene else { return }
-        var topViewController = scene.windows.filter { $0.isKeyWindow }.first?.rootViewController
-        while topViewController?.presentedViewController != nil {
-            topViewController = topViewController?.presentedViewController
-        }
-        
-        topViewController?.present(loginViewController, animated: true, completion: nil)
+        present(loginViewController)
         shared.hasLogged = true
+    }
+    
+    public class func signOut() {
+        let cookieStorage = AF.session.configuration.httpCookieStorage
+        let cookies = cookieStorage?.cookies
+        cookies?.forEach { cookieStorage?.deleteCookie($0) }
+        AppContext.shared.reset()
+        shared.hasLogged = false
     }
     
 }

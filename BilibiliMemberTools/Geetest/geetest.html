@@ -1,62 +1,53 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  </head>
-  <body>
-    <div id="captcha" />
+<html lang="en" style="color-scheme: light dark;"/>
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+</head>
+<body>
+    <div id="captcha"/>
 
     <script src="jquery.js"></script>
     <script src="gt.js"></script>
 
     <script>
-      var handler = function (captchaObj) {
-        captchaObj.appendTo("#captcha");
+        var handler = function (captchaObj) {
+            captchaObj.appendTo("#captcha");
 
-        setTimeout(() => {
-          debugger;
-          const targetNode = document.getElementsByClassName("geetest_success_radar_tip_content")[0];
+            setTimeout(() => {
+                debugger;
+                const targetNode = document.getElementsByClassName("geetest_success_radar_tip_content")[0];
 
-          // 观察器的配置（需要观察什么变动）
-          const config = { attributes: true, childList: true, subtree: true };
+                const config = {
+                    attributes: true,
+                    childList: true,
+                    subtree: true
+                };
 
-          // 当观察到变动时执行的回调函数
-          const callback = function (mutationsList, observer) {
-            // Use traditional 'for loops' for IE 11
-            if (targetNode.innerText === '验证成功') {
-              const result = captchaObj.getValidate();
-              window.webkit.messageHandlers.hostService.postMessage({ 
-                geetest_validate: result.geetest_validate,
-                geetest_seccode: result.geetest_seccode
-               });
-            }
-          };
+                const callback = function (mutationsList, observer) {
+                    if (targetNode.innerText === '验证成功') {
+                        const result = captchaObj.getValidate();
+                        window.webkit.messageHandlers.hostService.postMessage({geetest_validate: result.geetest_validate, geetest_seccode: result.geetest_seccode});
+                    }
+                };
 
-          // 创建一个观察器实例并传入回调函数
-          const observer = new MutationObserver(callback);
+                const observer = new MutationObserver(callback);
 
-          // 以上述配置开始观察目标节点
-          observer.observe(targetNode, config);
-        }, 500);
-      };
+                observer.observe(targetNode, config);
+            }, 500);
+        };
 
-      function showGeetest(gt, challenge) {
-        initGeetest(
-          {
-            // 以下 4 个配置参数为必须，不能缺少
-            gt: gt,
-            challenge: challenge,
-            offline: false, // 表示用户后台检测极验服务器是否宕机
-            new_captcha: true, // 用于宕机时表示是新验证码的宕机
+        function showGeetest(gt, challenge) {
+            initGeetest({
+                gt: gt,
+                challenge: challenge,
+                offline: false, // 表示用户后台检测极验服务器是否宕机
+                new_captcha: true, // 用于宕机时表示是新验证码的宕机
 
-            product: "popup", // 产品形式，包括：float，popup
-            width: "300px",
-            https: true,
-          },
-          handler
-        );
-      }
+                product: "popup", // 产品形式，包括：float，popup
+                width: "300px",
+                https: true
+            }, handler);
+        }
     </script>
-  </body>
-</html>
+</body></html>

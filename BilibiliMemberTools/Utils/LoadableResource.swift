@@ -18,9 +18,7 @@ class LoadableResource<T, E>: Loadable where E: Error {
     private var _state: CurrentValueSubject<LoadingState<T>, E>?
     
     var state: AnyPublisher<LoadingState<T>, E> {
-        if let _state = self._state {
-            return _state.eraseToAnyPublisher()
-        }
+        if let _state = self._state { return _state.eraseToAnyPublisher() }
         let _state = CurrentValueSubject<LoadingState<T>, E>(.loading)
         self._state = _state
         performLoading()

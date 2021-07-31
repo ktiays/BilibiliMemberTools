@@ -22,8 +22,18 @@ public extension View {
         environment(\.innerBottomPadding, value)
     }
     
-    func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
-        clipShape(RoundedCorner(radius: radius, corners: corners) )
+    @inline(__always) func cornerRadius(_ radius: CGFloat = 10, corners: UIRectCorner = .allCorners, style: RoundedCornerStyle = .circular) -> some View {
+        mask {
+            RoundedRect(cornerRadius: radius, corners: corners, style: style)
+        }
+    }
+    
+}
+
+public extension View {
+    
+    func loadingView<Content>(when condition: Bool, @ViewBuilder _ content: () -> Content) -> some View where Content: View {
+        condition ? AnyView(hidden().overlay(content())) : AnyView(self)
     }
     
 }

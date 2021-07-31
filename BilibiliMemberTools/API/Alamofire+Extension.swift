@@ -8,12 +8,14 @@ import Foundation
 
 extension DataRequest {
     
+    @discardableResult
     public func response<Serializer: DataResponseSerializerProtocol>(responseSerializer: Serializer) async -> AFDataResponse<Serializer.SerializedObject> {
         await withCheckedContinuation { continuation in
             response(responseSerializer: responseSerializer) { continuation.resume(returning: $0) }
         }
     }
     
+    @discardableResult
     public func responseJSON(dataPreprocessor: DataPreprocessor = JSONResponseSerializer.defaultDataPreprocessor,
                              emptyResponseCodes: Set<Int> = JSONResponseSerializer.defaultEmptyResponseCodes,
                              emptyRequestMethods: Set<HTTPMethod> = JSONResponseSerializer.defaultEmptyRequestMethods,

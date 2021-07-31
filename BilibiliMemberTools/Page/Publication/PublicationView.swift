@@ -10,22 +10,23 @@ import Introspect
 struct PublicationView: View {
     
     @State private var selection: Int = 0
-    
     @State private var scrollView: UIScrollView?
 
     var body: some View {
         VStack {
-            CyanKit.SegmentedControl(selection: $selection, content: [
+            SegmentedControl(selection: $selection, content: [
                 SegmentItem(id: 0, text: "视频管理"),
-                SegmentItem(id: 1, text: "互动视频管理"),
-                SegmentItem(id: 2, text: "专栏管理"),
-                SegmentItem(id: 3, text: "音频管理")
-            ], scrollable: true)
+                SegmentItem(id: 1, text: "专栏管理"),
+                SegmentItem(id: 2, text: "音频管理")
+            ], scrollable: false)
             .padding(.top)
             
-            if selection == 0 {
+            switch selection {
+            case 0:
                 VideoListView()
-            } else {
+            case 1:
+                ArticleListView()
+            default:
                 Spacer()
             }
         }

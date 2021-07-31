@@ -208,17 +208,22 @@ struct DashboardView: View {
     var body: some View {
         VStack(spacing: 0) {
             HStack {
-                WebImage(url: URL(string: userInfo?.avatarURL ?? .init()))
-                    .placeholder {
-                        Image(uiImage: UIImage())
-                            .resizable()
-                            .foregroundColor(.white)
-                            .redacted(reason: .placeholder)
-                    }
-                    .resizable()
-                    .frame(width: 60, height: 60)
-                    .clipShape(Circle())
-                    .unredacted()
+                Button {
+                    present(UIHostingController(rootView: SettingsView()))
+                } label: {
+                    WebImage(url: URL(string: userInfo?.avatarURL ?? .init()))
+                        .placeholder {
+                            Image(uiImage: UIImage())
+                                .resizable()
+                                .foregroundColor(.white)
+                                .redacted(reason: .placeholder)
+                        }
+                        .resizable()
+                        .frame(width: 60, height: 60)
+                        .clipShape(Circle())
+                        .unredacted()
+                }
+                .disabled(appContext.account.userInfo == nil)
                 
                 VStack(alignment: .leading, spacing: 6) {
                     Text(userInfo?.username ?? .init(count: 5))
@@ -262,7 +267,7 @@ struct DashboardView: View {
                     }
                     
                     HStack {
-                        CyanKit.SegmentedControl(selection: $selection, content: [
+                        SegmentedControl(selection: $selection, content: [
                             SegmentItem(id: 0, text: "视频数据"),
                             SegmentItem(id: 1, text: "专栏数据"),
                         ])
@@ -296,13 +301,6 @@ struct DashboardView: View {
                 )
             }
             .redacted(reason: upStatus == nil ? .placeholder : [])
-        }
-        .onAppear {
-            if appContext.account.userInfo != nil &&
-                appContext.account.upStatus != nil { return }
-            appContext.requestAccountInformationIfNeeded { string in
-                appContext.requestUpStatus { _ in }
-            }
         }
     }
     

@@ -124,6 +124,5 @@ struct Account {
     var memberInfo: MemberInfo?
     var userInfo: UserInfo?
     var upStatus: UpStatus?
-    var videos: [Video] = []
     
 }

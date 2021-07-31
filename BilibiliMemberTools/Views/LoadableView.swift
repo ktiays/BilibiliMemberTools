@@ -21,35 +21,36 @@ protocol Loadable: ObservableObject {
     
 }
 
-struct LoadableView<Source, Content>: View where Source: Loadable, Content: View {
+struct LoadableView<Source, Content, Resource>: View where Source: Loadable, Content: View {
     
     private enum SourceState {
         case loading
-        case success(Source.Output)
+        case success(Resource)
         case failed(Source.Failure)
     }
     
     @State private var sourceState: SourceState = .loading
     
     private let source: Source
-    private let contentBuilder: (Source.Output) -> Content
+    private let contentBuilder: (Resource) -> Content
+    private let resourceMapper: (Source.Output) -> Resource
     private var loadingViewBuilder: (() -> AnyView)?
     
-    init(source: Source, @ViewBuilder _ content: @escaping (Source.Output) -> Content) {
+    init(source: Source, resourceMapper: @escaping (Source.Output) -> Resource, @ViewBuilder _ content: @escaping (Resource) -> Content) {
         self.source = source
+        self.resourceMapper = resourceMapper
         self.contentBuilder = content
     }
     
     var body: some View {
         ZStack {
-            EmptyView()
             switch sourceState {
             case .loading:
                 loadingViewBuilder?()
             case let .success(output):
                 contentBuilder(output)
             case .failed(_):
-                EmptyView()
+                Optional<Never>.none
             }
         }
         .onReceive(source.state.map({ output in
@@ -57,7 +58,7 @@ struct LoadableView<Source, Content>: View where Source: Loadable, Content: View
             case .loading:
                 return SourceState.loading
             case let .loaded(output):
-                return SourceState.success(output)
+                return SourceState.success(resourceMapper(output))
             }
         }).catch({ error in
             Just(SourceState.failed(error))
@@ -68,10 +69,18 @@ struct LoadableView<Source, Content>: View where Source: Loadable, Content: View
     
     func loadingView<V>(@ViewBuilder _ content: @escaping () -> V) -> some View where V: View {
         var newView = self
-        newView.loadingViewBuilder = {
-            return AnyView(content())
-        }
+        newView.loadingViewBuilder = { AnyView(content()) }
         return newView
+    }
+    
+}
+
+extension LoadableView where Source.Output == Resource {
+    
+    init(source: Source, @ViewBuilder _ content: @escaping (Resource) -> Content) {
+        self.source = source
+        self.resourceMapper = { $0 }
+        self.contentBuilder = content
     }
     
 }

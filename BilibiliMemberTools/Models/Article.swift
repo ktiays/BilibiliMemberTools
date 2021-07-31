@@ -10,10 +10,10 @@ struct Article: Publication {
     struct Status {
         
         var views: Int
-        var danmaku: Int
         var replies: Int
         
         var likes: Int
+        var dislikes: Int
         var coins: Int
         var favorites: Int
         
@@ -21,10 +21,12 @@ struct Article: Publication {
         
     }
     
+    var cv: String
     var title: String
-    
+    var summary: String
     var coverURL: String
-    
+    var url: String
     var publishedTime: Date
+    var status: Status
     
 }

@@ -24,7 +24,7 @@
         "repositoryURL": "git@github.com:IcyStudio/CyanKit.git",
         "state": {
           "branch": "main",
-          "revision": "702d76d3cb1eb8f33a51876af04eab0167c2682d",
+          "revision": "6d04fffb36549bc1a62edb609ee300d0c3fe49c7",
           "version": null
         }
       },
@@ -65,7 +65,7 @@
         }
       },
       {
-        "package": "SwiftUI-Introspect",
+        "package": "Introspect",
         "repositoryURL": "https://github.com/siteline/SwiftUI-Introspect.git",
         "state": {
           "branch": null,

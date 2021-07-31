@@ -22,19 +22,12 @@ struct Video: Publication {
     }
     
     var title: String
-    
     var coverURL: String
-    
     var publishedTime: Date
-    
     var av: String
-    
     var bv: String
-    
     var description: String
-    
     var duration: Int
-    
     var status: Status
     
 }
