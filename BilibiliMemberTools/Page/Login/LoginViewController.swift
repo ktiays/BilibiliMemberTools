@@ -14,8 +14,8 @@ import Alamofire
 
 class LoginViewController: UIViewController {
     
-    private lazy var segmentedControl: UISegmentedControl = {
-        let segmentedControl = UISegmentedControl(items: ["客户端登录", "短信验证码登录"])
+    private lazy var segmentedControl: UnderscoreStyleSegmentedControl = {
+        let segmentedControl = UnderscoreStyleSegmentedControl(items: ["客户端登录", "短信验证码登录"])
         segmentedControl.selectedSegmentIndex = 0
         segmentedControl.addTarget(self, action: #selector(segmentDidChange(_:)), for: .valueChanged)
         segmentedControl.sizeToFit()

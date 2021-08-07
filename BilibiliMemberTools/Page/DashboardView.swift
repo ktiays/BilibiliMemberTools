@@ -252,7 +252,7 @@ struct DashboardView: View {
             .padding(.vertical, 36)
             .background(
                 Color.accentColor
-                    .cornerRadius(12)
+                    .cornerRadius(12, corners: [.bottomLeft, .bottomRight])
                     .ignoresSafeArea()
             )
             .redacted(reason: userInfo == nil ? .placeholder : [])

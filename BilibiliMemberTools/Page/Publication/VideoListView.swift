@@ -185,24 +185,6 @@ fileprivate struct VideoCard: View {
     
 }
 
-// MARK: - Interactive Tag View
-
-fileprivate struct InteractiveTag: View {
-    
-    var image: Image
-    var value: String
-    
-    var body: some View {
-        HStack(spacing: 3) {
-            image
-            Text(value)
-        }
-        .font(.system(size: 10))
-        .foregroundColor(.init(.secondaryLabel))
-    }
-    
-}
-
 // MARK: - Preview
 
 struct VideoListView_Previews: PreviewProvider {

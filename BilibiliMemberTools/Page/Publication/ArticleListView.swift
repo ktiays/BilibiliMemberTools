@@ -31,7 +31,7 @@ struct ArticleListView: View {
             )
             tableView.contentInset = .init(top: 8, left: 0, bottom: innerBottomPadding - 36, right: 0)
         }
-        .onAppear {
+        .task {
             if articles.isEmpty { UserDataManager.default.requestArticles() }
         }
     }
@@ -74,6 +74,12 @@ fileprivate struct ArticleCard: View {
                 Text(article.publishedTime.formattedString)
                     .font(.system(size: 12))
                     .foregroundColor(.init(.label).opacity(0.7))
+                HStack(spacing: 12) {
+                    InteractiveTag(image: Image(systemName: "eye"),
+                                   value: article.status.views.integerDescription)
+                    InteractiveTag(image: Image(systemName: "text.bubble.fill"),
+                                   value: article.status.replies.integerDescription)
+                }
             }
         }
     }

@@ -34,7 +34,6 @@ final class AppContext: ObservableObject {
     // MARK: - Account Information
     
     func requestAccountInformationIfNeeded() async {
-        
         var memberInfo = account.memberInfo
             
         if memberInfo == nil {
