@@ -27,4 +27,30 @@ extension DataRequest {
         }
     }
     
+    @discardableResult
+    public func responseString(dataPreprocessor: DataPreprocessor = StringResponseSerializer.defaultDataPreprocessor,
+                               encoding: String.Encoding? = nil,
+                               emptyResponseCodes: Set<Int> = StringResponseSerializer.defaultEmptyResponseCodes,
+                               emptyRequestMethods: Set<HTTPMethod> = StringResponseSerializer.defaultEmptyRequestMethods) async -> AFDataResponse<String> {
+        await withCheckedContinuation { continuation in
+            responseString(dataPreprocessor: dataPreprocessor, encoding: encoding, emptyResponseCodes: emptyResponseCodes, emptyRequestMethods: emptyRequestMethods) {
+                continuation.resume(returning: $0)
+            }
+        }
+    }
+    
+    @discardableResult
+    public func responseDecodable<T: Decodable>(of type: T.Type = T.self,
+                               queue: DispatchQueue = .main,
+                               dataPreprocessor: DataPreprocessor = DecodableResponseSerializer<T>.defaultDataPreprocessor,
+                               decoder: DataDecoder = JSONDecoder(),
+                               emptyResponseCodes: Set<Int> = DecodableResponseSerializer<T>.defaultEmptyResponseCodes,
+                               emptyRequestMethods: Set<HTTPMethod> = DecodableResponseSerializer<T>.defaultEmptyRequestMethods) async -> AFDataResponse<T> {
+        await withCheckedContinuation { continuation in
+            responseDecodable(of: type, dataPreprocessor: dataPreprocessor, decoder: decoder, emptyResponseCodes: emptyResponseCodes, emptyRequestMethods: emptyRequestMethods) {
+                continuation.resume(returning: $0)
+            }
+        }
+    }
+    
 }

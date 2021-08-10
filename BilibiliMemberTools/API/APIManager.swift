@@ -75,6 +75,12 @@ final class APIManager {
             
         }
         
+        fileprivate enum Resources {
+            
+            static let emoticon = httpPrefix + Host.api.rawValue + "/x/emote/user/panel/web"
+            
+        }
+        
     }
     
     fileprivate enum ErrorDescription: String {
@@ -562,6 +568,12 @@ final class APIManager {
         }, completion: completion)
     }
     
+    // MARK: - Resources
+    
+    func emoticon() async throws -> ResponseModel<EmoticonModel> {
+        try await commonRequest(url: InterfaceURL.Resources.emoticon, parameters: ["business": "reply"], to: ResponseModel<EmoticonModel>.self)
+    }
+    
     // MARK: - Private Methods
     
     private func commonRequest<T>(url: String, parameters: Parameters = [:], dataMapper: @escaping ([String : Any]) -> T?) async throws -> T {
@@ -570,6 +582,10 @@ final class APIManager {
                 continuation.resume(with: result)
             }
         }
+    }
+    
+    @inline(__always) private func commonRequest<T: Decodable>(url: String, parameters: Parameters = [:], to type: T.Type) async throws -> T {
+        try await AF.request(url, parameters: parameters, headers: standardHeaders).responseDecodable(of: type).result.get()
     }
     
     private func commonRequest<T>(url: String, parameters: Parameters = [:], dataMapper: @escaping ([String : Any]) -> T?, completion: @escaping (Result<T, APIError>) -> Void) {
