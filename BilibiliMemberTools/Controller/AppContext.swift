@@ -56,9 +56,12 @@ final class AppContext: ObservableObject {
         }
         
         guard let memberInfo = memberInfo else { return }
-        account.memberInfo = memberInfo
         do {
-            account.userInfo = try await APIManager.shared.userInfo(uid: memberInfo.uid)
+            let userInfo = try await APIManager.shared.userInfo(uid: memberInfo.uid)
+            await MainActor.run {
+                account.memberInfo = memberInfo
+                account.userInfo = userInfo
+            }
         } catch { print(error) }
     }
     

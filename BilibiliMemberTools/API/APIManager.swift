@@ -570,8 +570,8 @@ final class APIManager {
     
     // MARK: - Resources
     
-    func emoticon() async throws -> ResponseModel<EmoticonModel> {
-        try await commonRequest(url: InterfaceURL.Resources.emoticon, parameters: ["business": "reply"], to: ResponseModel<EmoticonModel>.self)
+    func emotes() async throws -> ResponseModel<EmoteModel> {
+        try await commonRequest(url: InterfaceURL.Resources.emoticon, parameters: ["business": "reply"], to: ResponseModel<EmoteModel>.self)
     }
     
     // MARK: - Private Methods

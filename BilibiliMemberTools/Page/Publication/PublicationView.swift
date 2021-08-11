@@ -27,7 +27,7 @@ struct PublicationView: View {
             case 1:
                 ArticleListView()
             case 2:
-                EmoticonPanel()
+                EmotePanel()
             default:
                 Spacer()
             }

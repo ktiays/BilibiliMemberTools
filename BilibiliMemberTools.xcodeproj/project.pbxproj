@@ -47,8 +47,8 @@
 		ED66021326AFDE7B005AD214 /* ArticleListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED66021226AFDE7B005AD214 /* ArticleListView.swift */; };
 		ED881C4A265D6D7E00A290C1 /* VideoListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED881C49265D6D7E00A290C1 /* VideoListView.swift */; };
 		ED9E24B426C2D2DD00125C2A /* ResponseModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED9E24B326C2D2DD00125C2A /* ResponseModel.swift */; };
-		ED9E24B726C2D42B00125C2A /* EmoticonModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED9E24B626C2D42B00125C2A /* EmoticonModel.swift */; };
-		ED9E24BC26C2DB7200125C2A /* EmoticonPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED9E24BB26C2DB7200125C2A /* EmoticonPanel.swift */; };
+		ED9E24B726C2D42B00125C2A /* EmoteModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED9E24B626C2D42B00125C2A /* EmoteModel.swift */; };
+		ED9E24BC26C2DB7200125C2A /* EmotePanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED9E24BB26C2DB7200125C2A /* EmotePanel.swift */; };
 		EDA2350826B5208E00AE142D /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDA2350726B5208E00AE142D /* SettingsView.swift */; };
 		EDA2350A26B53A9A00AE142D /* RoundedRect.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDA2350926B53A9A00AE142D /* RoundedRect.swift */; };
 		EDACFD92265ADB41004FC0A6 /* BlurEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDACFD91265ADB41004FC0A6 /* BlurEffectView.swift */; };
@@ -109,8 +109,8 @@
 		ED66021226AFDE7B005AD214 /* ArticleListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleListView.swift; sourceTree = "<group>"; };
 		ED881C49265D6D7E00A290C1 /* VideoListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoListView.swift; sourceTree = "<group>"; };
 		ED9E24B326C2D2DD00125C2A /* ResponseModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseModel.swift; sourceTree = "<group>"; };
-		ED9E24B626C2D42B00125C2A /* EmoticonModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmoticonModel.swift; sourceTree = "<group>"; };
-		ED9E24BB26C2DB7200125C2A /* EmoticonPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmoticonPanel.swift; sourceTree = "<group>"; };
+		ED9E24B626C2D42B00125C2A /* EmoteModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmoteModel.swift; sourceTree = "<group>"; };
+		ED9E24BB26C2DB7200125C2A /* EmotePanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmotePanel.swift; sourceTree = "<group>"; };
 		EDA2350726B5208E00AE142D /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		EDA2350926B53A9A00AE142D /* RoundedRect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedRect.swift; sourceTree = "<group>"; };
 		EDACFD91265ADB41004FC0A6 /* BlurEffectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlurEffectView.swift; sourceTree = "<group>"; };
@@ -274,7 +274,7 @@
 		ED9E24B526C2D41700125C2A /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				ED9E24B626C2D42B00125C2A /* EmoticonModel.swift */,
+				ED9E24B626C2D42B00125C2A /* EmoteModel.swift */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -283,7 +283,7 @@
 			isa = PBXGroup;
 			children = (
 				ED392CEF2660E7CF00D1D0A2 /* InteractionView.swift */,
-				ED9E24BB26C2DB7200125C2A /* EmoticonPanel.swift */,
+				ED9E24BB26C2DB7200125C2A /* EmotePanel.swift */,
 			);
 			path = Interaction;
 			sourceTree = "<group>";
@@ -429,7 +429,7 @@
 				EDC6CA7926BD7D81001CE221 /* UnderscoreStyleSegmentedControl.swift in Sources */,
 				ED27A4C4265BF7CB00EE6559 /* Publication.swift in Sources */,
 				EDAD90972691E5830030B7C3 /* LoginViewController.swift in Sources */,
-				ED9E24B726C2D42B00125C2A /* EmoticonModel.swift in Sources */,
+				ED9E24B726C2D42B00125C2A /* EmoteModel.swift in Sources */,
 				55FE0359265CA93E00595F78 /* View+Extension.swift in Sources */,
 				EDCD61C526A33BA0007DECFC /* LoadableResource.swift in Sources */,
 				ED60BF2F26B5450B00C253FA /* Utils.swift in Sources */,
@@ -448,7 +448,7 @@
 				ED1AE80126A3F89900CBB19B /* Operator.swift in Sources */,
 				EDBC9A9926A5CD79007E2553 /* AuthStatus.swift in Sources */,
 				553322FA2653A970006FE9B7 /* String+Extension.swift in Sources */,
-				ED9E24BC26C2DB7200125C2A /* EmoticonPanel.swift in Sources */,
+				ED9E24BC26C2DB7200125C2A /* EmotePanel.swift in Sources */,
 				55E0756A26539F210047CD8B /* SceneDelegate.swift in Sources */,
 				553322FC2653B953006FE9B7 /* Date+Extension.swift in Sources */,
 				ED5329D926BE5491008EE29B /* InteractiveTag.swift in Sources */,
