@@ -47,7 +47,9 @@ final class AppContext: ObservableObject {
                 // If user is not logged in,
                 // the login view will pop up.
                 if error.code == ErrorCode.notAuthorized.rawValue {
-                    LoginAssistant.login()
+                    withMainQueue {
+                        LoginAssistant.login()
+                    }
                 } else {
                     print("An unknown error occurred while fetching data.")
                 }

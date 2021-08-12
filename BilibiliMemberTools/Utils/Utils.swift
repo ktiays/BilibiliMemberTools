@@ -5,10 +5,15 @@
 
 import UIKit
 import CyanKit
+import SwiftUI
 
 func present(_ viewControllerToPresent: UIViewController, animated flag: Bool = true, completion: (() -> Void)? = nil) {
     let topViewController = (UIApplication.shared.connectedScenes.first as! UIWindowScene).keyWindow?.cyan.topViewController
     // Avoid the top view controller presenting other view controller when the top view controller was not completely dismissed.
     if topViewController?.isBeingDismissed == true { return }
     topViewController?.present(viewControllerToPresent, animated: flag, completion: completion)
+}
+
+func accentBackgroundColor(for colorScheme: ColorScheme) -> Color {
+    .accentColor.opacity(colorScheme == .dark ? 0.08 : 0.04)
 }

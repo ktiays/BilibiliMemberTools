@@ -8,10 +8,6 @@ import SDWebImageSwiftUI
 import Introspect
 import CyanKit
 
-fileprivate func cardBackgroundColor(for colorScheme: ColorScheme) -> Color {
-    .accentColor.opacity(colorScheme == .dark ? 0.08 : 0.04)
-}
-
 struct DashboardView: View {
     
     @StateObject private var appContext = AppContext.shared
@@ -80,7 +76,7 @@ struct DashboardView: View {
                     })
                     .padding(.vertical)
                     .padding(.horizontal, 2)
-                    .background(cardBackgroundColor(for: colorScheme))
+                    .background(accentBackgroundColor(for: colorScheme))
                     .clipShape(RoundedRectangle(cornerRadius: 20))
                 }
             }
@@ -146,7 +142,7 @@ struct DashboardView: View {
                     Spacer()
                 }
                 .padding(.vertical)
-                .background(cardBackgroundColor(for: colorScheme))
+                .background(accentBackgroundColor(for: colorScheme))
                 .clipShape(RoundedRectangle(cornerRadius: 20))
                 
                 DataSectionView(description: "三连数据概览", items: {
@@ -184,7 +180,7 @@ struct DashboardView: View {
                     Spacer()
                 }
                 .padding(.vertical)
-                .background(cardBackgroundColor(for: colorScheme))
+                .background(accentBackgroundColor(for: colorScheme))
                 .clipShape(RoundedRectangle(cornerRadius: 20))
                 
                 DataSectionView(description: "三连数据概览", items: {
