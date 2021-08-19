@@ -37,7 +37,10 @@ struct InteractionView: View {
                 top: 0, left: 0, bottom: innerBottomPadding, right: 0
             )
         }
-        .onAppear {
+        .task {
+            let overlayInputViewController = OverlayInputViewController()
+            overlayInputViewController.modalPresentationStyle = .overFullScreen
+            present(overlayInputViewController)
             badgeValue.value = .init()
             if !replies.isEmpty { return }
             appContext.requestReplyFeed { _ in }

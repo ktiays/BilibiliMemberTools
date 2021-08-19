@@ -67,6 +67,7 @@ struct RootTabView: View {
                 .background(Color(.systemBackground).opacity(0.5).ignoresSafeArea())
             }
         }
+        .ignoresSafeArea(.keyboard)
         .statusBar(style: currentStatusBarStyle)
         .task {
             let context = AppContext.shared

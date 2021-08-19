@@ -15,13 +15,10 @@ struct EmotePanel: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            Spacer()
             VStack(spacing: 0) {
                 EmotePackageControl(selection: $selection, packages: emote?.packages ?? [])
-//                    .background(Color.accentColor)
                     .cornerRadius(displayCornerRadius - 32, corners: .allCorners, style: .continuous)
-                    .padding()
-                ScrollView {
+                ScrollView(showsIndicators: false) {
                     LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 6)) {
                         ForEach(emote?.packages ?? []) { package in
                             if package.id == selection {
@@ -33,12 +30,11 @@ struct EmotePanel: View {
                             }
                         }
                     }
+                    Spacer()
+                        .frame(height: 12)
                 }
-                .frame(height: 300)
+                .padding(.horizontal, 8)
             }
-//            .background(Color.red.opacity(1))
-            .cornerRadius(displayCornerRadius - 16, corners: .allCorners, style: .continuous)
-            .padding(16)
         }
         .ignoresSafeArea()
         .task {
@@ -66,11 +62,15 @@ fileprivate struct EmotePackageControl: View {
     
     private let displayCornerRadius = UIScreen.main.displayCornerRadius
     
+    private let leadingInset: CGFloat = 8
+    
     @Environment(\.colorScheme) private var colorScheme
     
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 0) {
+                Spacer()
+                    .frame(height: leadingInset)
                 ForEach(packages) { package in
                     EmoteButton(url: package.packageImageURL) {
                         selection.wrappedValue = package.id
@@ -80,13 +80,16 @@ fileprivate struct EmotePackageControl: View {
                     }
                 }
                 .padding(8)
+                Spacer()
+                    .frame(height: leadingInset)
             }
             .background(
                 HStack(spacing: 0) {
-                    accentBackgroundColor(for: colorScheme)
+                    Color.accentColor
+                        .opacity(1)
                         .frame(width: 40, height: 40)
                         .cornerRadius(displayCornerRadius - 40, corners: .allCorners, style: .continuous)
-                        .offset(x: CGFloat(8 + selectionIndex * 56))
+                        .offset(x: CGFloat(8 + selectionIndex * 56) + leadingInset)
                     Spacer()
                 }
             )
@@ -134,6 +137,11 @@ fileprivate struct EmoteButton: View {
 
 struct EmotePanel_Previews: PreviewProvider {
     static var previews: some View {
-        EmotePanel()
+        VStack {
+            Spacer()
+            EmotePanel()
+                .frame(height: 400)
+        }
+        .preferredColorScheme(.dark)
     }
 }

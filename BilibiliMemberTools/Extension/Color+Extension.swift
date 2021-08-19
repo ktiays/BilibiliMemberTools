@@ -4,13 +4,14 @@
 // 
 
 import UIKit
+import SwiftUI
 
 // MARK: Initialization Method
 
 extension UIColor {
     
     convenience init(hex: String) {
-        var cString:String = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+        var cString: String = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
 
         if (cString.hasPrefix("#")) {
             cString.remove(at: cString.startIndex)
@@ -30,6 +31,22 @@ extension UIColor {
             blue: CGFloat(rgbValue & 0x0000FF) / 255.0,
             alpha: CGFloat(1.0)
         )
+    }
+    
+}
+
+// MARK: Properties
+
+extension UIColor {
+    
+    static var accentColor: UIColor { .init(named: "AccentColor") ?? .clear }
+    
+}
+
+extension Color {
+    
+    static func accentBackgroundColor(for colorScheme: ColorScheme) -> Color {
+        .accentColor.opacity(colorScheme == .dark ? 0.08 : 0.04)
     }
     
 }

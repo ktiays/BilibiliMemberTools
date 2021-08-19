@@ -76,7 +76,7 @@ struct DashboardView: View {
                     })
                     .padding(.vertical)
                     .padding(.horizontal, 2)
-                    .background(accentBackgroundColor(for: colorScheme))
+                    .background(Color.accentBackgroundColor(for: colorScheme))
                     .clipShape(RoundedRectangle(cornerRadius: 20))
                 }
             }
@@ -142,7 +142,7 @@ struct DashboardView: View {
                     Spacer()
                 }
                 .padding(.vertical)
-                .background(accentBackgroundColor(for: colorScheme))
+                .background(Color.accentBackgroundColor(for: colorScheme))
                 .clipShape(RoundedRectangle(cornerRadius: 20))
                 
                 DataSectionView(description: "三连数据概览", items: {
@@ -180,7 +180,7 @@ struct DashboardView: View {
                     Spacer()
                 }
                 .padding(.vertical)
-                .background(accentBackgroundColor(for: colorScheme))
+                .background(Color.accentBackgroundColor(for: colorScheme))
                 .clipShape(RoundedRectangle(cornerRadius: 20))
                 
                 DataSectionView(description: "三连数据概览", items: {

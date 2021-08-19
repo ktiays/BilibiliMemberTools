@@ -14,6 +14,6 @@ func present(_ viewControllerToPresent: UIViewController, animated flag: Bool = 
     topViewController?.present(viewControllerToPresent, animated: flag, completion: completion)
 }
 
-func accentBackgroundColor(for colorScheme: ColorScheme) -> Color {
-    .accentColor.opacity(colorScheme == .dark ? 0.08 : 0.04)
-}
+let displayCornerRadius = UIScreen.main.displayCornerRadius
+
+typealias UIHostingView = _UIHostingView
