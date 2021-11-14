@@ -5,7 +5,7 @@
 
 import SwiftUI
 import Introspect
-import SDWebImageSwiftUI
+import Kingfisher
 
 struct ArticleListView: View {
     
@@ -55,7 +55,7 @@ fileprivate struct ArticleCard: View {
     
     var body: some View {
         HStack {
-            WebImage(url: URL(string: article.coverURL))
+            KFImage(URL(string: article.coverURL))
                 .placeholder {
                     Image(uiImage: UIImage())
                         .resizable()

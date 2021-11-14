@@ -4,7 +4,7 @@
 // 
 
 import SwiftUI
-import SDWebImageSwiftUI
+import Kingfisher
 import Introspect
 import CyanKit
 
@@ -207,7 +207,7 @@ struct DashboardView: View {
                 Button {
                     present(UIHostingController(rootView: SettingsView()))
                 } label: {
-                    WebImage(url: URL(string: userInfo?.avatarURL ?? .init()))
+                    KFImage(URL(string: userInfo?.avatarURL ?? .init()))
                         .placeholder {
                             Image(uiImage: UIImage())
                                 .resizable()

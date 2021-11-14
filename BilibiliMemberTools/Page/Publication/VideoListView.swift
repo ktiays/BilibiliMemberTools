@@ -4,7 +4,7 @@
 // 
 
 import SwiftUI
-import SDWebImageSwiftUI
+import Kingfisher
 import Introspect
 
 // MARK: Video List View
@@ -104,32 +104,27 @@ fileprivate struct VideoCard: View {
     var body: some View {
         VStack {
             HStack(spacing: 12) {
-                ZStack {
-                    WebImage(url: URL(string: video.coverURL))
-                        .placeholder {
-                            Image(uiImage: UIImage())
-                                .resizable()
-                                .redacted(reason: .placeholder)
-                        }
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .unredacted()
-                    VStack(spacing: 0) {
-                        Spacer()
-                        HStack(spacing: 0) {
-                            Spacer()
-                            Text(formatDuration(video.duration))
-                                .font(.system(size: 10, weight: .medium))
-                                .foregroundColor(.white)
-                                .padding(.horizontal, 6)
-                                .padding(.vertical, 3)
-                                .background(Color.black.opacity(0.45))
-                                .cornerRadius(cornerRadius, corners: .topLeft)
-                        }
+                KFImage(URL(string: video.coverURL))
+                    .placeholder {
+                        Image(uiImage: UIImage())
+                            .resizable()
+                            .redacted(reason: .placeholder)
                     }
-                }
-                .frame(width: imageSize.width, height: imageSize.height)
-                .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: imageSize.width, height: imageSize.height)
+                    .unredacted()
+                    .overlay {
+                        Text(formatDuration(video.duration))
+                            .font(.system(size: 10, weight: .medium))
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 3)
+                            .background(Color.black.opacity(0.45))
+                            .cornerRadius(cornerRadius, corners: .topLeft)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
+                    }
+                    .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
                 
                 VStack(alignment: .leading, spacing: 8) {
                     Text(video.title)

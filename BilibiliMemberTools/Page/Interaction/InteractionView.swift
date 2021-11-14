@@ -5,7 +5,7 @@
 
 import SwiftUI
 import Introspect
-import SDWebImageSwiftUI
+import Kingfisher
 
 // MARK: Interaction View
 
@@ -79,7 +79,7 @@ fileprivate struct ReplyCard: View {
         HStack {
             VStack(alignment: .leading, spacing: 14) {
                 HStack {
-                    WebImage(url: URL(string: reply.avatarURL ?? .init()))
+                    KFImage(URL(string: reply.avatarURL ?? .init()))
                         .placeholder {
                             Image(uiImage: UIImage())
                                 .resizable()

@@ -4,7 +4,7 @@
 // 
 
 import SwiftUI
-import SDWebImageSwiftUI
+import Kingfisher
 import Introspect
 
 struct SettingsView: View {
@@ -20,7 +20,7 @@ struct SettingsView: View {
         ScrollView {
             LazyVStack {
                 Spacer(minLength: 44)
-                WebImage(url: URL(string: userInfo?.avatarURL ?? .init()))
+                KFImage(URL(string: userInfo?.avatarURL ?? .init()))
                     .placeholder {
                         Image(uiImage: UIImage())
                             .resizable()
@@ -32,7 +32,6 @@ struct SettingsView: View {
                     .frame(width: 80, height: 80)
                     .clipShape(Circle())
                     .unredacted()
-                
                 Text(userInfo?.username ?? .init())
                     .bold()
                     .font(.system(size: 18))
