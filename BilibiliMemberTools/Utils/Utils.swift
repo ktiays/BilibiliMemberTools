@@ -17,3 +17,8 @@ func present(_ viewControllerToPresent: UIViewController, animated flag: Bool = 
 let displayCornerRadius = UIScreen.main.displayCornerRadius
 
 typealias UIHostingView = _UIHostingView
+
+infix operator |>: MultiplicationPrecedence
+func |><T, U>(lhs: T, rhs: (T) -> U) -> U {
+    return rhs(lhs)
+}

@@ -13,10 +13,17 @@ class InputTextField: UIControl {
         set { textField.delegate = newValue }
     }
     
+    var emoteClickAction: (() -> ())?
+    var showsKeyboardIcon: Bool = false {
+        didSet {
+            emoteButton.setImage(.init(systemName: showsKeyboardIcon ? "keyboard" : "face.smiling"), for: .normal)
+        }
+    }
+    
     /// The corner radius using a continuous corner curve, for the text field background.
     private let _radius: CGFloat = displayCornerRadius - 16
     
-    private lazy var textField: UITextField = {
+    private(set) lazy var textField: UITextField = {
         let textField = UITextField()
         return textField
     }()
@@ -24,8 +31,10 @@ class InputTextField: UIControl {
     private lazy var emoteButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(UIImage(systemName: "face.smiling"), for: .normal)
-        button.contentVerticalAlignment = .fill
-        button.contentHorizontalAlignment = .fill
+        button.contentMode = .scaleAspectFit
+        button.addAction(.init(handler: { [unowned self] _ in
+            self.emoteClickAction?()
+        }), for: .touchUpInside)
         return button
     }()
     
@@ -52,7 +61,7 @@ class InputTextField: UIControl {
         emoteButton.snp.makeConstraints { make in
             let padding = _radius * 0.85
             make.width.equalTo(emoteButton.snp.height)
-            make.bottom.trailing.equalToSuperview().offset(-padding)
+            make.trailing.equalToSuperview().offset(-padding)
             make.leading.equalTo(textField.snp.trailing).offset(12)
             make.centerY.equalToSuperview()
         }

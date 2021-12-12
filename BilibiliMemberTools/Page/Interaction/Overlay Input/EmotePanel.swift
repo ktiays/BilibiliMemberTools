@@ -74,7 +74,7 @@ fileprivate struct EmotePackageControl: View {
                 ForEach(packages) { package in
                     EmoteButton(url: package.packageImageURL) {
                         selection.wrappedValue = package.id
-                        withAnimation(.spring()) {
+                        withAnimation(.spring(response: 0.3)) {
                             selectionIndex = index(of: package)
                         }
                     }

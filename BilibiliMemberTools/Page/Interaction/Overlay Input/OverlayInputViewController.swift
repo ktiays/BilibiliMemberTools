@@ -44,6 +44,16 @@ class OverlayInputViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func loadView() {
+        view = PassthroughView() |> {
+            $0.shouldPassthroughPrediction = { [unowned self] in
+                self.dismiss(animated: true, completion: nil)
+                return true
+            }
+            return $0
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -51,22 +61,44 @@ class OverlayInputViewController: UIViewController {
         view.addSubview(contentView)
         contentView.addSubview(textFieldView)
         contentView.addSubview(emotePanelView)
+        
+        textFieldView.delegate = self
+        textFieldView.showsKeyboardIcon = false
+        textFieldView.emoteClickAction = { [unowned self] in
+            self.textFieldView.textField |> {
+                if $0.isEditing {
+                    $0.resignFirstResponder()
+                } else {
+                    $0.becomeFirstResponder()
+                }
+            }
+        }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        textFieldView.textField.becomeFirstResponder()
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
+        let boundsWidth = view.bounds.width
         let width = _contentWidth()
-        let textFieldHeight: CGFloat = _radius * 2
+        let textFieldHeight: CGFloat = _keyboardDisplay ? 44 : (_radius * 2)
         if _keyboardDisplay {
             emotePanelView.alpha = 0
-            contentView.frame = .init(x: spacing, y: _keyboardEndFrame.minY - spacing - textFieldHeight, width: width, height: textFieldHeight)
+            contentView.frame = .init(x: 0, y: _keyboardEndFrame.minY - textFieldHeight, width: boundsWidth, height: textFieldHeight)
+            textFieldView.frame = .init(x: 0, y: 0, width: boundsWidth, height: textFieldHeight)
+            contentView.cornerRadius = 0
         } else {
             let contentViewHeight: CGFloat = emotePanelHeight + textFieldHeight
             emotePanelView.alpha = 1
             contentView.frame = .init(x: spacing, y: view.bounds.height - contentViewHeight - spacing, width: width, height: emotePanelHeight + textFieldHeight)
             emotePanelView.frame = .init(x: 0, y: contentView.frame.height - emotePanelHeight, width: width, height: emotePanelHeight)
             textFieldView.frame = .init(x: 0, y: emotePanelView.frame.minY - textFieldHeight, width: width, height: textFieldHeight)
+            contentView.cornerRadius = _radius
         }
     }
     
@@ -85,6 +117,18 @@ class OverlayInputViewController: UIViewController {
             view.setNeedsLayout()
             view.layoutIfNeeded()
         } completion: { _ in }
+    }
+    
+}
+
+extension OverlayInputViewController: UITextFieldDelegate {
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        textFieldView.showsKeyboardIcon = true
+    }
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        textFieldView.showsKeyboardIcon = false
     }
     
 }
