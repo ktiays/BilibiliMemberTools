@@ -212,15 +212,15 @@ class LoginViewController: UIViewController {
         guard let telephone = telTextField.text else { return }
         guard let smsCode = captchaTextField.text else { return }
         if telephone.count != phoneNumberLength || smsCode.count <= 0 { return }
-        Task.detached {
+        Task {
             if await APIManager.shared.login(telephone: telephone, smsCode: smsCode) == nil {
-                await self.dismiss(animated: true, completion: nil)
+                self.dismiss(animated: true, completion: nil)
             }
         }
     }
     
     @objc private func redirect(_ sender: UIButton) {
-        Task.detached { [self] in
+        Task { [self] in
             guard let qrCode = try? await APIManager.shared.qrCode() else { return }
             await MainActor.run { loginQRCode = qrCode }
             let encodedURL = qrCode.url.addingPercentEncoding(withAllowedCharacters: CharacterSet(charactersIn: ":/?=").inverted) ?? .init()
@@ -232,7 +232,7 @@ class LoginViewController: UIViewController {
             guard result else {
                 return
             }
-            await pollingAuthStatus()
+            pollingAuthStatus()
         }
     }
     
@@ -242,8 +242,9 @@ class LoginViewController: UIViewController {
         oauthTimerCancellable = Timer.publish(every: 1, on: .main, in: .common)
             .autoconnect()
             .sink { _ in
-                Task.detached { [self] in
-                    guard let oauthKey = await loginQRCode?.oauthKey else { return }
+                Task { [weak self] in
+                    guard let self else { return }
+                    guard let oauthKey = self.loginQRCode?.oauthKey else { return }
                     guard let authStatus = try? await APIManager.shared.authStatus(oauthKey: oauthKey) else {
                         print("An error occurred while obtaining authorization status.")
                         return
@@ -251,12 +252,12 @@ class LoginViewController: UIViewController {
                     do {
                         let _ = try authStatus.status.get()
                         print("Authentication succeeded.")
-                        await oauthTimerCancellable?.cancel()
-                        await dismiss(animated: true, completion: nil)
+                        self.oauthTimerCancellable?.cancel()
+                        self.dismiss(animated: true, completion: nil)
                     } catch let error as AuthStatus.AuthError {
                         let cleanHandler = {
                             await MainActor.run { self.loginQRCode = nil }
-                            await oauthTimerCancellable?.cancel()
+                            self.oauthTimerCancellable?.cancel()
                         }
                         switch error {
                         case .incorrectKey:
@@ -345,7 +346,7 @@ fileprivate class CAPTCHAViewController: UIViewController {
 extension CAPTCHAViewController: WKNavigationDelegate {
     
     fileprivate func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        Task.detached {
+        Task {
             let args = await APIManager.shared.captcha()
             await MainActor.run { [self] in
                 captcha.key = args.key
@@ -367,7 +368,7 @@ extension CAPTCHAViewController: WKScriptMessageHandler {
         captcha.validate = code["geetest_validate"] ?? .init()
         captcha.seccode = code["geetest_seccode"] ?? .init()
         captchaDidVerifyBlock?()
-        Task.detached {
+        Task {
             await self.requestSMSCode()
         }
     }
