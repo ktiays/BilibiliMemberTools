@@ -1,79 +1,77 @@
 {
-  "object": {
-    "pins": [
-      {
-        "package": "Alamofire",
-        "repositoryURL": "https://github.com/Alamofire/Alamofire.git",
-        "state": {
-          "branch": null,
-          "revision": "f96b619bcb2383b43d898402283924b80e2c4bae",
-          "version": "5.4.3"
-        }
-      },
-      {
-        "package": "CocoaLumberjack",
-        "repositoryURL": "https://github.com/CocoaLumberjack/CocoaLumberjack.git",
-        "state": {
-          "branch": null,
-          "revision": "e518eb6e362df327574ba5e04269cd6d29f40aec",
-          "version": "3.7.2"
-        }
-      },
-      {
-        "package": "CyanKit",
-        "repositoryURL": "git@github.com:IcyStudio/CyanKit.git",
-        "state": {
-          "branch": "main",
-          "revision": "6d04fffb36549bc1a62edb609ee300d0c3fe49c7",
-          "version": null
-        }
-      },
-      {
-        "package": "Kingfisher",
-        "repositoryURL": "https://github.com/onevcat/Kingfisher.git",
-        "state": {
-          "branch": null,
-          "revision": "318e319998bf555c3e914d5c3adb6da05af86a32",
-          "version": "7.1.1"
-        }
-      },
-      {
-        "package": "SnapKit",
-        "repositoryURL": "https://github.com/SnapKit/SnapKit.git",
-        "state": {
-          "branch": null,
-          "revision": "d458564516e5676af9c70b4f4b2a9178294f1bc6",
-          "version": "5.0.1"
-        }
-      },
-      {
-        "package": "SVGKit",
-        "repositoryURL": "https://github.com/SVGKit/SVGKit.git",
-        "state": {
-          "branch": "3.x",
-          "revision": "6a594bdc3554a2a630ee27e56c39b8a3f2aa73b3",
-          "version": null
-        }
-      },
-      {
-        "package": "swift-log",
-        "repositoryURL": "https://github.com/apple/swift-log.git",
-        "state": {
-          "branch": null,
-          "revision": "5d66f7ba25daf4f94100e7022febf3c75e37a6c7",
-          "version": "1.4.2"
-        }
-      },
-      {
-        "package": "Introspect",
-        "repositoryURL": "https://github.com/siteline/SwiftUI-Introspect.git",
-        "state": {
-          "branch": null,
-          "revision": "2e09be8af614401bc9f87d40093ec19ce56ccaf2",
-          "version": "0.1.3"
-        }
+  "pins" : [
+    {
+      "identity" : "alamofire",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Alamofire/Alamofire.git",
+      "state" : {
+        "revision" : "bc268c28fb170f494de9e9927c371b8342979ece",
+        "version" : "5.7.1"
       }
-    ]
-  },
-  "version": 1
+    },
+    {
+      "identity" : "cocoalumberjack",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/CocoaLumberjack/CocoaLumberjack.git",
+      "state" : {
+        "revision" : "67ec5818a757aba4d7c534e21a905d878d128dbf",
+        "version" : "3.8.1"
+      }
+    },
+    {
+      "identity" : "cyankit",
+      "kind" : "remoteSourceControl",
+      "location" : "git@github.com:IcyStudio/CyanKit.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "f6417a2917f23d4a9b86fd16582481560d0a2068"
+      }
+    },
+    {
+      "identity" : "kingfisher",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/onevcat/Kingfisher.git",
+      "state" : {
+        "revision" : "c75584ac759cbb16b204d0a7de3ebf53ea6b304d",
+        "version" : "7.9.0"
+      }
+    },
+    {
+      "identity" : "snapkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SnapKit/SnapKit.git",
+      "state" : {
+        "revision" : "f222cbdf325885926566172f6f5f06af95473158",
+        "version" : "5.6.0"
+      }
+    },
+    {
+      "identity" : "svgkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SVGKit/SVGKit.git",
+      "state" : {
+        "branch" : "3.x",
+        "revision" : "96c330df9627b26c1d3a3eb48a84b4eb5d21d7b3"
+      }
+    },
+    {
+      "identity" : "swift-log",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-log.git",
+      "state" : {
+        "revision" : "532d8b529501fb73a2455b179e0bbb6d49b652ed",
+        "version" : "1.5.3"
+      }
+    },
+    {
+      "identity" : "swiftui-introspect",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/siteline/SwiftUI-Introspect.git",
+      "state" : {
+        "revision" : "9da0f9b7bffe96a7c98a0128f1e214f62728a39a",
+        "version" : "0.11.1"
+      }
+    }
+  ],
+  "version" : 2
 }
